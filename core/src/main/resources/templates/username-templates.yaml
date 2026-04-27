@@ -1,0 +1,69 @@
+# Keys are comma-separated TemplateField names
+# Values are lists of StringSubstitutor templates
+
+FIRST_NAME:
+  - "${FIRST}123"
+  - "${FIRST}999"
+  - "${FIRST}${NUM10}"
+  - "${FIRST}${NUM100}"
+  - "${FIRST}${NUM1000}"
+
+FIRST_NAME,LAST_NAME:
+  - "${FIRST}${SEPARATOR}${LAST}"
+  # johndoe
+  - "${FIRST}${LAST}"
+  # john.d
+  - "${FIRST}${LAST_INITIAL}"
+  # john.d##
+  - "${FIRST}${LAST_INITIAL}${NUM10}"
+  # john.d###
+  - "${FIRST}${LAST_INITIAL}${NUM100}"
+  - "${FIRST}${LAST_INITIAL}${NUM1000}"
+
+FIRST_NAME,LAST_NAME,MIDDLE_NAME:
+  # johnjosephdoe
+  - "${FIRST}${MIDDLE_INITIAL}${LAST}"
+  #// johnjdoe
+  - "${FIRST}${MIDDLE_INITIAL}${LAST}"
+  # j.j.doe
+  - "${FIRST_INITIAL}${SEPARATOR}${MIDDLE_INITIAL}${SEPARATOR}${LAST}"
+  # john.j.d
+  - "${FIRST}${SEPARATOR}${MIDDLE_INITIAL}${SEPARATOR}${LAST_INITIAL}"
+
+FIRST_NAME,LAST_NAME,BIRTHDAY:
+  - "${FIRST}${LAST}${BIRTHDAY_YEAR}"
+  #// johndoe2000
+  - "${FIRST}${LAST}${BIRTHDAY_YEAR}"
+  #// johndoe00
+  - "${FIRST}${LAST}${BIRTHDAY_YEAR_SHORT}"
+  #// johndoe00
+  - "${FIRST}${LAST}${BIRTHDAY_DAY}"
+  #// johnd2000
+  - "${FIRST}${LAST_INITIAL}${BIRTHDAY_YEAR}"
+  #// johnd2000
+  - "${FIRST}${LAST_INITIAL}${BIRTHDAY_YEAR_SHORT}"
+  #// johndoe2000
+  - "${FIRST}${LAST}${BIRTHDAY_YEAR}"
+  #// johndoe00
+  - "${FIRST}${LAST}${BIRTHDAY_YEAR_SHORT}"
+  #// johnd2000
+  - "${FIRST}${LAST_INITIAL}${BIRTHDAY_YEAR}"
+  #// johnd2000
+  - "${FIRST}${LAST_INITIAL}${BIRTHDAY_YEAR_SHORT}"
+
+KEYWORD:
+  - "${KEYWORD}${SEPARATOR}${NUM1000}"
+  - "${KEYWORD}${NUM10}"
+  - "${KEYWORD}${NUM100}"
+  - "${KEYWORD}${NUM1000}"
+
+KEYWORD,FIRST_NAME:
+  - "${FIRST}_hoops"
+  - "${FIRST}_skates"
+  - "${FIRST}${SEPARATOR}gamer"
+  - "${FIRST}${SEPARATOR}codes"
+  - "${FIRST}${SEPARATOR}draws"
+  - "surfer${SEPARATOR}${FIRST}"
+  # surfergirl_
+  - "x_${FIRST}_x"
+

@@ -1,0 +1,51 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.reneekbartlett</groupId>
+    <artifactId>verisimilar</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>verisimilar-core</artifactId>
+  <name>verisimilar-core</name>
+
+  <dependencies>
+      <dependency>
+        <groupId>jakarta.persistence</groupId>
+        <artifactId>jakarta.persistence-api</artifactId>
+        <!--<version>3.2.0</version>-->
+      </dependency>
+      <dependency>
+          <groupId>org.yaml</groupId>
+          <artifactId>snakeyaml</artifactId>
+          <!--<version>2.6</version>-->
+          <scope>compile</scope>
+      </dependency>
+  </dependencies>
+  
+  <build>
+    <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <!--<resource>
+                <directory>src/main/java/com/reneekbartlett/verisimilar/core/data</directory>
+                <targetPath>com/reneekbartlett/verisimilar/core/data</targetPath>
+            </resource>-->
+            <resource>
+                <directory>../parent/config/verisimilar/</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/java/com/reneekbartlett/verisimilar/data</directory>
+                <targetPath>com/reneekbartlett/verisimilar/data</targetPath>
+            </testResource>
+        </testResources>
+  </build>
+
+</project>
