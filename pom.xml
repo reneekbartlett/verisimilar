@@ -15,8 +15,8 @@
   <name>verisimilar</name>
 
   <modules>
-    <module>verisimilar-core</module>
-    <module>verisimilar-api</module>
+    <module>core</module>
+    <module>api</module>
   </modules>
 
   <properties>

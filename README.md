@@ -11,6 +11,8 @@ I have many, MANY ideas for future features, including:
 * Data Reporting/Charting
 * User forms to allow custom weighting by features like Gender, Ethnicity, Region.
 * Data generation 'modes', i.e. a mode to generate a really toxic file of data
-* Use of public data validation API's to compare generated data against real checks.
+* Use of public data validation API's to validate generated data.
+* Add ZIP4 to Zipcode
+
 
 I am using just US data for now and my aim is to try to stay as diverse as possible.  STAY TUNED.
