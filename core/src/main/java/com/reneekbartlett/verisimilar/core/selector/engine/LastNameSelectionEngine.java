@@ -40,16 +40,16 @@ public class LastNameSelectionEngine extends AbstractSelectionEngine<LastNameDat
 
     protected void setup() {
         // TODO:  Check logic here.  Maybe just iterate result.dataSets()
-        this.ethnicitiesMap = Ethnicity.defaultMap();
+        //this.ethnicitiesMap = Ethnicity.defaultMap();
+        this.ethnicitiesMap = Map.of(Ethnicity.UNKNOWN, 0.0001);
 
         LastNameDatasetResult lastNameDatasetResult = resolvers.last().resolve(LastNameDatasetKey.defaults());
 
         this.selectorsByNameKey = HashMap.newHashMap(5);
 
-        Set<Ethnicity> customEthnicities = Ethnicity.defaultMap().keySet();
-        if(customEthnicities.size() >= 1){
+        if(!ethnicitiesMap.isEmpty() && ethnicitiesMap.keySet().size() >= 1) {
+            Set<Ethnicity> customEthnicities = ethnicitiesMap.keySet();
             for(Ethnicity e : customEthnicities){
-                //LastNameDatasetResult ds1 = resolvers.last().resolve(new LastNameDatasetKey(e));
                 Map<String,Double> map = lastNameDatasetResult.get(new NameKey(e));
                 if(!map.isEmpty()) {
                     RandomSelector<String> s1 = strategy.buildSelector(map);

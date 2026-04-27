@@ -11,11 +11,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan
-public class MakeAFakeServiceApplication extends SpringBootServletInitializer {
+public class VerisimilarServiceApplication extends SpringBootServletInitializer {
 
     //private Logger logger = LoggerFactory.getLogger(WebApplication.class);
 
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(MakeAFakeServiceApplication.class, args);
+        SpringApplication.run(VerisimilarServiceApplication.class, args);
     }
 }

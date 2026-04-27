@@ -15,7 +15,6 @@ import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.UniformSelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.UsernameTemplateSelector;
-import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.templates.TemplateRegistry;
 
@@ -26,7 +25,7 @@ import com.reneekbartlett.verisimilar.core.templates.TemplateRegistry;
  * Map<String, String[]> NICKNAME_MAP
  */
 public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDatasetKey, UsernameDatasetResult> {
-    private static final SelectorStrategy<String> DEFAULT_SELECTOR_STRATEGY = new WeightedSelectorStrategy<>();
+    private static final SelectorStrategy<String> DEFAULT_SELECTOR_STRATEGY = new UniformSelectorStrategy<>();
     private final TemplateRegistry templateRegistry;
 
     protected Map<NameKey, RandomSelector<String>> selectorsByNameKey;
@@ -132,10 +131,6 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
         return UsernameDatasetKey.defaults();
     }
 
-    public static SelectorStrategy<String> defaultSelectorStrategy(){
-        return new UniformSelectorStrategy<>();
-    }
-
     @Override
     public Class<UsernameDatasetKey> keyType() {
         return UsernameDatasetKey.class;
@@ -144,5 +139,9 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
     @Override
     public Class<UsernameDatasetResult> resultType() {
         return UsernameDatasetResult.class;
+    }
+
+    public static SelectorStrategy<String> defaultSelectorStrategy(){
+        return DEFAULT_SELECTOR_STRATEGY;
     }
 }

@@ -18,9 +18,9 @@ import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
 public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNameDatasetKey, MiddleNameDatasetResult> {
     private static final SelectorStrategy<String> DEFAULT_SELECTOR_STRATEGY = new WeightedSelectorStrategy<>();
-    private final Map<GenderIdentity, Double> genderIdentityMap;
-    private final RandomSelector<GenderIdentity> genderSelector;
-    private final Map<Ethnicity, Double> ethnicitiesMap;
+    private Map<GenderIdentity, Double> genderIdentityMap;
+    private RandomSelector<GenderIdentity> genderSelector;
+    private Map<Ethnicity, Double> ethnicitiesMap;
     private Map<NameKey, RandomSelector<String>> selectorsByNameKey;
 
     public record NameKey(GenderIdentity gender, Ethnicity ethnicity) {
@@ -45,14 +45,15 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
             SelectorStrategy<String> strategy
     ) {
         super(resolvers, strategy);
+    }
+
+    protected void setup() {
         this.genderIdentityMap = GenderIdentity.defaultMap(); // TODO
         this.genderSelector = new WeightedSelectorImpl<>(genderIdentityMap);
 
         // TODO:  Create cfg_fullname_middle_female_ETHNICITY.csv & cfg_fullname_middle_male_ETHNICITY.csv files.
         this.ethnicitiesMap = Map.of(Ethnicity.UNKNOWN, 0.0001);
-    }
 
-    protected void setup() {
         // This DatasetResult contains both genders, so only call once.
         MiddleNameDatasetResult middleNameDatasetResult = resolvers.middle().resolve(MiddleNameDatasetKey.defaults());
 

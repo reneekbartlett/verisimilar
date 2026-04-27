@@ -1,5 +1,6 @@
 package com.reneekbartlett.verisimilar.core.selector.engine;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.KeywordDatasetKey;
@@ -37,9 +38,10 @@ public class KeywordSelectionEngine extends AbstractSelectionEngine<KeywordDatas
 
     protected void setup() {
         KeywordDatasetResult keywordDatasetResult = resolvers.keyword().resolve(KeywordDatasetKey.defaults());
+        this.selectorsByNameKey = HashMap.newHashMap(keywordDatasetResult.datasets().size());
         keywordDatasetResult.datasets().forEach((nameKey, map) -> {
             RandomSelector<String> selector = strategy.buildSelector(map);
-            selectorsByNameKey.put(nameKey, selector);
+            this.selectorsByNameKey.put(nameKey, selector);
         });
         LOGGER.debug("setup - result:{}", keywordDatasetResult.toString());
     }
@@ -72,5 +74,9 @@ public class KeywordSelectionEngine extends AbstractSelectionEngine<KeywordDatas
     @Override
     public Class<KeywordDatasetResult> resultType() {
         return KeywordDatasetResult.class;
+    }
+
+    public static SelectorStrategy<String> defaultSelectorStrategy(){
+        return DEFAULT_SELECTOR_STRATEGY;
     }
 }

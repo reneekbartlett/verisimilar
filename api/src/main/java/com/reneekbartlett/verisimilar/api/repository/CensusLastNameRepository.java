@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.reneekbartlett.verisimilar.core.model.CensusLastName;
+import com.reneekbartlett.verisimilar.api.model.CensusLastName;
 //import com.reneekbartlett.verisimilar.service.Param;
 //import com.reneekbartlett.verisimilar.service.Query;
 

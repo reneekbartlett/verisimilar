@@ -43,11 +43,11 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
 
     private static final SelectorStrategy<String> DEFAULT_SELECTOR_STRATEGY = new WeightedSelectorStrategy<>();
 
-    private final Map<GenderIdentity, Double> genderIdentityMap;
-    private final RandomSelector<GenderIdentity> genderSelector;
+    private Map<GenderIdentity, Double> genderIdentityMap;
+    private RandomSelector<GenderIdentity> genderSelector;
 
-    private final Map<Ethnicity, Double> ethnicitiesMap;
-    private final RandomSelector<Ethnicity> ethnicitySelector;
+    private Map<Ethnicity, Double> ethnicitiesMap;
+    private RandomSelector<Ethnicity> ethnicitySelector;
 
     private Map<NameKey, RandomSelector<String>> selectorsByNameKey;
 
@@ -60,6 +60,10 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
             SelectorStrategy<String> strategy
     ) {
         super(resolvers, strategy);
+    }
+
+    @Override
+    protected void setup() {
         this.genderIdentityMap = GenderIdentity.defaultMap();
         this.genderSelector = new WeightedSelectorImpl<>(genderIdentityMap);
 
@@ -67,9 +71,7 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
         //this.ethnicitiesMap = Ethnicity.defaultMap();
         this.ethnicitiesMap = Map.of(Ethnicity.UNKNOWN, 0.0001);
         this.ethnicitySelector = new WeightedSelectorImpl<>(ethnicitiesMap);
-    }
 
-    protected void setup() {
         // This DatasetResult contains both genders, so only call once.
         FirstNameDatasetResult firstNameDatasetResult = resolvers.first().resolve(FirstNameDatasetKey.defaults());
 

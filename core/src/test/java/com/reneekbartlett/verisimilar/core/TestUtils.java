@@ -79,7 +79,6 @@ public class TestUtils {
 
         DomainDatasetResolver domainResolver = new DomainDatasetResolver(loader);
 
-        //PhoneNumberDatasetResolver phoneNumberResolver = new PhoneNumberDatasetResolver(loader);
         AreaCodeDatasetResolver areaCodeResolver = new AreaCodeDatasetResolver(loader);
 
         KeywordDatasetResolver keywordResolver = new KeywordDatasetResolver(loader);
@@ -123,15 +122,15 @@ public class TestUtils {
     public static DatasetSelectionEngineRegistry getDatasetSelectionEngineRegistry() {
         DatasetResolverRegistry resolvers = getDatasetResolverRegistry();
 
-        FirstNameSelectionEngine firstNameSelector = new FirstNameSelectionEngine(resolvers, WEIGHTED_RANDOM);
-        MiddleNameSelectionEngine middleNameSelector = new MiddleNameSelectionEngine(resolvers, WEIGHTED_RANDOM);
-        LastNameSelectionEngine lastNameSelector = new LastNameSelectionEngine(resolvers, WEIGHTED_RANDOM);
-        NicknameSelectionEngine nicknameSelector = new NicknameSelectionEngine(resolvers, WEIGHTED_RANDOM);
+        FirstNameSelectionEngine firstNameSelector = new FirstNameSelectionEngine(resolvers);
+        MiddleNameSelectionEngine middleNameSelector = new MiddleNameSelectionEngine(resolvers);
+        LastNameSelectionEngine lastNameSelector = new LastNameSelectionEngine(resolvers);
+        NicknameSelectionEngine nicknameSelector = new NicknameSelectionEngine(resolvers);
 
-        StreetNameSelectionEngine streetNameSelector = new StreetNameSelectionEngine(resolvers, WEIGHTED_RANDOM);
-        StreetSuffixSelectionEngine streetSuffixSelector = new StreetSuffixSelectionEngine(resolvers, WEIGHTED_RANDOM);
-        AddressTwoSelectionEngine addressTwoSelector = new AddressTwoSelectionEngine(resolvers, WEIGHTED_RANDOM);
-        CityStateZipSelectionEngine cityStateZipSelector = new CityStateZipSelectionEngine(resolvers, WEIGHTED_RANDOM);
+        StreetNameSelectionEngine streetNameSelector = new StreetNameSelectionEngine(resolvers);
+        StreetSuffixSelectionEngine streetSuffixSelector = new StreetSuffixSelectionEngine(resolvers);
+        AddressTwoSelectionEngine addressTwoSelector = new AddressTwoSelectionEngine(resolvers);
+        CityStateZipSelectionEngine cityStateZipSelector = new CityStateZipSelectionEngine(resolvers);
 
         UsernameSelectionEngine usernameSelector = new UsernameSelectionEngine(resolvers, UNIFORM_RANDOM, getUsernameTemplateRegistry());
         DomainSelectionEngine domainSelector = new DomainSelectionEngine(resolvers, WEIGHTED_RANDOM);

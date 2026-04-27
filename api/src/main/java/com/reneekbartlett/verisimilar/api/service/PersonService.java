@@ -31,6 +31,7 @@ public class PersonService {
     //private static final String FIELD_DELIM = "\t";
     private static final Long MAX_LINES = 10000L;
 
+    // TODO:  use config
     private static final String OUTFILE_DIR = "/opt/reneekbartlett/outfiles/";
 
     private final PersonGenerator personGenerator;
@@ -40,18 +41,13 @@ public class PersonService {
     }
 
     public PersonResponseDto generate() {
-//        String addr1,
-//        String addr2,
-//        String city,
-//        String state,
-//        String zip,
-//        String phoneNumber,
-//        String emailAddress
         DatasetResolutionContext ctx = DatasetResolutionContext.builder().build();
         SelectionFilter filter = SelectionFilter.builder().build();
+
         PersonRecord person = personGenerator.generate(ctx, filter);
 
-        return new PersonResponseDto(person.firstName(), person.middleName(), person.lastName(), person.birthday(),
+        return new PersonResponseDto(person.firstName(), person.middleName(), person.lastName(), 
+                person.birthday(),
                 // person.gender(),
                 GenderIdentity.GENDER_UNSPECIFIED, person.address1(), // String address1,
                 person.address2(), // String address2,

@@ -7,7 +7,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.reneekbartlett.verisimilar.core.model.CensusLastName;
+//import com.reneekbartlett.verisimilar.core.model.CensusLastName;
+import com.reneekbartlett.verisimilar.api.model.CensusLastName;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
