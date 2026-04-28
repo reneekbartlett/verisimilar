@@ -20,17 +20,16 @@ public class TemplateRegistry {
 
     private final Map<Set<TemplateField>, TemplateSet> registry;
 
-    // defaultRegistry
-    // Set<TemplateField> = HashSet.of("KEYWORD", "NUM10");
-    private static final TemplateSet DEFAULT_KEYWORD_TEMPLATES = TemplateSet.defaults();
-
     public TemplateRegistry(Map<Set<TemplateField>, TemplateSet> registry) {
         this.registry = Map.copyOf(registry);
     }
 
+    public Map<Set<TemplateField>,TemplateSet> getTemplateMap(){
+        return registry;
+    }
+
     public Set<String> getTemplatesFor(Set<TemplateField> fields) {
         Set<String> stringTemplates = new LinkedHashSet<>();
-
         registry.forEach((key, value) -> {
             if (fields.containsAll(key)) {
                 stringTemplates.addAll(value.templates());
@@ -39,16 +38,26 @@ public class TemplateRegistry {
 
         // TODO:  Move elsewhere?
         if(stringTemplates.size() == 0) {
-            stringTemplates.addAll(DEFAULT_KEYWORD_TEMPLATES.templates());
-            LOGGER.debug("Using default keyword templates");
+            //stringTemplates.addAll(DEFAULT_KEYWORD_TEMPLATES.templates());
+            //LOGGER.debug("Using default keyword templates");
+            LOGGER.warn("NO TEMPLATES LOADED");
         }
-
         return stringTemplates;
     }
 
     public static TemplateRegistry defaults() {
         Map<Set<TemplateField>, TemplateSet> registry = new HashMap<>();
-        registry.put(Set.of(TemplateField.KEYWORD, TemplateField.NUM10), TemplateSet.defaults());
+        TemplateSet defaultTemplateSet = TemplateSet.of(
+                "${KEYWORD}.${NUM10}",
+                "${KEYWORD}${NUM10}",
+                "${KEYWORD}${NUM10}0",
+                "${KEYWORD}${NUM10}00"
+        );
+        registry.put(Set.of(TemplateField.KEYWORD1, TemplateField.NUM10), defaultTemplateSet);
         return new TemplateRegistry(registry);
+    }
+
+    public static Map<Set<TemplateField>, TemplateSet> defaultTemplateMap() {
+        return defaults().getTemplateMap();
     }
 }

@@ -64,10 +64,10 @@ public class KeywordSelectionEngineTests {
         DatasetResolverRegistry resolvers = TestUtils.getEmailAddressDatasetResolverRegistry();
         //UsernameDatasetResolver usernameDatasetResolver = resolvers.username();
 
-        TemplateRegistryLoader templateLoader = new TemplateRegistryLoader();
-        TemplateRegistry templateRegistry = templateLoader.loadFromClasspath("templates/username-templates.yaml");
+        //TemplateRegistryLoader templateLoader = new TemplateRegistryLoader();
+        //TemplateRegistry templateRegistry = templateLoader.loadFromClasspath("templates/username-templates.yaml");
 
-        UsernameSelectionEngine usernameSelector = new UsernameSelectionEngine(resolvers, TestUtils.UNIFORM_RANDOM, templateRegistry);
+        UsernameSelectionEngine usernameSelector = new UsernameSelectionEngine(resolvers);
         //select(UsernameDatasetKey key, SelectionFilter filter)
         String username1 = usernameSelector.select();
         LOGGER.debug("username1={}", username1);

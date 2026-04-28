@@ -47,7 +47,23 @@ public enum GenderIdentity {
                 return gender;
             }
         }
-        throw new IllegalArgumentException("Unknown gender identity value: " + value);
+        //throw new IllegalArgumentException("Unknown gender identity value: " + value);
+        return null;
+    }
+
+    public static GenderIdentity fromText(String text) {
+        if(text != null) {
+            for (GenderIdentity g : values()) {
+                if (g.name().equalsIgnoreCase(text)) {
+                    return g;
+                } else if (text.equalsIgnoreCase("F")) {
+                    return GenderIdentity.FEMALE;
+                } else if (text.equalsIgnoreCase("M")) {
+                    return GenderIdentity.MALE;
+                }
+            }
+        }
+        return null;
     }
 
     public static Set<GenderIdentity> defaults() {

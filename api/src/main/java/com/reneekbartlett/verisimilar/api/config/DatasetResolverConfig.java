@@ -2,13 +2,8 @@ package com.reneekbartlett.verisimilar.api.config;
 
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.NameDatasetResolverRegistry;
-import com.reneekbartlett.verisimilar.core.templates.TemplateRegistry;
-import com.reneekbartlett.verisimilar.core.templates.loader.TemplateRegistryLoader;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.*;
 import com.reneekbartlett.verisimilar.core.datasets.loader.ResourceLoaderUtil;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,10 +38,10 @@ public class DatasetResolverConfig {
         CityStateZipDatasetResolver cityStateZipResolver = new CityStateZipDatasetResolver(loader);
 
         // TODO
-        Set<String> allTemplates = new HashSet<>();
-        TemplateRegistryLoader templateLoader = new TemplateRegistryLoader();
-        TemplateRegistry templateRegistry = templateLoader.loadFromClasspath("templates/username-templates.yaml");
-        UsernameDatasetResolver usernameResolver = new UsernameDatasetResolver(loader, allTemplates);
+        //Set<String> allTemplates = new HashSet<>();
+        //TemplateRegistryLoader templateLoader = new TemplateRegistryLoader();
+        //TemplateRegistry templateRegistry = templateLoader.loadFromClasspath("templates/username-templates.yaml");
+        UsernameDatasetResolver usernameResolver = new UsernameDatasetResolver(loader);
 
         DomainDatasetResolver domainResolver = new DomainDatasetResolver(loader);
 

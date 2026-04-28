@@ -29,13 +29,7 @@ import com.reneekbartlett.verisimilar.core.selector.engine.StreetNameSelectionEn
 import com.reneekbartlett.verisimilar.core.selector.engine.StreetSuffixSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.UsernameSelectionEngine;
 
-import com.reneekbartlett.verisimilar.core.templates.TemplateRegistry;
-import com.reneekbartlett.verisimilar.core.templates.loader.TemplateRegistryLoader;
-
 public class PersonGenerator extends AbstractValueGenerator<PersonRecord>{
-
-    //private static final SelectorStrategy<String> WEIGHTED_RANDOM = new WeightedSelectorStrategy<>();
-    //private static final SelectorStrategy<String> UNIFORM_RANDOM = new UniformSelectorStrategy<>();
 
     private final BirthdayGenerator birthdayGenerator;
     private final FullNameGenerator fullNameGenerator;
@@ -63,11 +57,8 @@ public class PersonGenerator extends AbstractValueGenerator<PersonRecord>{
                 new AreaCodeSelectionEngine(resolvers)
         );
 
-        TemplateRegistryLoader loader = new TemplateRegistryLoader();
-        TemplateRegistry templateRegistry = loader.loadFromClasspath("templates/username-templates.yaml");
-
         this.emailAddressGenerator = new EmailAddressGenerator(
-                new UsernameSelectionEngine(resolvers, templateRegistry),
+                new UsernameSelectionEngine(resolvers),
                 new DomainSelectionEngine(resolvers),
                 new KeywordSelectionEngine(resolvers)
         );

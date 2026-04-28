@@ -88,4 +88,20 @@ public class PersonResponseDto {
     public String getEmailAddress() {
         return emailAddress;
     }
+
+    @Override
+    public String toString() {
+        String delim = ",";
+        StringBuilder sb = new StringBuilder(0).append(firstName);
+        sb.append(delim).append(middleName);
+        sb.append(delim).append(lastName);
+        sb.append(delim).append(addr1);
+        sb.append(delim).append(addr2);
+        sb.append(delim).append(city);
+        sb.append(delim).append(state);
+        sb.append(delim).append(zip);
+        sb.append(delim).append(phoneNumber);
+        sb.append(delim).append(emailAddress);
+        return sb.toString();
+    }
 }

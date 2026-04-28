@@ -5,8 +5,11 @@ public enum TemplateField {
     MIDDLE_NAME("MIDDLE"),
     LAST_NAME("LAST"),
     BIRTHDAY("BIRTHDAY"),
-    KEYWORD("KEYWORD"),
+
+    //KEYWORD("KEYWORD"),
     KEYWORD1("KEYWORD1"),
+    KEYWORD2("KEYWORD2"),
+    KEYWORD3("KEYWORD3"),
 
     STREET_NAME("STREET_NAME"),
     STREET_SUFFIX("STREET_SUFFIX"),
@@ -19,6 +22,8 @@ public enum TemplateField {
 
     ADDRESS_CATEGORY("ADDRESS_CATEGORY"),
     UNIT_TYPE("UNIT_TYPE"),
+
+    SEPARATOR("SEPARATOR"),
 
     NUM10("NUM10"),
     NUM100("NUM100"),
@@ -35,5 +40,17 @@ public enum TemplateField {
 
     public String getPlaceholder() {
         return placeholder;
+    }
+
+    public static TemplateField fromValue(String templateValue) {
+        if(templateValue != null) {
+            for (TemplateField field : values()) {
+                if (field.name().equalsIgnoreCase(templateValue)) {
+                    return field;
+                }
+            }
+        }
+        //throw new IllegalArgumentException("Invalid state abbreviation: " + abbr);
+        return null;
     }
 }

@@ -16,10 +16,8 @@ public class EmailAddressGenerator extends AbstractValueGenerator<EmailAddressRe
     public EmailAddressGenerator(UsernameSelectionEngine usernameSelector, 
             DomainSelectionEngine domainSelector,
             KeywordSelectionEngine keywordSelector) {
-        this.usernameGenerator = new UsernameGenerator(usernameSelector, keywordSelector);
+        this.usernameGenerator = new UsernameGenerator(usernameSelector);
         this.domainGenerator = new DomainGenerator(domainSelector);
-        // TODO:  Check templates
-        //if(usernameSelector.getTemplateSelector(null, null))
     }
 
     @Override

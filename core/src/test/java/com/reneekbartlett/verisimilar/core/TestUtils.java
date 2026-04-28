@@ -1,8 +1,5 @@
 package com.reneekbartlett.verisimilar.core;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.reneekbartlett.verisimilar.core.datasets.loader.ResourceLoaderUtil;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.AddressTwoDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.AreaCodeDatasetResolver;
@@ -73,9 +70,7 @@ public class TestUtils {
         AddressTwoDatasetResolver addressTwoResolver = new AddressTwoDatasetResolver(loader);
         CityStateZipDatasetResolver cityStateZipResolver = new CityStateZipDatasetResolver(loader);
 
-        // TODO
-        Set<String> allTemplates = new HashSet<>();
-        UsernameDatasetResolver usernameResolver = new UsernameDatasetResolver(loader, allTemplates);
+        UsernameDatasetResolver usernameResolver = new UsernameDatasetResolver(loader);
 
         DomainDatasetResolver domainResolver = new DomainDatasetResolver(loader);
 
@@ -96,9 +91,7 @@ public class TestUtils {
 
     public static EmailAddressDatasetResolverRegistry getEmailAddressDatasetResolverRegistry() {
         ResourceLoaderUtil loader = new ResourceLoaderUtil();
-        // TODO
-        Set<String> allTemplates = new HashSet<>();
-        UsernameDatasetResolver usernameResolver = new UsernameDatasetResolver(loader, allTemplates);
+        UsernameDatasetResolver usernameResolver = new UsernameDatasetResolver(loader);
         DomainDatasetResolver domainResolver = new DomainDatasetResolver(loader);
         KeywordDatasetResolver keywordResolver = new KeywordDatasetResolver(loader);
         return new EmailAddressDatasetResolverRegistry(usernameResolver, domainResolver, keywordResolver);
@@ -132,7 +125,7 @@ public class TestUtils {
         AddressTwoSelectionEngine addressTwoSelector = new AddressTwoSelectionEngine(resolvers);
         CityStateZipSelectionEngine cityStateZipSelector = new CityStateZipSelectionEngine(resolvers);
 
-        UsernameSelectionEngine usernameSelector = new UsernameSelectionEngine(resolvers, UNIFORM_RANDOM, getUsernameTemplateRegistry());
+        UsernameSelectionEngine usernameSelector = new UsernameSelectionEngine(resolvers);
         DomainSelectionEngine domainSelector = new DomainSelectionEngine(resolvers, WEIGHTED_RANDOM);
 
         AreaCodeSelectionEngine areaCodeSelector = new AreaCodeSelectionEngine(resolvers, WEIGHTED_RANDOM);
@@ -164,7 +157,7 @@ public class TestUtils {
     public static EmailAddressSelectionEngineRegistry getEmailAddressSelectionEngineRegistry() {
         DatasetResolverRegistry emailResolvers = getEmailAddressDatasetResolverRegistry();
 
-        UsernameSelectionEngine usernameSelector = new UsernameSelectionEngine(emailResolvers, WEIGHTED_RANDOM, getUsernameTemplateRegistry());
+        UsernameSelectionEngine usernameSelector = new UsernameSelectionEngine(emailResolvers);
         DomainSelectionEngine domainSelector = new DomainSelectionEngine(emailResolvers, WEIGHTED_RANDOM);
         KeywordSelectionEngine keywordSelector = new KeywordSelectionEngine(emailResolvers, WEIGHTED_RANDOM);
         return new EmailAddressSelectionEngineRegistry(usernameSelector, domainSelector, keywordSelector);
