@@ -1,6 +1,5 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
@@ -29,10 +28,7 @@ public record KeywordDatasetKey(
     }
 
     public static Set<String> defaultKeywordTypes() {
-        // TODO
-        Set<String> keywordTypes = new HashSet<>();
-        keywordTypes.add("ALL");
-        return keywordTypes;
+        return Set.of("ALL");
     }
 
     @Override

@@ -30,7 +30,9 @@ public record FirstNameDatasetResult(Map<NameKey, Map<String, Double>> datasets)
         return datasets.getOrDefault(new NameKey(gender, ethnicity), get(gender));
     }
 
-    // TODO:  Add get(NameKey nameKey)?
+    public Map<String, Double> get(NameKey nameKey) {
+        return datasets.getOrDefault(nameKey, getDefault());
+    }
 
     @Override
     public String toString() {

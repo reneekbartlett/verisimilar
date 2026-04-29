@@ -19,12 +19,7 @@ public class GeneratePersonService {
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(GeneratePersonService.class);
 
-    //private static final String FIELD_DELIM = "\t";
-    //private static final Long MAX_LINES = 10000L;
-
-    // TODO:  use config
-    //private static final String OUTFILE_DIR = "/opt/reneekbartlett/outfiles/";
-
+    @SuppressWarnings("unused")
     private final JsonMapper jsonMapper;
 
     private final PersonGenerator personGenerator;

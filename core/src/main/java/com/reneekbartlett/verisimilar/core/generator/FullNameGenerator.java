@@ -76,7 +76,7 @@ public class FullNameGenerator extends AbstractValueGenerator<FullName>{
 
         if(ctx.gender() == null && filter.gender().isEmpty()) {
             // TODO:  update instead of overwrite?
-            GenderIdentity genderIdentity = GenderIdentityGenerator.get().generate();
+            GenderIdentity genderIdentity = new GenderIdentityGenerator().generate();
             filter = SelectionFilter.builder().gender(genderIdentity).build();
             LOGGER.debug("generateFullName - Add GenderIdentity to criteria " + genderIdentity.name());
         }

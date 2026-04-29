@@ -20,7 +20,7 @@ public class CityStateZipDatasetResolver extends AbstractDatasetResolver<CitySta
     @Override
     public CityStateZipDatasetResult loadForKey(CityStateZipDatasetKey key) {
         Map<String,Double> map = loadValuesAsMap(key);
-        return new CityStateZipDatasetResult(null, Map.of(new NameKey(), map));
+        return new CityStateZipDatasetResult(Map.of(new NameKey(), map));
     }
 
     @Override

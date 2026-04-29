@@ -1,6 +1,5 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
@@ -29,10 +28,7 @@ public record UsernameDatasetKey(
     }
 
     public static Set<String> defaultUsernameTypes() {
-        // TODO
-        Set<String> usernameTypes = new HashSet<>();
-        usernameTypes.add("ALL");
-        return usernameTypes;
+        return Set.of("ALL");
     }
 
     @Override

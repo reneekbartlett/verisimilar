@@ -13,9 +13,11 @@ public class EmailAddressGenerator extends AbstractValueGenerator<EmailAddressRe
     private final UsernameGenerator usernameGenerator;
     private final DomainGenerator domainGenerator;
 
-    public EmailAddressGenerator(UsernameSelectionEngine usernameSelector, 
+    public EmailAddressGenerator(
+            UsernameSelectionEngine usernameSelector, 
             DomainSelectionEngine domainSelector,
-            KeywordSelectionEngine keywordSelector) {
+            KeywordSelectionEngine keywordSelector
+    ) {
         this.usernameGenerator = new UsernameGenerator(usernameSelector);
         this.domainGenerator = new DomainGenerator(domainSelector);
     }
@@ -25,17 +27,11 @@ public class EmailAddressGenerator extends AbstractValueGenerator<EmailAddressRe
         return generateEmailAddress(ctx, filter);
     }
 
-    @Override
-    protected Class<EmailAddressRecord> valueType() {
-        return EmailAddressRecord.class;
-    }
-
-    //TODO
     private EmailAddressRecord generateEmailAddress(DatasetResolutionContext ctx, SelectionFilter filter) {
 
         String domain = getDomain(ctx, filter);
 
-        // TODO:  set user filter from ^^
+        // TODO:  Tweak SelectionFilter.toBuilder to set user filter from ^^
         SelectionFilter.Builder usernameFilterBuilder = SelectionFilter.builder().domain(domain);
         if(filter.firstName().isPresent()) usernameFilterBuilder.firstName(filter.firstName().get());
         if(filter.middleName().isPresent()) usernameFilterBuilder.middleName(filter.middleName().get());
@@ -52,6 +48,11 @@ public class EmailAddressGenerator extends AbstractValueGenerator<EmailAddressRe
 
     private String getUsername(DatasetResolutionContext ctx, SelectionFilter filter) {
         return usernameGenerator.generate(filter).toUpperCase();
+    }
+
+    @Override
+    protected Class<EmailAddressRecord> valueType() {
+        return EmailAddressRecord.class;
     }
 
 }

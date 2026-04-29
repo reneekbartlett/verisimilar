@@ -48,7 +48,7 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
     }
 
     protected void setup() {
-        this.genderIdentityMap = GenderIdentity.defaultMap(); // TODO
+        this.genderIdentityMap = GenderIdentity.defaultMap();
         this.genderSelector = new WeightedSelectorImpl<>(genderIdentityMap);
 
         // TODO:  Create cfg_fullname_middle_female_ETHNICITY.csv & cfg_fullname_middle_male_ETHNICITY.csv files.
@@ -89,7 +89,6 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
 
         // TODO: If Ethnicity is NOT supplied here, just select from dataset based on GenderIdentity.
         //Ethnicity ethnicity = criteria.ethnicity().orElse(Ethnicity.UNKNOWN);
-        //Ethnicity ethnicity = null;
 
         NameKey nameKey = new NameKey(gender, null);
         RandomSelector<String> selector = selectorsByNameKey.get(nameKey);

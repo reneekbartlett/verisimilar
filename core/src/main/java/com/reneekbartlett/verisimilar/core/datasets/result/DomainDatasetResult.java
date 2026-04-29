@@ -9,7 +9,13 @@ import com.reneekbartlett.verisimilar.core.selector.engine.DomainSelectionEngine
 public record DomainDatasetResult(
         Map<NameKey, Map<String, Double>> datasets
 ) implements DatasetResult {
-    public DomainDatasetResult(Map<String, Double> b2c, Map<String, Double> b2b, Map<String, Double> edu, Map<String, Double> gov) {
+    public DomainDatasetResult(
+            Map<String, Double> b2c, 
+            Map<String, Double> b2b, 
+            Map<String, Double> edu, 
+            Map<String, Double> gov, 
+            Map<String, Double> disposable
+    ) {
         this(
                 Map.of(
                         new NameKey(DomainType.B2C), b2c, 

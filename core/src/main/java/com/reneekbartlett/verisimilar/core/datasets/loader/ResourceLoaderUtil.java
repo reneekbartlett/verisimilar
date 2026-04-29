@@ -48,7 +48,7 @@ public class ResourceLoaderUtil {
         Map<String, String> map = new HashMap<>();
         try {
             for (String[] parts : readLines(resourcePath)) {
-                //TODO
+                //TODO: Support more than 2 columns
                 map.put(parts[1], parts[0]);
             }
         } catch(Exception e) {
@@ -111,14 +111,10 @@ public class ResourceLoaderUtil {
         List<String[]> rows = new ArrayList<>();
 
         try {
-            //InputStream is = ResourceMapLoader.class.getResourceAsStream(resourcePath);
             InputStream is = getResourceAsStream(resourcePath);
             if (is == null) {
                 throw new IllegalArgumentException("Dataset not found: " + resourcePath);
             }
-    
-            //Map<String, Double> map = new HashMap<>();
-
             try (
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))
             ) {
@@ -128,11 +124,6 @@ public class ResourceLoaderUtil {
                         continue;
                     }
                     rows.add(line.split(DEFAULT_COL_DELIMITER, 2));
-
-                    //String[] parts = line.split(",");
-                    //String value = parts[0].trim();
-                    //Double weight = Double.parseDouble(parts[1].trim());
-                    //map.put(value, weight);
                 }
             } catch (Exception e) {
                 throw new RuntimeException("Failed to load resource: " + resourcePath, e);

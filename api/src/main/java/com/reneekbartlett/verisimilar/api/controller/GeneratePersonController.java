@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping("/api/generate/person")
 public class GeneratePersonController {
@@ -30,7 +29,6 @@ public class GeneratePersonController {
             @RequestParam(name="gender", required=false) String gender,
             @RequestParam(name="state", required=false) String state
     ) {
-        //TODO
         SelectionFilter.Builder filter = SelectionFilter.builder();
         if(GenderIdentity.fromText(gender) != null) filter.gender(GenderIdentity.fromText(gender));
         if(USState.fromAbbreviation(state) != null) filter.states(Set.of(USState.fromAbbreviation(state)));

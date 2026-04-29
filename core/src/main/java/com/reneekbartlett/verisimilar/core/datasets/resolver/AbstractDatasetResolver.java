@@ -39,7 +39,6 @@ public abstract class AbstractDatasetResolver<K, R> implements DatasetResolver<K
     /**
      * Convenience method for loading a weighted map from a CSV.
      */
-    //TODO
     protected Map<String, Double> load(String path) {
         return loader.loadWeightedMap(path);
     }

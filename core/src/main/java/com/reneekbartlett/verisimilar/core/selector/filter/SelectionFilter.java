@@ -321,7 +321,7 @@ public record SelectionFilter(
         }
 
         public Builder contains(String value) {
-            // TODO
+            // TODO: Use map
             //return this.customPredicate(key -> value.stream().anyMatch(key::contains));
             this.contains = value;
             return this;
@@ -409,7 +409,6 @@ public record SelectionFilter(
             sb.append("states=" + String.join("$", USState.names(states.get())) + FIELD_DELIM);
         }
         if(!zipCodes.isEmpty()) {
-            //TODO
             sb.append("zipCodes=" + String.join("$", zipCodes.get()) + FIELD_DELIM);
         }
         if(!birthday.isEmpty()) sb.append("birthday=" + this.birthday.get().toString() + FIELD_DELIM);

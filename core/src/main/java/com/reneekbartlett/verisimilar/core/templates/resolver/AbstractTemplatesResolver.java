@@ -29,7 +29,7 @@ public abstract class AbstractTemplatesResolver<K, R> implements TemplatesResolv
     public Set<String> getTemplates(Set<TemplateField> populatedFields) {
         Set<String> filteredTemplates;
         if(templateRegistry == null) {
-            // TODO
+            // TODO: Check logic
             filteredTemplates = TemplateRegistry.defaults().getTemplatesFor(Set.of(TemplateField.KEYWORD1));
         } else {
             filteredTemplates = templateRegistry.getTemplatesFor(populatedFields);
@@ -39,5 +39,4 @@ public abstract class AbstractTemplatesResolver<K, R> implements TemplatesResolv
 
     @Override
     public abstract Class<K> keyType();
-
 }

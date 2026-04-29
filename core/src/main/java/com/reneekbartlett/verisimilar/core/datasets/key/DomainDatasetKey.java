@@ -24,15 +24,8 @@ public record DomainDatasetKey(String id, Set<String> domainTypes, Integer year)
         return new DomainDatasetKey(KEY_ID, defaultDomainTypes(), null);
     }
 
-    // TODO:  defaultYears
     public static Set<String> defaultDomainTypes() {
-        String[] domainTypes = new String[5];
-        domainTypes[0] = "b2c";
-        domainTypes[1] = "b2b";
-        domainTypes[2] = "disposable";
-        domainTypes[3] = "edu";
-        domainTypes[4] = "gov";
-        return Set.of(domainTypes);
+        return Set.of("b2c", "b2b", "disposable", "edu", "gov");
     }
 
     public static DomainDatasetKey fromContext(DatasetResolutionContext ctx) {

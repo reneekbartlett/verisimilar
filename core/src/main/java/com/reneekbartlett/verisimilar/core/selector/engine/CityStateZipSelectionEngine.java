@@ -51,8 +51,7 @@ public class CityStateZipSelectionEngine extends AbstractSelectionEngine<CitySta
         }
         if(filter != null && !filter.isEmpty()) {
             if(filter.equalToMap().containsKey(TemplateField.CITY)) {
-                // TODO
-                
+                // TODO: Add Filtering
             }
             selector.setFilter(filter);
         }

@@ -6,6 +6,8 @@ public enum TemplateField {
     LAST_NAME("LAST"),
     BIRTHDAY("BIRTHDAY"),
 
+    GENDER_IDENTITY("GENDER_IDENTITY"),
+
     //KEYWORD("KEYWORD"),
     KEYWORD1("KEYWORD1"),
     KEYWORD2("KEYWORD2"),

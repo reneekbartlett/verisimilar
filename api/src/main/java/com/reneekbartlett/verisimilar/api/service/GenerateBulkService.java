@@ -24,7 +24,7 @@ public class GenerateBulkService {
     private final long DEFAULT_LINE_COUNT = 10;
     private static final Logger LOGGER = LoggerFactory.getLogger(GenerateBulkService.class);
 
-    private static final String FIELD_DELIM = "\t";
+    //private static final String FIELD_DELIM = "\t";
     private static final Long MAX_LINES = 10000L;
     private static final String OUTFILE_DIR = "/opt/reneekbartlett/outfiles/";
 

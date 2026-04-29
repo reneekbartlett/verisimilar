@@ -21,10 +21,6 @@ public record LastNameDatasetKey(String id, Ethnicity ethnicity) implements Data
         this(KEY_ID, ethnicity);
     }
 
-    //public boolean isDefault() {
-    //    return this.toString() == defaults().toString();
-    //}
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(0).append(id);

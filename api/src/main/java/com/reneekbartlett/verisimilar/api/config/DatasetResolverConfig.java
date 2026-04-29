@@ -1,8 +1,19 @@
 package com.reneekbartlett.verisimilar.api.config;
 
+import com.reneekbartlett.verisimilar.core.datasets.resolver.AddressTwoDatasetResolver;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.AreaCodeDatasetResolver;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.CityStateZipDatasetResolver;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.DomainDatasetResolver;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.FirstNameDatasetResolver;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.KeywordDatasetResolver;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.LastNameDatasetResolver;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.MiddleNameDatasetResolver;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.NicknameDatasetResolver;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.StreetNameDatasetResolver;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.StreetSuffixDatasetResolver;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.UsernameDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.NameDatasetResolverRegistry;
-import com.reneekbartlett.verisimilar.core.datasets.resolver.*;
 import com.reneekbartlett.verisimilar.core.datasets.loader.ResourceLoaderUtil;
 
 import org.springframework.context.annotation.Bean;
@@ -37,12 +48,7 @@ public class DatasetResolverConfig {
         AddressTwoDatasetResolver addressTwoResolver = new AddressTwoDatasetResolver(loader);
         CityStateZipDatasetResolver cityStateZipResolver = new CityStateZipDatasetResolver(loader);
 
-        // TODO
-        //Set<String> allTemplates = new HashSet<>();
-        //TemplateRegistryLoader templateLoader = new TemplateRegistryLoader();
-        //TemplateRegistry templateRegistry = templateLoader.loadFromClasspath("templates/username-templates.yaml");
         UsernameDatasetResolver usernameResolver = new UsernameDatasetResolver(loader);
-
         DomainDatasetResolver domainResolver = new DomainDatasetResolver(loader);
 
         AreaCodeDatasetResolver areaCodeResolver = new AreaCodeDatasetResolver(loader);
@@ -50,9 +56,14 @@ public class DatasetResolverConfig {
         KeywordDatasetResolver keywordResolver = new KeywordDatasetResolver(loader);
 
         return new DatasetResolverRegistry(
-                firstNameResolver, middleNameResolver, lastNameResolver, nicknameResolver,
-                streetNameResolver, streetSuffixResolver,
-                addressTwoResolver, cityStateZipResolver, 
+                firstNameResolver, 
+                middleNameResolver, 
+                lastNameResolver, 
+                nicknameResolver,
+                streetNameResolver, 
+                streetSuffixResolver,
+                addressTwoResolver, 
+                cityStateZipResolver, 
                 areaCodeResolver,
                 usernameResolver, 
                 domainResolver,
