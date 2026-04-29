@@ -7,6 +7,7 @@ import com.reneekbartlett.verisimilar.core.datasets.key.KeywordDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.KeywordDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.datasets.result.KeywordDatasetResult;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.UniformSelectorStrategy;
@@ -43,18 +44,22 @@ public class KeywordSelectionEngine extends AbstractSelectionEngine<KeywordDatas
             RandomSelector<String> selector = strategy.buildSelector(map);
             this.selectorsByNameKey.put(nameKey, selector);
         });
-        LOGGER.debug("setup - result:{}", keywordDatasetResult.toString());
+        LOGGER.debug("setup - KeywordDatasetResult:{}", keywordDatasetResult.toString());
     }
 
     @Override
     public String select(KeywordDatasetKey key, SelectionFilter filter) {
+        // There are currently no NameKey parameters, so just get default.
         NameKey nameKey = new NameKey();
         RandomSelector<String> selector = selectorsByNameKey.get(nameKey);
         if (selector == null) {
             throw new IllegalStateException("No selector registered for " + nameKey);
         }
 
-        if(!filter.isEmpty()) {
+        if(filter != null && !filter.isEmpty()) {
+            if(filter.equalToMap().containsKey(TemplateField.KEYWORD1)) {
+                return filter.equalToMap().get(TemplateField.KEYWORD1);
+            }
             selector.setFilter(filter);
         }
 

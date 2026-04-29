@@ -8,6 +8,8 @@ public enum TemplateField {
 
     GENDER_IDENTITY("GENDER_IDENTITY"),
 
+    ETHNICITY("ETHNICITY"),
+
     //KEYWORD("KEYWORD"),
     KEYWORD1("KEYWORD1"),
     KEYWORD2("KEYWORD2"),
@@ -15,10 +17,15 @@ public enum TemplateField {
 
     STREET_NAME("STREET_NAME"),
     STREET_SUFFIX("STREET_SUFFIX"),
+    ADDRESS2("ADDRESS2"),
     CITY("CITY"),
     STATE("STATE"),
+    ZIP_CODE("ZIP_CODE"),
+    REGION("REGION"),
+
     AREA_CODE("AREA_CODE"),
     USERNAME("USERNAME"),
+
     DOMAIN("DOMAIN"),
     DOMAIN_TYPE("DOMAIN_TYPE"),
 
@@ -36,11 +43,16 @@ public enum TemplateField {
      */
     private final String placeholder;
 
+    // TODO:  Add field for storing applicable Generator Classes?
     private TemplateField(String placeholder) {
         this.placeholder = placeholder;
     }
 
     public String getPlaceholder() {
+        return placeholder;
+    }
+
+    public String getLabel() {
         return placeholder;
     }
 

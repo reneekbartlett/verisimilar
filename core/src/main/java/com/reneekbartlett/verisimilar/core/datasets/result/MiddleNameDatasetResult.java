@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
-import com.reneekbartlett.verisimilar.core.selector.engine.FirstNameSelectionEngine.NameKey;
+import com.reneekbartlett.verisimilar.core.selector.engine.MiddleNameSelectionEngine.NameKey;
 
 public record MiddleNameDatasetResult(
         Map<NameKey, Map<String, Double>> datasets

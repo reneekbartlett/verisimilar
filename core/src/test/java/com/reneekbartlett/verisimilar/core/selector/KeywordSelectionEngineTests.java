@@ -8,6 +8,7 @@ import com.reneekbartlett.verisimilar.core.TestUtils;
 import com.reneekbartlett.verisimilar.core.datasets.key.UsernameDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.UsernameDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.engine.KeywordSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.UsernameSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
@@ -54,7 +55,7 @@ public class KeywordSelectionEngineTests {
         String username1 = usernameSelector.select();
         LOGGER.debug("username1={}", username1);
 
-        SelectionFilter filter = SelectionFilter.builder().startsWith("R").build();
+        SelectionFilter filter = SelectionFilter.builder().startsWith("R", TemplateField.USERNAME).build();
         String username2 = usernameSelector.select(filter);
         LOGGER.debug("username2={}", username2);
     }

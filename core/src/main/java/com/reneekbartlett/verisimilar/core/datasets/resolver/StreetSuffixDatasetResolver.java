@@ -1,10 +1,12 @@
 package com.reneekbartlett.verisimilar.core.datasets.resolver;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.StreetSuffixDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.loader.ResourceLoaderUtil;
 import com.reneekbartlett.verisimilar.core.datasets.result.StreetSuffixDatasetResult;
+import com.reneekbartlett.verisimilar.core.selector.engine.StreetSuffixSelectionEngine.NameKey;
 
 public class StreetSuffixDatasetResolver extends AbstractDatasetResolver<StreetSuffixDatasetKey, StreetSuffixDatasetResult> {
 
@@ -16,8 +18,18 @@ public class StreetSuffixDatasetResolver extends AbstractDatasetResolver<StreetS
 
     @Override
     public StreetSuffixDatasetResult loadForKey(StreetSuffixDatasetKey key) {
+        // Convert to Weighted Map
         Map<String, String> suffixAbbr = loadDataset(key);
-        return new StreetSuffixDatasetResult(suffixAbbr);
+        final Map<String, Double> streetSuffixMap = HashMap.newHashMap(suffixAbbr.size()*2);
+        suffixAbbr.forEach((k,v) -> {
+            streetSuffixMap.put(k, 1.000);
+            streetSuffixMap.put(v, 1.000);
+        });
+
+        Map<NameKey, Map<String, Double>> datasets = HashMap.newHashMap(0);
+        datasets.put(new NameKey(), streetSuffixMap);
+
+        return new StreetSuffixDatasetResult(datasets);
     }
 
     @Override

@@ -1,42 +1,62 @@
 package com.reneekbartlett.verisimilar.core.datasets.resolver;
 
+import java.util.HashMap;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Set;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.NicknameDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.loader.ResourceLoaderUtil;
 import com.reneekbartlett.verisimilar.core.datasets.result.NicknameDatasetResult;
+import com.reneekbartlett.verisimilar.core.model.Ethnicity;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
+import com.reneekbartlett.verisimilar.core.selector.engine.NicknameSelectionEngine.NameKey;
 
 public class NicknameDatasetResolver extends AbstractDatasetResolver<NicknameDatasetKey, NicknameDatasetResult> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NicknameDatasetResolver.class);
-    private static final String DEFAULT_FILE = "datasets/cfg_nicknames_%s_ALL.csv";
+    private static final String DEFAULT_FILE = "datasets/cfg_nicknames_%s_%s.csv";
+
+    private final Set<GenderIdentity> genderIdentities;
+    private final Set<Ethnicity> ethnicities;
 
     public NicknameDatasetResolver(ResourceLoaderUtil loader) {
         super(loader);
+        this.genderIdentities = GenderIdentity.defaults();
+        this.ethnicities = Ethnicity.defaultDatasets();
     }
 
     @Override
     public NicknameDatasetResult loadForKey(NicknameDatasetKey key) {
-        Map<String, Double> female = loadGenderDataset(GenderIdentity.FEMALE, key);
-        Map<String, Double> male = loadGenderDataset(GenderIdentity.MALE, key);
+        Map<NameKey, Map<String, Double>> datasets = HashMap.newHashMap(0);
 
-        return new NicknameDatasetResult(female, male);
+        // Load both datasets (male + female) for the given ethnicity
+        for(GenderIdentity genderIdentity : genderIdentities) {
+            datasets.put(new NameKey(genderIdentity, Ethnicity.UNKNOWN), loadGenderDataset(genderIdentity));
+        }
+
+        for(Ethnicity ethnicity : ethnicities) {
+            if(ethnicity != Ethnicity.UNKNOWN) {
+                // TODO:  Add ethnicity files.
+                //for(GenderIdentity genderIdentity : genderIdentities) {
+                    //NameKey nameKey = new NameKey(genderIdentity, ethnicity);
+                    //datasets.put(nameKey, loadEthnicityDataset(genderIdentity, ethnicity));
+                //}
+            }
+        }
+
+        return new NicknameDatasetResult(datasets);
     }
 
-    private Map<String, Double> loadGenderDataset(
-            GenderIdentity gender,
-            NicknameDatasetKey key
-    ) {
+    private Map<String, Double> loadGenderDataset(GenderIdentity gender) {
         String genderStr = gender.name().toLowerCase();
+        String fallback = String.format(DEFAULT_FILE, genderStr, "ALL");
 
-        // 3. fallback: gender + ALL
-        String fallback = String.format(DEFAULT_FILE, genderStr);
-        LOGGER.debug("Default Path: " + fallback);
         return load(fallback);
+    }
+
+    @SuppressWarnings("unused")
+    private Map<String, Double> loadEthnicityDataset(GenderIdentity gender, Ethnicity ethnicity) {
+        String filePath = String.format(DEFAULT_FILE, gender.name().toLowerCase(), ethnicity.getPlaceholder());
+        return load(filePath);
     }
 
     @Override

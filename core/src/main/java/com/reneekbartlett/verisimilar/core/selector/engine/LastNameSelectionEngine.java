@@ -22,7 +22,7 @@ public class LastNameSelectionEngine extends AbstractSelectionEngine<LastNameDat
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder(0).append("dataset$lastname");
-            if(ethnicity != null) sb.append("$" + ethnicity.name());
+            if(ethnicity != null) sb.append("$ethnicity:" + ethnicity.getPlaceholder());
             return sb.toString();
         }
     }
@@ -39,14 +39,12 @@ public class LastNameSelectionEngine extends AbstractSelectionEngine<LastNameDat
     }
 
     protected void setup() {
-        // TODO:  Check logic here.  Maybe just iterate result.dataSets()
-        //this.ethnicitiesMap = Ethnicity.defaultMap();
-        this.ethnicitiesMap = Map.of(Ethnicity.UNKNOWN, 0.0001);
+        this.ethnicitiesMap = Ethnicity.defaultMap();
+        //this.ethnicitiesMap = Map.of(Ethnicity.UNKNOWN, 0.0001);
 
+        // Extract specific datasets (Map<String,Double>), build selectors, and add to selectorsByNameKey
         LastNameDatasetResult lastNameDatasetResult = resolvers.last().resolve(LastNameDatasetKey.defaults());
-
         this.selectorsByNameKey = HashMap.newHashMap(5);
-
         if(!ethnicitiesMap.isEmpty() && ethnicitiesMap.keySet().size() >= 1) {
             Set<Ethnicity> customEthnicities = ethnicitiesMap.keySet();
             for(Ethnicity e : customEthnicities){
@@ -77,12 +75,8 @@ public class LastNameSelectionEngine extends AbstractSelectionEngine<LastNameDat
             selector.setFilter(filter);
         }
 
-        LOGGER.debug("select lastName - nameKey={}; strategyType={};", nameKey, strategy.getType());
+        //LOGGER.debug("select lastName - nameKey={}; strategyType={};", nameKey, strategy.getType());
         return selector.select();
-
-        // FILTER BEFORE SELECTION
-        //Map<String, Double> filtered = EntryFilter.apply(result.all(), filter);
-        //WeightedSelector<String> selector = strategy.buildSelector(filtered);
     }
 
     @Override

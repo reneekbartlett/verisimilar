@@ -33,7 +33,7 @@ public class LastNameGeneratorTests {
         Assertions.assertNotNull(lastName);
     }
 
-    //@Test
+    @Test
     public void GeneratedLastName_EthnicityFilter(){
         LastNameSelectionEngine lastNameProvider = new LastNameSelectionEngine(TestUtils.getNameDatasetResolverRegistry(), TestUtils.WEIGHTED_RANDOM);
         LastNameGenerator lastNameGenerator = new LastNameGenerator(lastNameProvider);

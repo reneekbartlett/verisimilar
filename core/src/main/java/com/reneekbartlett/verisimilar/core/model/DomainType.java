@@ -9,6 +9,7 @@ public enum DomainType {
     B2C("B2C", 0.5000),
     EDU("EDU", 0.0250),
     GOV("GOV", 0.0250),
+    DISPOSABLE("DISPOSABLE", 0.0000),
     B2B("B2B", 0.0000);
 
     private final String label;
@@ -29,7 +30,7 @@ public enum DomainType {
 
     public static Set<DomainType> defaultDatasets(){
         return Set.of(DomainType.B2C, DomainType.EDU, DomainType.GOV
-                //, DomainType.B2B
+                //, DomainType.B2B, DomainType.DISPOSABLE
                 );
     }
 
@@ -38,10 +39,6 @@ public enum DomainType {
         defaultDatasets().forEach(domainType -> {
             defaultMap.put(domainType, domainType.getWeight());
         });
-        //defaultMap.put(DomainType.B2C, 0.5000);
-        //defaultMap.put(DomainType.B2B, 0.0020);
-        //defaultMap.put(DomainType.EDU, 0.0020);
-        //defaultMap.put(DomainType.GOV, 0.0020);
         return defaultMap;
     }
 }

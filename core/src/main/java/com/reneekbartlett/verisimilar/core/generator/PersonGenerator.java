@@ -16,7 +16,8 @@ import com.reneekbartlett.verisimilar.core.model.USState;
 
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
-
+import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
+import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorImpl;
 import com.reneekbartlett.verisimilar.core.selector.engine.AddressTwoSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.AreaCodeSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.CityStateZipSelectionEngine;
@@ -69,61 +70,57 @@ public class PersonGenerator extends AbstractValueGenerator<PersonRecord>{
         return generatePerson(ctx, criteria);
     }
 
-    @Override
-    protected Class<PersonRecord> valueType() {
-        return PersonRecord.class;
-    }
-
+    // TODO:  Make these asynchronous
     private PersonRecord generatePerson(DatasetResolutionContext ctx, SelectionFilter filter) {
         // Generate the birthday first.
         LocalDate birthday = generateBirthday(ctx, filter);
 
-        GenderIdentity gender;
-        if(filter.gender().isEmpty()) {
-            gender = generateGenderIdentity(ctx, filter);
-        } else {
-            gender = filter.gender().get();
-        }
+        GenderIdentity gender = filter.gender().orElseGet(this::generateGenderIdentity);
 
         // Then the Postal.
         PostalAddress postalAddress = generatePostalAddress(ctx, filter);
 
         // Use information to create name
         USState state = USState.fromAbbreviation(postalAddress.state());
-        DatasetResolutionContext.Builder stepTwoConstraint = DatasetResolutionContext.builder()
-                .states(Set.of(state))
-                .gender(gender);
+        //DatasetResolutionContext.Builder stepTwoConstraint = DatasetResolutionContext.builder().states(Set.of(state)).gender(gender);
         SelectionFilter.Builder stepTwoCriteria = SelectionFilter.builder()
                 .birthday(birthday)
                 .states(Set.of(state))
                 .gender(gender);
 
-        FullName fullName = generateFullName(stepTwoConstraint.build(), stepTwoCriteria.build());
+        //FullName fullName = generateFullName(stepTwoConstraint.build(), stepTwoCriteria.build());
+        FullName fullName = generateFullName(ctx, stepTwoCriteria.build());
 
-        PhoneNumber phoneNumber = generatePhoneNumber(stepTwoConstraint.build(), stepTwoCriteria.build());
+        //PhoneNumber phoneNumber = generatePhoneNumber(stepTwoConstraint.build(), stepTwoCriteria.build());
+        PhoneNumber phoneNumber = generatePhoneNumber(ctx, stepTwoCriteria.build());
 
         //
         // TODO:  These 3 could probably be async
         //
 
         // TODO: Add Birthday and Postal to weight name
-        DatasetResolutionContext.Builder stepThreeConstraint = DatasetResolutionContext.builder().gender(gender);
+        //DatasetResolutionContext.Builder stepThreeConstraint = DatasetResolutionContext.builder().gender(gender);
         SelectionFilter.Builder stepThreeCriteria = SelectionFilter.builder()
                 .firstName(fullName.firstName())
                 .lastName(fullName.lastName())
                 .middleName(fullName.middleName())
                 .birthday(birthday)
                 .gender(gender);
-        EmailAddressRecord emailAddress = generateEmailAddress(stepThreeConstraint.build(), stepThreeCriteria.build());
+        EmailAddressRecord emailAddress = generateEmailAddress(ctx, stepThreeCriteria.build());
 
         return new PersonRecord(fullName, gender, birthday, postalAddress, emailAddress, phoneNumber);
+    }
+
+    private GenderIdentity generateGenderIdentity() {
+        RandomSelector<GenderIdentity> selector = new WeightedSelectorImpl<>(GenderIdentity.defaultMap());
+        return selector.select();
     }
 
     private LocalDate generateBirthday(DatasetResolutionContext ctx, SelectionFilter criteria) {
         return birthdayGenerator.generate(ctx, criteria);
     }
 
-    public FullName generateFullName(DatasetResolutionContext ctx, SelectionFilter criteria) {
+    private FullName generateFullName(DatasetResolutionContext ctx, SelectionFilter criteria) {
         return fullNameGenerator.generateValue(ctx, criteria);
     }
 
@@ -139,7 +136,8 @@ public class PersonGenerator extends AbstractValueGenerator<PersonRecord>{
         return this.emailAddressGenerator.generate(ctx, criteria);
     }
 
-    public GenderIdentity generateGenderIdentity(DatasetResolutionContext ctx, SelectionFilter criteria) {
-        return GenderIdentity.FEMALE;
+    @Override
+    protected Class<PersonRecord> valueType() {
+        return PersonRecord.class;
     }
 }

@@ -2,8 +2,6 @@ package com.reneekbartlett.verisimilar.core.selector.engine;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.MiddleNameDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
@@ -25,13 +23,13 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
 
     public record NameKey(GenderIdentity gender, Ethnicity ethnicity) {
         public NameKey(GenderIdentity gender) {
-            this(gender, null);
+            this(gender, Ethnicity.UNKNOWN);
         }
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder(0).append("dataset$middlename");
-            if(gender != null) sb.append("$"+gender.name());
-            if(ethnicity != null) sb.append("$"+ethnicity.name());
+            if(gender != null) sb.append("$gender:"+gender.getPlaceholder());
+            if(ethnicity != null) sb.append("$ethnicity:"+ethnicity.getPlaceholder());
             return sb.toString();
         }
     }
@@ -59,41 +57,43 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
 
         this.selectorsByNameKey = HashMap.newHashMap(middleNameDatasetResult.datasets().size());
 
-        RandomSelector<String> middleNameFemaleSelector = strategy.buildSelector(middleNameDatasetResult.get(GenderIdentity.FEMALE));
-        selectorsByNameKey.put(new NameKey(GenderIdentity.FEMALE), middleNameFemaleSelector);
-
-        RandomSelector<String> middleNameMaleSelector = strategy.buildSelector(middleNameDatasetResult.get(GenderIdentity.MALE));
-        selectorsByNameKey.put(new NameKey(GenderIdentity.MALE), middleNameMaleSelector);
-
-        // TODO:  MiddleName Ethnicity is statically set for now.. will always be unknown.
-        Set<Ethnicity> customEthnicities = ethnicitiesMap.keySet().stream()
-                .filter(s -> !s.getLabel().isEmpty() && s != Ethnicity.UNKNOWN) // for first+middle names, don't include UNKNOWN
-                .collect(Collectors.toSet());
-
-        if(customEthnicities.size() >= 1){
-            for(Ethnicity ethnicity : customEthnicities){
+        // Extract specific datasets (Map<String,Double>) and build selectors
+        if(ethnicitiesMap.size() >= 1){
+            for(Ethnicity ethnicity : ethnicitiesMap.keySet()){
                 genderIdentityMap.keySet().forEach(gender -> {
-                    MiddleNameDatasetResult ds1 = resolvers.middle().resolve(new MiddleNameDatasetKey(gender));
-                    RandomSelector<String> s1 = strategy.buildSelector(ds1.get(gender, ethnicity));
-                    selectorsByNameKey.put(new NameKey(gender, ethnicity), s1);
+                    NameKey nameKey = new NameKey(gender, ethnicity);
+                    RandomSelector<String> selector = strategy.buildSelector(middleNameDatasetResult.get(nameKey));
+                    selectorsByNameKey.put(nameKey, selector);
                 });
             }
         }
+        //LOGGER.debug("MiddleNameSelectioEngine setup complete");
+        return;
     }
 
     @Override
     public String select(MiddleNameDatasetKey key, SelectionFilter filter) {
         // If GenderIdentity is not specified, pick a random 1 then only return first letter.
-        // TODO:  Add neutral file
         GenderIdentity gender = filter.gender().orElse(genderSelector.select());
 
         // TODO: If Ethnicity is NOT supplied here, just select from dataset based on GenderIdentity.
-        //Ethnicity ethnicity = criteria.ethnicity().orElse(Ethnicity.UNKNOWN);
+        Ethnicity ethnicity = filter.ethnicity().orElse(Ethnicity.UNKNOWN);
+        if(ethnicity != null && !ethnicitiesMap.containsKey(ethnicity)) {
+            ethnicity = Ethnicity.UNKNOWN;
+        }
 
-        NameKey nameKey = new NameKey(gender, null);
+        NameKey nameKey = new NameKey(gender, ethnicity);
         RandomSelector<String> selector = selectorsByNameKey.get(nameKey);
 
+        if(selector == null) {
+            throw new IllegalStateException("No selector registered for " + nameKey);
+        }
+
         if(filter != null && !filter.isEmpty()) {
+            if(!filter.middleName().isEmpty()) {
+                return filter.middleName().get();
+            }
+
             if(filter.gender().isEmpty()) {
                 // Just return first letter
                 return selector.select().substring(0, 1);
@@ -101,6 +101,7 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
             selector.setFilter(filter);
         }
 
+        LOGGER.debug("select middleName - nameKey={}; strategyType={};", nameKey, strategy.getType());
         return selector.select();
     }
 
@@ -109,7 +110,6 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
             Map<String, Double> map,
             SelectionFilter filter
     ) {
-        //LOGGER.debug("MiddleName.applyCriteria: " + criteria.toString());
         return super.applyFilter(map, filter);
     }
 

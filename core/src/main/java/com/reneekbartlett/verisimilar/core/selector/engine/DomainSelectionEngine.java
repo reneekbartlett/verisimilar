@@ -5,9 +5,11 @@ import java.util.Map;
 import com.reneekbartlett.verisimilar.core.datasets.key.DomainDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.result.DomainDatasetResult;
 import com.reneekbartlett.verisimilar.core.model.DomainType;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
+import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorImpl;
 import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
@@ -21,7 +23,7 @@ public class DomainSelectionEngine extends AbstractSelectionEngine<DomainDataset
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder(0).append("dataset$domain");
-            if(domainType != null) sb.append("$"+domainType);
+            if(domainType != null) sb.append("$domainType:"+domainType);
             return sb.toString();
         }
     }
@@ -46,7 +48,8 @@ public class DomainSelectionEngine extends AbstractSelectionEngine<DomainDataset
 
     @Override
     public String select(DomainDatasetKey key, SelectionFilter filter) {
-        DomainType domainType = filter.domainType().orElse(DomainType.B2C);
+        // If domainType is already specified, use it.  Otherwise, get a random one.
+        DomainType domainType = filter.domainType().orElseGet(this::getRandomDomainType);
 
         NameKey nameKey = new NameKey(domainType);
         RandomSelector<String> selector = selectorsByNameKey.get(nameKey);
@@ -55,9 +58,15 @@ public class DomainSelectionEngine extends AbstractSelectionEngine<DomainDataset
         }
 
         if(filter != null && !filter.isEmpty()) {
+            if(filter.equalToMap().containsKey(TemplateField.DOMAIN)) {
+                return filter.equalToMap().get(TemplateField.DOMAIN);
+            }
+
+            selector.setFilter(filter);
+
             // rebuild without domainDomain
-            SelectionFilter domainFilter = filter.toBuilder().build();
-            selector.setFilter(domainFilter);
+            //SelectionFilter domainFilter = filter.toBuilder().build();
+            //selector.setFilter(domainFilter);
         }
 
         return selector.select();
@@ -76,5 +85,10 @@ public class DomainSelectionEngine extends AbstractSelectionEngine<DomainDataset
     @Override
     public Class<DomainDatasetResult> resultType() {
         return DomainDatasetResult.class;
+    }
+
+    private DomainType getRandomDomainType() {
+        RandomSelector<DomainType> domainTypeSelector = new WeightedSelectorImpl<>(domainTypesMap);
+        return domainTypeSelector.select();
     }
 }

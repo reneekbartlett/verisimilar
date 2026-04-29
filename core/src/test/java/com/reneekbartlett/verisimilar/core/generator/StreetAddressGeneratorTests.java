@@ -45,7 +45,7 @@ public class StreetAddressGeneratorTests {
         StreetAddressGenerator streetAddressGenerator = new StreetAddressGenerator(
                 streetNameSelector, streetSuffixSelector, addressTwoSelector);
 
-        SelectionFilter filter = SelectionFilter.builder().startsWith(TemplateField.STREET_NAME, "M").build();
+        SelectionFilter filter = SelectionFilter.builder().startsWith("M", TemplateField.STREET_NAME).build();
         StreetAddress streetAddress1 = streetAddressGenerator.generate(filter);
         LOGGER.debug(streetAddress1.toString());
         Assertions.assertNotNull(streetAddress1.address1());

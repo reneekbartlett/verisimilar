@@ -9,11 +9,11 @@ import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
-import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorStrategy;
+import com.reneekbartlett.verisimilar.core.selector.UniformSelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
 public class StreetNameSelectionEngine extends AbstractSelectionEngine<StreetNameDatasetKey,StreetNameDatasetResult> {
-    private static final SelectorStrategy<String> DEFAULT_SELECTOR_STRATEGY = new WeightedSelectorStrategy<>();
+    private static final SelectorStrategy<String> DEFAULT_SELECTOR_STRATEGY = new UniformSelectorStrategy<>();
     private Map<NameKey, RandomSelector<String>> selectorsByNameKey;
 
     public record NameKey() {
@@ -34,29 +34,33 @@ public class StreetNameSelectionEngine extends AbstractSelectionEngine<StreetNam
 
     protected void setup() {
         StreetNameDatasetResult streetNameDatasetResult = resolvers.streetName().resolve(StreetNameDatasetKey.defaults());
-        this.selectorsByNameKey = HashMap.newHashMap(1);
+        this.selectorsByNameKey = HashMap.newHashMap(streetNameDatasetResult.datasets().size());
         streetNameDatasetResult.datasets().forEach((nameKey, map) -> {
             RandomSelector<String> selector = strategy.buildSelector(map);
             selectorsByNameKey.put(nameKey, selector);
         });
-
-        //RandomSelector<String> selector = strategy.buildSelector(Set.of(streetNameDatasetResult.all()));
-        //selectorsByNameKey.put(new NameKey(), selector);
         LOGGER.debug("streetSuffixDatasetResult=[{}]", streetNameDatasetResult);
     }
 
     @Override
     public String select(StreetNameDatasetKey key, SelectionFilter filter) {
+        // There are currently no NameKey parameters, so just get default.
         NameKey nameKey = new NameKey();
         RandomSelector<String> selector = selectorsByNameKey.get(nameKey);
         if (selector == null) {
             throw new IllegalStateException("No selector registered for " + nameKey);
         }
 
-        if(filter != null && filter.startsWithMap().containsKey(TemplateField.STREET_NAME)) {
-            SelectionFilter streetNameFilter = SelectionFilter.builder()
-                    .startsWith(filter.startsWithMap().get(TemplateField.STREET_NAME)).build();
-            selector.setFilter(streetNameFilter);
+        if(filter != null && !filter.isEmpty()) {
+            if(filter.equalToMap().containsKey(TemplateField.STREET_NAME)) {
+                return filter.equalToMap().get(TemplateField.STREET_NAME);
+            }
+
+            //if(filter.startsWithMap().containsKey(TemplateField.STREET_NAME)) {
+            //    //SelectionFilter streetNameFilter = filter.toBuilder().build();
+            //}
+
+            selector.setFilter(filter);
         }
 
         return selector.select();

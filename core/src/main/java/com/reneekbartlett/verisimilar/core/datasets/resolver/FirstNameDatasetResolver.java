@@ -1,28 +1,50 @@
 package com.reneekbartlett.verisimilar.core.datasets.resolver;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.FirstNameDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.loader.ResourceLoaderUtil;
 import com.reneekbartlett.verisimilar.core.datasets.result.FirstNameDatasetResult;
+import com.reneekbartlett.verisimilar.core.model.Ethnicity;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
+import com.reneekbartlett.verisimilar.core.selector.engine.FirstNameSelectionEngine.NameKey;
 
 public class FirstNameDatasetResolver extends AbstractDatasetResolver<FirstNameDatasetKey, FirstNameDatasetResult> {
 
-    private static final String DEFAULT_FILE = "datasets/cfg_fullname_first_%s_ALL.csv";
+    private static final String DEFAULT_FILE = "datasets/cfg_fullname_first_%s_%s.csv";
+
+    private final Set<GenderIdentity> genderIdentities;
+    private final Set<Ethnicity> ethnicities;
 
     public FirstNameDatasetResolver(ResourceLoaderUtil loader) {
         super(loader);
+        this.genderIdentities = GenderIdentity.defaults();
+        this.ethnicities = Ethnicity.defaultDatasets();
     }
 
     @Override
     public FirstNameDatasetResult loadForKey(FirstNameDatasetKey key) {
-        // Load both datasets (male + female) for the given ethnicity
-        // Load everything up front — selection happens later.
-        Map<String, Double> female = loadGenderDataset(GenderIdentity.FEMALE, key);
-        Map<String, Double> male = loadGenderDataset(GenderIdentity.MALE, key);
+        Map<NameKey, Map<String, Double>> datasets = HashMap.newHashMap(0);
 
-        return new FirstNameDatasetResult(female, male);
+        // Load both datasets (male + female) for the given ethnicity
+        for(GenderIdentity genderIdentity : genderIdentities) {
+            datasets.put(new NameKey(genderIdentity, Ethnicity.UNKNOWN), loadGenderDataset(genderIdentity));
+        }
+
+        for(Ethnicity ethnicity : ethnicities) {
+            if(ethnicity != Ethnicity.UNKNOWN) {
+                // TODO:  Iterate genderIdentities
+                Map<String, Double> map1 = loadEthnicityDataset(GenderIdentity.FEMALE, ethnicity);
+                datasets.put(new NameKey(GenderIdentity.FEMALE, ethnicity), map1);
+
+                Map<String, Double> map2 = loadEthnicityDataset(GenderIdentity.MALE, ethnicity);
+                datasets.put(new NameKey(GenderIdentity.MALE, ethnicity), map2);
+            }
+        }
+
+        return new FirstNameDatasetResult(datasets);
     }
 
     @Override
@@ -35,8 +57,13 @@ public class FirstNameDatasetResolver extends AbstractDatasetResolver<FirstNameD
         return FirstNameDatasetResult.class;
     }
 
-    private Map<String, Double> loadGenderDataset(GenderIdentity gender, FirstNameDatasetKey key) {
-        String filePath = String.format(DEFAULT_FILE, gender.name().toLowerCase());
+    private Map<String, Double> loadGenderDataset(GenderIdentity gender) {
+        String filePath = String.format(DEFAULT_FILE, gender.name().toLowerCase(), "ALL");
+        return load(filePath);
+    }
+
+    private Map<String, Double> loadEthnicityDataset(GenderIdentity gender, Ethnicity ethnicity) {
+        String filePath = String.format(DEFAULT_FILE, gender.name().toLowerCase(), ethnicity.getPlaceholder());
         return load(filePath);
     }
 }

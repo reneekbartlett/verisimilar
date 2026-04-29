@@ -10,15 +10,14 @@ import org.slf4j.LoggerFactory;
 import com.reneekbartlett.verisimilar.core.TestUtils;
 import com.reneekbartlett.verisimilar.core.model.PostalAddress;
 import com.reneekbartlett.verisimilar.core.model.USState;
-import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.selector.engine.registry.PostalAddressSelectionEngineRegistry;
 
 public class PostalAddressGeneratorTests {
     private static final Logger LOGGER = LoggerFactory.getLogger(PostalAddressGeneratorTests.class);
 
-    //@Test
-    public void GeneratePostalAddress() {
+    @Test
+    public void GeneratePostalAddress_Random() {
 
         PostalAddressSelectionEngineRegistry registry = TestUtils.getPostalAddressSelectionEngineRegistry();
         PostalAddressRecordGenerator postalAddressGenerator = new PostalAddressRecordGenerator(registry);
@@ -29,60 +28,53 @@ public class PostalAddressGeneratorTests {
         Assertions.assertNotNull(postalAddress);
     }
 
-    //@Test
-    public void GeneratePostalAddress_StateCriteria_MA() {
+    @Test
+    public void GeneratePostalAddress_StateFilter_MA() {
         PostalAddressSelectionEngineRegistry registry = TestUtils.getPostalAddressSelectionEngineRegistry();
         PostalAddressRecordGenerator postalAddressGenerator = new PostalAddressRecordGenerator(registry);
 
         Set<USState> states = Set.of(USState.MA);
-        DatasetResolutionContext ctx = DatasetResolutionContext.builder()
-                .states(states)
-                .build();
-        SelectionFilter criteria = SelectionFilter.builder()
+        //DatasetResolutionContext ctx = DatasetResolutionContext.builder().states(states).build();
+        SelectionFilter filter = SelectionFilter.builder()
                 .states(states).build();
 
-        PostalAddress postalAddress = postalAddressGenerator.generate(ctx, criteria);
+        PostalAddress postalAddress = postalAddressGenerator.generate(filter);
         LOGGER.debug(postalAddress.toString());
 
         Assertions.assertNotNull(postalAddress);
+        Assertions.assertTrue(states.contains(USState.fromAbbreviation(postalAddress.state())));
     }
 
-    //@Test
+    @Test
     public void GeneratePostalAddress_StateCriteria_Multiple() {
         PostalAddressSelectionEngineRegistry registry = TestUtils.getPostalAddressSelectionEngineRegistry();
         PostalAddressRecordGenerator postalAddressGenerator = new PostalAddressRecordGenerator(registry);
 
         Set<USState> states = Set.of(USState.MA, USState.CT, USState.NH );
-        DatasetResolutionContext ctx = DatasetResolutionContext.builder()
-                .states(states)
-                .build();
-        SelectionFilter criteria = SelectionFilter.builder()
-                .states(states).build();
+        SelectionFilter filter = SelectionFilter.builder().states(states).build();
 
-        PostalAddress postalAddress1 = postalAddressGenerator.generate(ctx, criteria);
+        PostalAddress postalAddress1 = postalAddressGenerator.generate(filter);
         LOGGER.debug(postalAddress1.toString());
+        Assertions.assertTrue(states.contains(USState.fromAbbreviation(postalAddress1.state())));
 
-        PostalAddress postalAddress2 = postalAddressGenerator.generate(ctx, criteria);
+        PostalAddress postalAddress2 = postalAddressGenerator.generate(filter);
         LOGGER.debug(postalAddress2.toString());
+        Assertions.assertTrue(states.contains(USState.fromAbbreviation(postalAddress2.state())));
 
-        PostalAddress postalAddress3 = postalAddressGenerator.generate(ctx, criteria);
+        PostalAddress postalAddress3 = postalAddressGenerator.generate(filter);
         LOGGER.debug(postalAddress3.toString());
+        Assertions.assertTrue(states.contains(USState.fromAbbreviation(postalAddress3.state())));
     }
 
-    //@Test
+    @Test
     public void GeneratePostalAddress_StateZipCriteria_ShrewsburyMA() {
         PostalAddressSelectionEngineRegistry registry = TestUtils.getPostalAddressSelectionEngineRegistry();
         PostalAddressRecordGenerator postalAddressGenerator = new PostalAddressRecordGenerator(registry);
 
         Set<USState> states = Set.of(USState.MA);
-        //DatasetResolutionContext ctx = DatasetResolutionContext.builder()
-        //        .states(states).zipCodes(Set.of("01545")).build();
-        SelectionFilter criteria = SelectionFilter.builder()
-                .states(states)
-                .zipCodes(Set.of("01545"))
-                .build();
+        SelectionFilter filter = SelectionFilter.builder().states(states).zipCodes(Set.of("01545")).build();
 
-        PostalAddress postalAddress = postalAddressGenerator.generate(criteria);
+        PostalAddress postalAddress = postalAddressGenerator.generate(filter);
 
         LOGGER.debug(postalAddress.toString());
 

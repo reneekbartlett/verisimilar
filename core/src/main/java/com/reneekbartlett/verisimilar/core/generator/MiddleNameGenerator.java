@@ -14,7 +14,7 @@ public class MiddleNameGenerator extends AbstractStringGenerator {
 
     @Override
     protected String generateString(DatasetResolutionContext ctx, SelectionFilter filter) {
-        MiddleNameDatasetKey key = new MiddleNameDatasetKey(ctx.gender(), ctx.year().orElse(null));
+        MiddleNameDatasetKey key = new MiddleNameDatasetKey(ctx.genders(), ctx.year().orElse(null));
         return generateMiddleName(key, filter);
     }
 

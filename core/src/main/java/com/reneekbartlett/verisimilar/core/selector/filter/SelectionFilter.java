@@ -31,6 +31,7 @@ public record SelectionFilter(
         Optional<Integer> maxYear,
 
         Optional<Set<USState>> states,
+        Optional<USState> state,
         Optional<Set<String>> zipCodes,
         Optional<USRegion> region,
         Optional<Ethnicity> ethnicity,
@@ -48,10 +49,13 @@ public record SelectionFilter(
         Optional<Set<SelectionPredicate<String>>> customPredicates,
 
         Map<TemplateField, String> startsWithMap,
-        Map<TemplateField, String> equalToMap
+        Map<TemplateField, String> endsWithMap,
+        Map<TemplateField, String> equalToMap,
+        Map<TemplateField, String> containsMap
 ) {
 
     public SelectionFilter {
+        // TODO:  Check if these optional checks are necessary
         firstName = firstName == null? Optional.empty() : firstName;
         middleName = middleName == null? Optional.empty() : middleName;
         lastName = lastName == null? Optional.empty() : lastName;
@@ -64,6 +68,7 @@ public record SelectionFilter(
         maxYear = (maxYear == null) ? Optional.empty() : maxYear;
 
         states = states == null ? Optional.empty() : states;
+        state = state == null ? Optional.empty() : state;
         zipCodes = zipCodes == null ? Optional.empty() : zipCodes;
         region = region == null ? Optional.empty() : region;
         ethnicity = ethnicity == null ? Optional.empty() : ethnicity;
@@ -87,8 +92,11 @@ public record SelectionFilter(
     }
 
     public PersonRecord getPersonRecord() {
-        FullName fullName = new FullName(firstName.get(), middleName.get(), lastName.get());
-        return new PersonRecord(fullName, birthday.orElse(null));
+        FullName fullName = new FullName(firstName.orElse(""), middleName.orElse(""), lastName.orElse(""));
+        return new PersonRecord(
+                fullName, 
+                birthday.orElse(null)
+        );
     }
 
     public Map<String, Object> getResolvedValues() {
@@ -113,6 +121,7 @@ public record SelectionFilter(
                 && minYear.isEmpty()
                 && maxYear.isEmpty()
                 && states.isEmpty()
+                && state.isEmpty()
                 && zipCodes.isEmpty()
                 && region.isEmpty()
                 && ethnicity.isEmpty()
@@ -124,7 +133,9 @@ public record SelectionFilter(
                 && minLength.isEmpty()
                 && maxLength.isEmpty()
                 && startsWithMap.isEmpty()
-                && equalToMap.isEmpty();
+                && endsWithMap.isEmpty()
+                && equalToMap.isEmpty()
+                && containsMap.isEmpty();
     }
 
     public static SelectionFilter empty() {
@@ -151,6 +162,9 @@ public record SelectionFilter(
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
+                HashMap.newHashMap(0),
+                HashMap.newHashMap(0),
                 HashMap.newHashMap(0),
                 HashMap.newHashMap(0)
         );
@@ -176,6 +190,7 @@ public record SelectionFilter(
         private Integer maxYear;
 
         private Set<USState> states;
+        private USState state;
         private Set<String> zipCodes;
         private USRegion region;
         private Ethnicity ethnicity;
@@ -192,8 +207,10 @@ public record SelectionFilter(
         private Set<SelectionPredicate<String>> customPredicates;
 
         private Map<TemplateField, String> startsWithMap = HashMap.newHashMap(0);
+        private Map<TemplateField, String> endsWithMap = HashMap.newHashMap(0);
 
         private Map<TemplateField, String> equalToMap = HashMap.newHashMap(0);
+        private Map<TemplateField, String> containsMap = HashMap.newHashMap(0);
 
         public Builder() {
             //
@@ -203,30 +220,42 @@ public record SelectionFilter(
          * Copy over some existing elements.
          */
         public Builder(SelectionFilter filter) {
-            this.startsWith = filter.startsWith.orElse(null);
-            this.endsWith = filter.endsWith.orElse(null);
-            this.contains = filter.contains.orElse(null);
+            this.gender = filter.gender.orElse(null);
+            this.ethnicity = filter.ethnicity.orElse(null);
+
+            this.firstName = filter.firstName.orElse(null);
+            this.middleName = filter.middleName.orElse(null);
+            this.lastName = filter.lastName.orElse(null);
+            this.birthday = filter.birthday.orElse(null);
+
+            this.region = filter.region.orElse(null);
+
             this.startsWithMap = filter.startsWithMap;
+            this.endsWithMap = filter.endsWithMap;
             this.equalToMap = filter.equalToMap;
         }
 
         public Builder firstName(String value) {
             this.firstName = value;
+            this.equalToMap.put(TemplateField.FIRST_NAME, value);
             return this;
         }
 
         public Builder middleName(String value) {
             this.middleName = value;
+            this.equalToMap.put(TemplateField.MIDDLE_NAME, value);
             return this;
         }
 
         public Builder lastName(String value) {
             this.lastName = value;
+            this.equalToMap.put(TemplateField.LAST_NAME, value);
             return this;
         }
 
-        public Builder gender(GenderIdentity gender) {
-            this.gender = gender;
+        public Builder gender(GenderIdentity value) {
+            this.gender = value;
+            this.equalToMap.put(TemplateField.GENDER_IDENTITY, value.getLabel());
             return this;
         }
 
@@ -250,6 +279,13 @@ public record SelectionFilter(
             return this;
         }
 
+        // TODO:  Check handling of abbreviations/full name.  Maybe switch to customPredicate.
+        public Builder state(USState value) {
+            this.state = value;
+            this.equalToMap.put(TemplateField.STATE, value.toString());
+            return this;
+        }
+
         public Builder states(Set<USState> values) {
             this.states = values;
             Set<String> stateNames = new HashSet<>();
@@ -262,6 +298,11 @@ public record SelectionFilter(
                 this.customPredicates = new HashSet<>();
             }
             this.customPredicates.add(p);
+            return this;
+        }
+
+        public Builder zipCode(String value) {
+            this.equalToMap.put(TemplateField.ZIP_CODE, value);
             return this;
         }
 
@@ -282,30 +323,34 @@ public record SelectionFilter(
 
         public Builder region(USRegion value) {
             this.region = value;
+            this.equalToMap.put(TemplateField.REGION, value.getRegionName());
             return this;
         }
 
         public Builder ethnicity(Ethnicity value) {
             this.ethnicity = value;
+            this.equalToMap.put(TemplateField.ETHNICITY, value.getLabel());
             return this;
         }
 
         public Builder domainType(DomainType value) {
             this.domainType = value;
+            this.equalToMap.put(TemplateField.DOMAIN_TYPE, value.getLabel());
             return this;
         }
-        
+
         public Builder domain(String value) {
             this.domain = value;
+            this.equalToMap.put(TemplateField.DOMAIN, value);
             return this;
         }
 
-        public Builder startsWith(String value) {
-            this.startsWith = value;
-            return this;
-        }
+//        public Builder startsWith(String value) {
+//            this.startsWith = value;
+//            return this;
+//        }
 
-        public Builder startsWith(TemplateField field, String value) {
+        public Builder startsWith(String value, TemplateField field) {
             this.startsWithMap.put(field, value);
             return this;
         }
@@ -315,15 +360,25 @@ public record SelectionFilter(
             return this;
         }
 
-        public Builder endsWith(String value) {
-            this.endsWith = value;
+//        public Builder endsWith(String value) {
+//            this.endsWith = value;
+//            return this;
+//        }
+
+        public Builder endsWith(String value, TemplateField field) {
+            this.endsWithMap.put(field, value);
             return this;
         }
 
-        public Builder contains(String value) {
-            // TODO: Use map
-            //return this.customPredicate(key -> value.stream().anyMatch(key::contains));
-            this.contains = value;
+//        public Builder contains(String value) {
+//            // TODO: Use map
+//            //return this.customPredicate(key -> value.stream().anyMatch(key::contains));
+//            this.contains = value;
+//            return this;
+//        }
+
+        public Builder contains(String value, TemplateField field) {
+            this.containsMap.put(field, value);
             return this;
         }
 
@@ -356,6 +411,7 @@ public record SelectionFilter(
                     Optional.ofNullable(maxYear),
 
                     Optional.ofNullable(states),
+                    Optional.ofNullable(state),
                     Optional.ofNullable(zipCodes),
                     Optional.ofNullable(region),
                     Optional.ofNullable(ethnicity),
@@ -370,8 +426,11 @@ public record SelectionFilter(
 
                     Optional.ofNullable(customPredicate),
                     Optional.ofNullable(customPredicates),
+
                     startsWithMap,
-                    equalToMap
+                    endsWithMap,
+                    equalToMap,
+                    containsMap
             );
         };
     }

@@ -34,31 +34,31 @@ public class StreetSuffixSelectionEngine extends AbstractSelectionEngine<StreetS
 
     protected void setup() {
         StreetSuffixDatasetResult streetSuffixDatasetResult = resolvers.streetSuffix().resolve(StreetSuffixDatasetKey.defaults());
-        this.selectorsByNameKey = HashMap.newHashMap(1);
-        final Map<String, Double> map = new HashMap<>();
-        streetSuffixDatasetResult.suffixAbbr().forEach((k,v) -> {
-            map.put(k, 1.000);
-            map.put(v, 1.000);
+        this.selectorsByNameKey = HashMap.newHashMap(streetSuffixDatasetResult.datasets().size());
+        streetSuffixDatasetResult.datasets().forEach((nameKey, map) -> {
+            RandomSelector<String> selector = strategy.buildSelector(map);
+            selectorsByNameKey.put(nameKey, selector);
         });
-        RandomSelector<String> selector = strategy.buildSelector(map);
-        selectorsByNameKey.put(new NameKey(), selector);
-
-        //streetSuffixDatasetResult.datasets().forEach((nameKey, map) -> {
-        //    RandomSelector<String> selector = strategy.buildSelector(map);
-         //   selectorsByNameKey.put(nameKey, selector);
-        //});
-
         LOGGER.debug("streetSuffixDatasetResult=[{}]", streetSuffixDatasetResult);
     }
 
     @Override
     public String select(StreetSuffixDatasetKey key, SelectionFilter filter) {
+        // There are currently no NameKey parameters, so just get default.
         NameKey nameKey = new NameKey();
         RandomSelector<String> selector = selectorsByNameKey.get(nameKey);
         if (selector == null) {
             throw new IllegalStateException("No selector registered for " + nameKey);
         }
-        if(filter != null && filter.startsWithMap().containsKey(field())) {
+        if(filter != null && !filter.isEmpty()) {
+            if(filter.equalToMap().containsKey(field())) {
+                return filter.equalToMap().get(field());
+            }
+
+            if(filter.startsWithMap().containsKey(field())) {
+                //TODO
+            }
+
             selector.setFilter(filter);
         }
         return selector.select();

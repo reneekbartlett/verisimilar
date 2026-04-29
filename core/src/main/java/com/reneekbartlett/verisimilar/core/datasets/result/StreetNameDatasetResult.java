@@ -6,17 +6,16 @@ import java.util.Map;
 import com.reneekbartlett.verisimilar.core.selector.engine.StreetNameSelectionEngine.NameKey;
 
 public record StreetNameDatasetResult(
-        String[] all,
         Map<NameKey, Map<String, Double>> datasets
 ) implements DatasetResult {
 
-    public StreetNameDatasetResult(String[] all) {
-        this(all, Map.of(new NameKey(), toWeightedMap(all)));
-    }
+    //public StreetNameDatasetResult(String[] all) {
+    //    this(all, Map.of(new NameKey(), toWeightedMap(all)));
+    //}
 
-    public StreetNameDatasetResult(Map<NameKey, Map<String, Double>> datasets) {
-        this(new String[0], datasets);
-    }
+    //public StreetNameDatasetResult(Map<NameKey, Map<String, Double>> datasets) {
+    //    this(new String[0], datasets);
+    //}
 
     @Override
     public Map<String, Double> getDefault() {
@@ -38,8 +37,7 @@ public record StreetNameDatasetResult(
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(0);
-        sb.append("StreetNames:" + all.length);
-        sb.append(",datasets:" + datasets.size());
+        sb.append("datasets:" + datasets.size());
         return sb.toString();
     }
 }

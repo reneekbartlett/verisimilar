@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.slf4j.Logger;
@@ -28,6 +29,16 @@ public final class UniformSelectorImpl<T> implements RandomSelector<T> {
             throw new IllegalArgumentException("Items cannot be empty");
         }
         this.items = items;
+        this.valueCount = items.size();
+    }
+
+    public UniformSelectorImpl(Set<T> items) {
+        Objects.requireNonNull(items, "items");
+        if (items.isEmpty()) {
+            LOGGER.error("Items cannot be empty");
+            throw new IllegalArgumentException("Items cannot be empty");
+        }
+        this.items = new ArrayList<>(items);
         this.valueCount = items.size();
     }
 

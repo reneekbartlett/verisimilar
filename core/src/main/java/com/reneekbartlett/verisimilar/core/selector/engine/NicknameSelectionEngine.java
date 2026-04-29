@@ -17,13 +17,13 @@ public class NicknameSelectionEngine extends AbstractSelectionEngine<NicknameDat
 
     public record NameKey(GenderIdentity gender, Ethnicity ethnicity) {
         public NameKey(GenderIdentity gender) {
-            this(gender, null);
+            this(gender, Ethnicity.UNKNOWN);
         }
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder(0).append("dataset$nickname");
-            if(gender != null) sb.append("$"+gender.name());
-            if(ethnicity != null) sb.append("$"+ethnicity.name());
+            if(gender != null) sb.append("$gender:"+gender.name());
+            if(ethnicity != null) sb.append("$ethnicity:"+ethnicity.name());
             return sb.toString();
         }
     }
@@ -42,7 +42,7 @@ public class NicknameSelectionEngine extends AbstractSelectionEngine<NicknameDat
             RandomSelector<String> selector = strategy.buildSelector(map);
             selectorsByNameKey.put(nameKey, selector);
         });
-        LOGGER.debug("setup - result:{}", result.toString());
+        //LOGGER.debug("setup - result:{}", result.toString());
     }
 
     @Override

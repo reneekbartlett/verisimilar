@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.reneekbartlett.verisimilar.core.TestUtils;
 import com.reneekbartlett.verisimilar.core.model.DomainType;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.selector.engine.DomainSelectionEngine;
 
@@ -48,7 +49,7 @@ public class DomainGeneratorTests {
         LOGGER.debug("domain1=" + domain1);
         Assertions.assertNotNull(domain1);
 
-        SelectionFilter filter2 = SelectionFilter.builder().startsWith("gma").build();
+        SelectionFilter filter2 = SelectionFilter.builder().startsWith("gma", TemplateField.DOMAIN).build();
         String domain2 = domainGenerator.generate(filter2);
         LOGGER.debug("domain2=" + domain2);
         Assertions.assertNotNull(domain2);
@@ -76,7 +77,7 @@ public class DomainGeneratorTests {
 
         SelectionFilter filter = SelectionFilter.builder()
                 .domainType(DomainType.GOV)
-                .startsWith("S")
+                .startsWith("S", TemplateField.DOMAIN)
                 .build();
         String domain1 = domainGenerator.generate(filter);
         LOGGER.debug("domain1=" + domain1);
@@ -91,7 +92,7 @@ public class DomainGeneratorTests {
         DomainGenerator domainGenerator = new DomainGenerator(domainSelector);
 
         SelectionFilter filter = SelectionFilter.builder()
-                .startsWith("C")
+                .startsWith("C", TemplateField.DOMAIN)
                 .build();
         String domain1 = domainGenerator.generate(filter);
         LOGGER.debug("domain1=" + domain1);

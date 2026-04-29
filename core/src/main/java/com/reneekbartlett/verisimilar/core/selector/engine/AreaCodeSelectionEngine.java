@@ -1,8 +1,9 @@
 package com.reneekbartlett.verisimilar.core.selector.engine;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import com.reneekbartlett.verisimilar.core.datasets.key.AreaCodeDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.result.AreaCodeDatasetResult;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
@@ -11,8 +12,7 @@ import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetRes
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.UniformSelectorImpl;
-import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorImpl;
-import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorStrategy;
+import com.reneekbartlett.verisimilar.core.selector.UniformSelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
 /***
@@ -20,10 +20,9 @@ import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
  * AZ,480|520|602|623|928
  */
 public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDatasetKey, AreaCodeDatasetResult> {
-    private static final SelectorStrategy<String> DEFAULT_SELECTOR_STRATEGY = new WeightedSelectorStrategy<>();
-    private final Map<USState, Double> usStateMap;
-    private final RandomSelector<USState> usStateSelector;
-    private Map<NameKey, RandomSelector<String>> datasetsByNameKey;
+    private static final SelectorStrategy<String> DEFAULT_SELECTOR_STRATEGY = new UniformSelectorStrategy<>();
+    private Set<USState> usStateOptions;
+    private Map<NameKey, RandomSelector<String>> selectorsByNameKey;
 
     //  For meta-selection (which selector to use at runtime)
     public record NameKey(String usStateAbbr) {
@@ -33,7 +32,7 @@ public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDat
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder(0).append("dataset$areacode");
-            if(usStateAbbr.length() > 0) sb.append("$" + usStateAbbr);
+            if(usStateAbbr.length() > 0) sb.append("$usstate:" + usStateAbbr);
             return sb.toString();
         }
     }
@@ -44,32 +43,34 @@ public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDat
 
     public AreaCodeSelectionEngine(DatasetResolverRegistry resolvers, SelectorStrategy<String> strategy) {
         super(resolvers, strategy);
-        this.usStateMap = USState.defaultMap();
-        this.usStateSelector = new WeightedSelectorImpl<>(usStateMap);
     }
 
     @Override
     protected void setup() {
         AreaCodeDatasetResult result = resolvers.areaCode().resolve(AreaCodeDatasetKey.defaults());
-        this.datasetsByNameKey = HashMap.newHashMap(result.datasets().size());
-        for (Map.Entry<String, String[]> entry : result.areaCodesByState().entrySet()) {
-            RandomSelector<String> selector = new UniformSelectorImpl<>(List.of(entry.getValue()));
-            datasetsByNameKey.put(new NameKey(entry.getKey()), selector);
-        }
+        this.selectorsByNameKey = HashMap.newHashMap(result.datasets().size());
+        result.datasets().forEach((nameKey, map) -> {
+            RandomSelector<String> selector = strategy.buildSelector(map);
+            selectorsByNameKey.put(nameKey, selector);
+        });
+        LOGGER.debug("AreaCodeDatasetResult=[{}]", result);
     }
 
     @Override
     public String select(AreaCodeDatasetKey key, SelectionFilter filter) {
-        USState usState;
-        if(filter.states().isPresent()) {
-            // TODO: Pick a random state from set in filter
-            usState = filter.states().get().stream().findFirst().get();
-        } else {
-            usState = usStateSelector.select();
+        // TODO:  Revise/streamline logic
+
+        // If area code is already populated, just return it.
+        if(filter != null && filter.equalToMap().containsKey(field())) {
+            return filter.equalToMap().get(field());
         }
 
+        // Then check if State is assigned.
+        this.usStateOptions = filter.states().orElse(USState.defaultMap().keySet());
+        USState usState = filter.state().orElseGet(this::getRandomState);
+
         NameKey nameKey = new NameKey(usState.name());
-        RandomSelector<String> selector = datasetsByNameKey.get(nameKey);
+        RandomSelector<String> selector = selectorsByNameKey.get(nameKey);
         if (selector == null) {
             throw new IllegalStateException("No selector registered for " + nameKey);
         }
@@ -95,8 +96,13 @@ public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDat
     public Class<AreaCodeDatasetResult> resultType() {
         return AreaCodeDatasetResult.class;
     }
-    
+
     public TemplateField field() {
         return TemplateField.AREA_CODE;
+    }
+
+    private USState getRandomState() {
+        RandomSelector<USState> stateSelector = new UniformSelectorImpl<>(usStateOptions);
+        return stateSelector.select();
     }
 }

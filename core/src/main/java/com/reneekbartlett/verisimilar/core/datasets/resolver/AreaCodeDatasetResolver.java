@@ -23,32 +23,21 @@ public class AreaCodeDatasetResolver extends AbstractDatasetResolver<AreaCodeDat
 
     @Override
     public AreaCodeDatasetResult loadForKey(AreaCodeDatasetKey key) {
-        Map<String, String[]> areaCodesByState = loadDataset(key);
-
         Map<NameKey, Map<String, Double>> datasets = loadDatasetsByKey(key);
-
-        return new AreaCodeDatasetResult(areaCodesByState, datasets);
+        return new AreaCodeDatasetResult(datasets);
     }
 
     private Map<NameKey, Map<String, Double>> loadDatasetsByKey(AreaCodeDatasetKey key) {
+        Map<String, String[]> areaCodesByState = loader.loadArrayMap(DEFAULT_FILE);
         Map<NameKey, Map<String, Double>> datasets = HashMap.newHashMap(1);
-
-        Map<String, String[]> m1 = loader.loadArrayMap(DEFAULT_FILE);
-
-        m1.forEach((state, areaCodeArr) -> {
+        areaCodesByState.forEach((state, areaCodeArr) -> {
             Map<String, Double> map = new HashMap<>();
             Arrays.stream(areaCodeArr).forEach(areaCode -> {
                 map.put(areaCode, 0.0001);
             });
             datasets.put(new NameKey(state), map);
         });
-
         return datasets;
-    }
-
-    private Map<String, String[]> loadDataset(AreaCodeDatasetKey key) {
-        //LOGGER.debug("Default path: " + DEFAULT_FILE);
-        return loader.loadArrayMap(DEFAULT_FILE);
     }
 
     @Override
@@ -60,6 +49,4 @@ public class AreaCodeDatasetResolver extends AbstractDatasetResolver<AreaCodeDat
     public Class<AreaCodeDatasetResult> resultType() {
         return AreaCodeDatasetResult.class;
     }
-
-    
 }

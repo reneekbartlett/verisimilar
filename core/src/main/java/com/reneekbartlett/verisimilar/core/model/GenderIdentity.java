@@ -1,24 +1,25 @@
 package com.reneekbartlett.verisimilar.core.model;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public enum GenderIdentity {
-    MALE("MALE", 1, 0.4995),
-    FEMALE("FEMALE", 2, 0.4995),
-    NONBINARY("NON-BINARY", 3, 0.0010),
-    GENDER_UNSPECIFIED("UNSPECIFIED", 0, 0.0000);
+    MALE("MALE", 1, 0.4995, "male"),
+    FEMALE("FEMALE", 2, 0.4995, "female"),
+    NONBINARY("NON-BINARY", 3, 0.0010, "unisex"),
+    GENDER_UNSPECIFIED("UNSPECIFIED", 0, 0.0000, "unisex");
 
     private final String label;
     private final int value;
     private final double weight;
+    private final String placeholder;
 
-    private GenderIdentity(String label, int value, double weight) {
+    private GenderIdentity(String label, int value, double weight, String placeholder) {
         this.label = label;
         this.value = value;
         this.weight = weight;
+        this.placeholder = placeholder;
     }
 
     public String getLabel() {
@@ -31,6 +32,10 @@ public enum GenderIdentity {
 
     public double getWeight() {
         return this.weight;
+    }
+
+    public String getPlaceholder() {
+        return placeholder;
     }
 
     public boolean isFemale() {
@@ -66,19 +71,19 @@ public enum GenderIdentity {
         return null;
     }
 
+    public static Set<GenderIdentity> defaultDatasets(){
+        return Set.of(MALE, FEMALE);
+    }
+
     public static Set<GenderIdentity> defaults() {
-        Set<GenderIdentity> defaults = new HashSet<>();
-        defaults.add(MALE);
-        defaults.add(FEMALE);
-        //defaults.add(NONBINARY);
-        return defaults;
+        return Set.of(MALE, FEMALE);
     }
 
     public static Map<GenderIdentity, Double> defaultMap() {
-        Map<GenderIdentity, Double> defaultMap = HashMap.newHashMap(3);
-        defaultMap.put(GenderIdentity.MALE, GenderIdentity.MALE.getWeight());
-        defaultMap.put(GenderIdentity.FEMALE, GenderIdentity.FEMALE.getWeight());
-        //defaultMap.put(GenderIdentity.NONBINARY, GenderIdentity.NONBINARY.getWeight());
+        Map<GenderIdentity, Double> defaultMap = HashMap.newHashMap(0);
+        for(GenderIdentity genderIdentity : defaultDatasets()) {
+            defaultMap.put(genderIdentity, 0.5000); // TODO:  use genderIdentity.getWeight()
+        }
         return defaultMap;
     }
 

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.CityStateZipDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.result.CityStateZipDatasetResult;
+import com.reneekbartlett.verisimilar.core.model.CityStateZip;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
@@ -44,12 +45,24 @@ public class CityStateZipSelectionEngine extends AbstractSelectionEngine<CitySta
 
     @Override
     public String select(CityStateZipDatasetKey key, SelectionFilter filter) {
+        // There are currently no CityStateZipSelectionEngine.NameKey parameters, so just get default.
         NameKey nameKey = new NameKey();
         RandomSelector<String> selector = selectorsByNameKey.get(nameKey);
         if (selector == null) {
             throw new IllegalStateException("No selector registered for " + nameKey);
         }
         if(filter != null && !filter.isEmpty()) {
+            if(filter.equalToMap().containsKey(TemplateField.STATE) 
+                    && filter.equalToMap().containsKey(TemplateField.CITY)
+                    && filter.equalToMap().containsKey(TemplateField.ZIP_CODE)
+            ) {
+                return new CityStateZip(
+                        filter.equalToMap().get(TemplateField.CITY),
+                        filter.equalToMap().get(TemplateField.STATE),
+                        filter.equalToMap().get(TemplateField.ZIP_CODE)
+                ).toString();
+            }
+
             if(filter.equalToMap().containsKey(TemplateField.CITY)) {
                 // TODO: Add Filtering
             }

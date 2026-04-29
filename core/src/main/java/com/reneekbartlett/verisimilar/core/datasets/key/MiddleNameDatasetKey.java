@@ -1,5 +1,8 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 
 /***
@@ -10,7 +13,7 @@ import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
  */
 public record MiddleNameDatasetKey(
         String id,
-        GenderIdentity gender,
+        Set<GenderIdentity> genders,
         Integer year
 ) implements DatasetKey {
 
@@ -20,18 +23,19 @@ public record MiddleNameDatasetKey(
         return new MiddleNameDatasetKey(KEY_ID, null, null);
     }
 
-    public MiddleNameDatasetKey(GenderIdentity gender) {
-        this(KEY_ID, gender, null);
+    public MiddleNameDatasetKey(Set<GenderIdentity> genders) {
+        this(KEY_ID, genders, null);
     }
 
-    public MiddleNameDatasetKey(GenderIdentity gender, Integer year) {
-        this(KEY_ID, gender, year);
+    public MiddleNameDatasetKey(Set<GenderIdentity> genders, Integer year) {
+        this(KEY_ID, genders, year);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(0).append(id);
-        if(gender != null) sb.append("$").append(gender.getLabel());
+        //if(gender != null) sb.append("$").append(gender.getLabel());
+        if(genders != null) sb.append("$").append(genders.stream().map(Enum::name).collect(Collectors.joining("|")));
         if(year != null) sb.append("$").append(year);
         return sb.toString();
     }
