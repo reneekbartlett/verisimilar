@@ -39,11 +39,11 @@ public record SelectionFilter(
         Optional<DomainType> domainType,
         Optional<String> domain,
 
-        Optional<String> startsWith,
-        Optional<String> endsWith,
-        Optional<String> contains,
-        Optional<Integer> minLength,
-        Optional<Integer> maxLength,
+        //Optional<String> startsWith,
+        //Optional<String> endsWith,
+        //Optional<String> contains,
+        //Optional<Integer> minLength,
+        //Optional<Integer> maxLength,
 
         Optional<SelectionPredicate<String>> customPredicate,
         Optional<Set<SelectionPredicate<String>>> customPredicates,
@@ -108,15 +108,15 @@ public record SelectionFilter(
             values.put("BIRTHDAY", birthday.get());
         }
 
-        //if(!domain.isEmpty()) values.put("DOMAIN", domain.get());
-        //if(!gender.isEmpty()) values.put("GENDER", gender.get());
+        if(!domain.isEmpty()) values.put("DOMAIN", domain.get());
+        if(!gender.isEmpty()) values.put("GENDER", gender.get());
         return values;
     }
 
     public boolean isEmpty() {
         return customPredicate.isEmpty() && customPredicates.isEmpty()
                 && firstName.isEmpty() && middleName.isEmpty() && lastName.isEmpty()
-                //&& gender.isEmpty()
+                && gender.isEmpty()
                 && birthday.isEmpty()
                 && minYear.isEmpty()
                 && maxYear.isEmpty()
@@ -127,11 +127,6 @@ public record SelectionFilter(
                 && ethnicity.isEmpty()
                 && domainType.isEmpty()
                 && domain.isEmpty()
-                && startsWith.isEmpty()
-                && endsWith.isEmpty()
-                && contains.isEmpty()
-                && minLength.isEmpty()
-                && maxLength.isEmpty()
                 && startsWithMap.isEmpty()
                 && endsWithMap.isEmpty()
                 && equalToMap.isEmpty()
@@ -146,11 +141,6 @@ public record SelectionFilter(
                 // Gender / Genders
                 Optional.empty(), Optional.empty(),
 
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
@@ -197,11 +187,8 @@ public record SelectionFilter(
         private DomainType domainType;
         private String domain;
 
-        private String startsWith;
-        private String endsWith;
-        private String contains;
-        private Integer minLength;
-        private Integer maxLength;
+        //private Integer minLength;
+        //private Integer maxLength;
 
         private SelectionPredicate<String> customPredicate;
         private Set<SelectionPredicate<String>> customPredicates;
@@ -345,11 +332,6 @@ public record SelectionFilter(
             return this;
         }
 
-//        public Builder startsWith(String value) {
-//            this.startsWith = value;
-//            return this;
-//        }
-
         public Builder startsWith(String value, TemplateField field) {
             this.startsWithMap.put(field, value);
             return this;
@@ -360,37 +342,25 @@ public record SelectionFilter(
             return this;
         }
 
-//        public Builder endsWith(String value) {
-//            this.endsWith = value;
-//            return this;
-//        }
-
         public Builder endsWith(String value, TemplateField field) {
             this.endsWithMap.put(field, value);
             return this;
         }
-
-//        public Builder contains(String value) {
-//            // TODO: Use map
-//            //return this.customPredicate(key -> value.stream().anyMatch(key::contains));
-//            this.contains = value;
-//            return this;
-//        }
 
         public Builder contains(String value, TemplateField field) {
             this.containsMap.put(field, value);
             return this;
         }
 
-        public Builder minLength(Integer value) {
-            this.minLength = value;
-            return this;
-        }
-
-        public Builder maxLength(Integer value) {
-            this.maxLength = value;
-            return this;
-        }
+//        public Builder minLength(Integer value) {
+//            this.minLength = value;
+//            return this;
+//        }
+//
+//        public Builder maxLength(Integer value) {
+//            this.maxLength = value;
+//            return this;
+//        }
 
         public Builder customPredicate(SelectionPredicate<String> predicate) {
             this.customPredicate = predicate;
@@ -418,12 +388,6 @@ public record SelectionFilter(
                     Optional.ofNullable(domainType),
                     Optional.ofNullable(domain),
 
-                    Optional.ofNullable(startsWith),
-                    Optional.ofNullable(endsWith),
-                    Optional.ofNullable(contains),
-                    Optional.ofNullable(minLength),
-                    Optional.ofNullable(maxLength),
-
                     Optional.ofNullable(customPredicate),
                     Optional.ofNullable(customPredicates),
 
@@ -445,17 +409,8 @@ public record SelectionFilter(
         if(!customPredicates.isEmpty()) {
             sb.append("customPredicates=" + "TRUE" + FIELD_DELIM);
         }
-        if(!startsWith.isEmpty()) {
-            sb.append("startsWith=" + this.startsWith().get() + FIELD_DELIM);
-        }
         if(!startsWithMap.isEmpty()) {
             sb.append("startsWithMap.size()=" + this.startsWithMap.size() + FIELD_DELIM);
-        }
-        if(!endsWith.isEmpty()) {
-            sb.append("endsWith=" + this.endsWith().get() + FIELD_DELIM);
-        }
-        if(!contains.isEmpty()) {
-            sb.append("contains=" + this.contains().get() + FIELD_DELIM);
         }
         if(!firstName.isEmpty()) sb.append("firstName=" + this.firstName.get()+ FIELD_DELIM);
         if(!middleName.isEmpty()) sb.append("middleName=" + this.middleName.get()+ FIELD_DELIM);
