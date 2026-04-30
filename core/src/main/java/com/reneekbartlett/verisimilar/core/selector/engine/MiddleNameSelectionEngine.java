@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.MiddleNameDatasetKey;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.MiddleNameDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.datasets.result.MiddleNameDatasetResult;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
@@ -44,6 +45,10 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
             SelectorStrategy<String> strategy
     ) {
         super(resolvers, strategy);
+    }
+
+    public MiddleNameSelectionEngine(MiddleNameDatasetResolver resolver) {
+        super(resolver, DEFAULT_SELECTOR_STRATEGY);
     }
 
     protected void setup() {

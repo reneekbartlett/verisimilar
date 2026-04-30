@@ -9,7 +9,7 @@ import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.selector.engine.FirstNameSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.LastNameSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.MiddleNameSelectionEngine;
-import com.reneekbartlett.verisimilar.core.selector.engine.registry.NameSelectionEngineRegistry;
+import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelectionEngineRegistry;
 
 public class FullNameGenerator extends AbstractValueGenerator<FullName>{
     private final FirstNameGenerator firstNameGenerator;
@@ -25,7 +25,7 @@ public class FullNameGenerator extends AbstractValueGenerator<FullName>{
         this.lastNameGenerator = new LastNameGenerator(lastNameSelector);
     }
 
-    public FullNameGenerator(NameSelectionEngineRegistry nameSelectors) {
+    public FullNameGenerator(DatasetSelectionEngineRegistry nameSelectors) {
         this.firstNameGenerator = new FirstNameGenerator(nameSelectors.first());
         this.middleNameGenerator = new MiddleNameGenerator(nameSelectors.middle());
         this.lastNameGenerator = new LastNameGenerator(nameSelectors.last());

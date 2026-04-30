@@ -1,5 +1,7 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
+import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
+
 public record StreetSuffixDatasetKey(String id) implements DatasetKey {
 
     public static final String KEY_ID = "STREETSUFFIX";
@@ -9,6 +11,10 @@ public record StreetSuffixDatasetKey(String id) implements DatasetKey {
     }
 
     public static StreetSuffixDatasetKey defaults() {
+        return new StreetSuffixDatasetKey(KEY_ID);
+    }
+
+    public static StreetSuffixDatasetKey fromContext(DatasetResolutionContext ctx) {
         return new StreetSuffixDatasetKey(KEY_ID);
     }
 

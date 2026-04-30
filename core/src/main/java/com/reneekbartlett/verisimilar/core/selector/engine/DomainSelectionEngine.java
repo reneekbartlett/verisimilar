@@ -6,6 +6,7 @@ import com.reneekbartlett.verisimilar.core.datasets.key.DomainDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.result.DomainDatasetResult;
 import com.reneekbartlett.verisimilar.core.model.DomainType;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.DomainDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
@@ -16,7 +17,7 @@ import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 public class DomainSelectionEngine extends AbstractSelectionEngine<DomainDatasetKey,DomainDatasetResult> {
     private static final SelectorStrategy<String> DEFAULT_SELECTOR_STRATEGY = new WeightedSelectorStrategy<>();
     @SuppressWarnings("unused")
-    private final Map<DomainType, Double> domainTypesMap;
+    private Map<DomainType, Double> domainTypesMap;
     private Map<NameKey, RandomSelector<String>> selectorsByNameKey;
 
     public record NameKey(DomainType domainType) {
@@ -34,10 +35,14 @@ public class DomainSelectionEngine extends AbstractSelectionEngine<DomainDataset
 
     public DomainSelectionEngine(DatasetResolverRegistry resolvers, SelectorStrategy<String> strategy) {
         super(resolvers, strategy);
-        this.domainTypesMap = DomainType.defaultMap();
+    }
+
+    public DomainSelectionEngine(DomainDatasetResolver resolver) {
+        super(resolver, DEFAULT_SELECTOR_STRATEGY);
     }
 
     protected void setup() {
+        this.domainTypesMap = DomainType.defaultMap();
         DomainDatasetResult domainDatasetResult = resolvers.domain().resolve(DomainDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(domainDatasetResult.datasets().size());
         domainDatasetResult.datasets().forEach((nameKey, map) -> {

@@ -1,7 +1,6 @@
 package com.reneekbartlett.verisimilar.api.service;
 
 import com.reneekbartlett.verisimilar.core.generator.UsernameGenerator;
-import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
 import org.springframework.stereotype.Service;
@@ -22,16 +21,10 @@ public class GenerateUsernameService {
             @RequestParam(required = false)String region
     ) {
 
-        DatasetResolutionContext context = DatasetResolutionContext.builder()
-                .put("firstName", first)
-                .put("lastName", last)
-                .put("region", region)
-                .build();
-
         SelectionFilter filter = SelectionFilter.builder()
                 .firstName(first)
                 .build();
 
-        return generator.generate(context, filter);
+        return generator.generate(filter);
     }
 }

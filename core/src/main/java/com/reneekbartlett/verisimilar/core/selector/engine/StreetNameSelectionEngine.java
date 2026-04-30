@@ -6,6 +6,7 @@ import java.util.Map;
 import com.reneekbartlett.verisimilar.core.datasets.key.StreetNameDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.result.StreetNameDatasetResult;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.StreetNameDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
@@ -30,6 +31,10 @@ public class StreetNameSelectionEngine extends AbstractSelectionEngine<StreetNam
 
     public StreetNameSelectionEngine(DatasetResolverRegistry resolvers, SelectorStrategy<String> strategy) {
         super(resolvers, strategy);
+    }
+
+    public StreetNameSelectionEngine(StreetNameDatasetResolver resolver) {
+        super(resolver, DEFAULT_SELECTOR_STRATEGY);
     }
 
     protected void setup() {

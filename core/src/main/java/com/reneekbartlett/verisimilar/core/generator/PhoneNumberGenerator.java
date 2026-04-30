@@ -1,6 +1,5 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.AreaCodeDatasetKey;
@@ -9,7 +8,9 @@ import com.reneekbartlett.verisimilar.core.model.PhoneNumber;
 import com.reneekbartlett.verisimilar.core.model.USState;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
+import com.reneekbartlett.verisimilar.core.util.FieldValidationUtils;
 import com.reneekbartlett.verisimilar.core.selector.engine.AreaCodeSelectionEngine;
+import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelectionEngineRegistry;
 
 /***
  * Map<String, String[]> AREACODES_BY_STATE ResourceMapLoader.loadArrayMap("/phone_areacode_bystate_us.txt");
@@ -20,6 +21,7 @@ public class PhoneNumberGenerator extends AbstractValueGenerator<PhoneNumber> {
 
     // TODO: EXCHANGE_CODES_BY_AREACODE
     // TODO: PHONE_NUMBER_TYPE
+    // TODO: AreaCodeGenerator?
 
     private final AreaCodeSelectionEngine areaCodeSelector;
 
@@ -27,28 +29,25 @@ public class PhoneNumberGenerator extends AbstractValueGenerator<PhoneNumber> {
         this.areaCodeSelector = areaCodeSelector;
     }
 
-    @Override
-    protected PhoneNumber generateValue(DatasetResolutionContext ctx, SelectionFilter criteria) {
-        return generatePhoneNumber(ctx, criteria);
+    public PhoneNumberGenerator(DatasetSelectionEngineRegistry selectors) {
+        this(selectors.areaCode());
     }
 
     @Override
-    protected Class<PhoneNumber> valueType() {
-        return PhoneNumber.class;
+    protected PhoneNumber generateValue(DatasetResolutionContext ctx, SelectionFilter filter) {
+        AreaCodeDatasetKey key = AreaCodeDatasetKey.fromContext(ctx);
+        return generatePhoneNumber(key, filter);
     }
 
-    private PhoneNumber generatePhoneNumber(DatasetResolutionContext ctx, SelectionFilter criteria) {
-        String areaCode = generateAreaCode(ctx, criteria);
-        String exchangeCode = generateExchangeCode(ctx, criteria);
-        String lineNumber = generateLineNumber(ctx, criteria);
-
+    private PhoneNumber generatePhoneNumber(AreaCodeDatasetKey key, SelectionFilter filter) {
+        String areaCode = generateAreaCode(key, filter);
+        String exchangeCode = generateExchangeCode(filter);
+        String lineNumber = generateLineNumber(filter);
         return new PhoneNumber(areaCode, exchangeCode, lineNumber);
     }
 
-    private String generateAreaCode(DatasetResolutionContext ctx, SelectionFilter filter) {
-        Set<USState> usStates = filter.states().orElse(null);
-        AreaCodeDatasetKey areaCodeKey = new AreaCodeDatasetKey(usStates);
-
+    private String generateAreaCode(AreaCodeDatasetKey areaCodeKey, SelectionFilter filter) {
+        //Set<USState> usStates = filter.states().orElse(null);
         String areaCode = areaCodeSelector.select(areaCodeKey, filter);
         //LOGGER.debug("selected:{}", areaCode);
         return areaCode;
@@ -68,14 +67,7 @@ public class PhoneNumberGenerator extends AbstractValueGenerator<PhoneNumber> {
         return options[ThreadLocalRandom.current().nextInt(options.length)];
     }
 
-    private String generateExchangeCode(DatasetResolutionContext ctx, SelectionFilter criteria) {
-        // TODO:  Cleanup?
-        //Integer startsWith = null;
-        //if (startsWith != null) {
-        //    if (startsWith < 2 || startsWith > 9) throw new IllegalArgumentException("Starting digit must be between 2 and 9.");
-        //    firstDigit = startsWith;
-        //}
-
+    private String generateExchangeCode(SelectionFilter filter) {
         // Generate exchange code (NXX)
         int firstDigit = ThreadLocalRandom.current().nextInt(2, 10); // 2–9
         int secondDigit = ThreadLocalRandom.current().nextInt(0, 10);
@@ -86,9 +78,7 @@ public class PhoneNumberGenerator extends AbstractValueGenerator<PhoneNumber> {
         return formatExchangeCode(exchangeCode);
     }
 
-    
-
-    private String generateLineNumber(DatasetResolutionContext ctx, SelectionFilter criteria) {
+    private String generateLineNumber(SelectionFilter filter) {
         // Line number (0000–9999)
         int lineNumber = ThreadLocalRandom.current().nextInt(0, 10000);
         return formatLineNumber(lineNumber);
@@ -103,12 +93,12 @@ public class PhoneNumberGenerator extends AbstractValueGenerator<PhoneNumber> {
     }
 
     public static String format(int areaCode, int exchangeCode, int lineNumber) {
-        validateAreaCode(areaCode);
+        FieldValidationUtils.validateAreaCode(areaCode);
         return String.format("%03d-%03d-%04d", areaCode, exchangeCode, lineNumber);
     }
 
     public static String format(String phoneStr) {
-        validatePhoneStr(phoneStr);
+        FieldValidationUtils.validatePhoneStr(phoneStr);
 
         String areaCode = phoneStr.substring(0, 3);
         String exchangeCode = phoneStr.substring(3, 6);
@@ -117,18 +107,8 @@ public class PhoneNumberGenerator extends AbstractValueGenerator<PhoneNumber> {
         return String.format("%03d-%03d-%04d", areaCode, exchangeCode, lineNumber);
     }
 
-    public static boolean validateAreaCode(Integer areaCode) {
-        if (areaCode == null || areaCode < 200 || areaCode > 999) {
-            throw new IllegalArgumentException("Area code must be between 200 and 999.");
-        }
-        return true;
-    }
-
-    public static boolean validatePhoneStr(String phoneStr) {
-        if (phoneStr == null || !phoneStr.matches("\\d{10}")) {
-            LOGGER.debug(phoneStr);
-            throw new IllegalArgumentException("Input must be exactly 10 digits.");
-        }
-        return true;
+    @Override
+    protected Class<PhoneNumber> valueType() {
+        return PhoneNumber.class;
     }
 }

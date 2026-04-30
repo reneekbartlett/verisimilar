@@ -3,6 +3,7 @@ package com.reneekbartlett.verisimilar.core.selector.engine;
 import java.util.Map;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.NicknameDatasetKey;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.NicknameDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.datasets.result.NicknameDatasetResult;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
@@ -35,6 +36,10 @@ public class NicknameSelectionEngine extends AbstractSelectionEngine<NicknameDat
 
     public NicknameSelectionEngine(DatasetResolverRegistry resolvers, SelectorStrategy<String> strategy) {
         super(resolvers, strategy);
+    }
+
+    public NicknameSelectionEngine(NicknameDatasetResolver resolver) {
+        super(resolver, DEFAULT_SELECTOR_STRATEGY);
     }
 
     protected void setup() {

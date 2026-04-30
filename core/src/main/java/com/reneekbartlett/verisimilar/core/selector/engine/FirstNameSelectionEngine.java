@@ -3,6 +3,7 @@ package com.reneekbartlett.verisimilar.core.selector.engine;
 import java.util.HashMap;
 import java.util.Map;
 import com.reneekbartlett.verisimilar.core.datasets.key.FirstNameDatasetKey;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.FirstNameDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.datasets.result.FirstNameDatasetResult;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
@@ -57,6 +58,10 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
             SelectorStrategy<String> strategy
     ) {
         super(resolvers, strategy);
+    }
+
+    public FirstNameSelectionEngine(FirstNameDatasetResolver resolver) {
+        super(resolver, DEFAULT_SELECTOR_STRATEGY);
     }
 
     @Override

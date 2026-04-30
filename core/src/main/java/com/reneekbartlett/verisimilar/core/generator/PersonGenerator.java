@@ -2,8 +2,6 @@ package com.reneekbartlett.verisimilar.core.generator;
 
 import java.time.LocalDate;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.generator.api.AbstractValueGenerator;
@@ -20,17 +18,7 @@ import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorImpl;
-import com.reneekbartlett.verisimilar.core.selector.engine.AddressTwoSelectionEngine;
-import com.reneekbartlett.verisimilar.core.selector.engine.AreaCodeSelectionEngine;
-import com.reneekbartlett.verisimilar.core.selector.engine.CityStateZipSelectionEngine;
-import com.reneekbartlett.verisimilar.core.selector.engine.DomainSelectionEngine;
-import com.reneekbartlett.verisimilar.core.selector.engine.FirstNameSelectionEngine;
-import com.reneekbartlett.verisimilar.core.selector.engine.KeywordSelectionEngine;
-import com.reneekbartlett.verisimilar.core.selector.engine.LastNameSelectionEngine;
-import com.reneekbartlett.verisimilar.core.selector.engine.MiddleNameSelectionEngine;
-import com.reneekbartlett.verisimilar.core.selector.engine.StreetNameSelectionEngine;
-import com.reneekbartlett.verisimilar.core.selector.engine.StreetSuffixSelectionEngine;
-import com.reneekbartlett.verisimilar.core.selector.engine.UsernameSelectionEngine;
+import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelectionEngineRegistry;
 
 public class PersonGenerator extends AbstractValueGenerator<PersonRecord>{
 
@@ -40,30 +28,37 @@ public class PersonGenerator extends AbstractValueGenerator<PersonRecord>{
     private final PhoneNumberGenerator phoneNumberGenerator;
     private final EmailAddressGenerator emailAddressGenerator;
 
+    public PersonGenerator(
+            BirthdayGenerator birthdayGenerator, 
+            FullNameGenerator fullNameGenerator,
+            PostalAddressRecordGenerator postalAddressGenerator,
+            PhoneNumberGenerator phoneNumberGenerator,
+            EmailAddressGenerator emailAddressGenerator
+    ) {
+        this.birthdayGenerator = birthdayGenerator;
+        this.fullNameGenerator = fullNameGenerator;
+        this.postalAddressGenerator = postalAddressGenerator;
+        this.phoneNumberGenerator = phoneNumberGenerator;
+        this.emailAddressGenerator = emailAddressGenerator;
+    }
+
+    public PersonGenerator(DatasetSelectionEngineRegistry selectors){
+        this(
+            new BirthdayGenerator(),
+            new FullNameGenerator(selectors),
+            new PostalAddressRecordGenerator(selectors),
+            new PhoneNumberGenerator(selectors),
+            new EmailAddressGenerator(selectors)
+        );
+    }
+
     public PersonGenerator(DatasetResolverRegistry resolvers){
-        this.birthdayGenerator = new BirthdayGenerator();
-
-        this.fullNameGenerator = new FullNameGenerator(
-                new FirstNameSelectionEngine(resolvers),
-                new MiddleNameSelectionEngine(resolvers),
-                new LastNameSelectionEngine(resolvers)
-        );
-
-        this.postalAddressGenerator = new PostalAddressRecordGenerator(
-                new StreetNameSelectionEngine(resolvers), 
-                new StreetSuffixSelectionEngine(resolvers),
-                new AddressTwoSelectionEngine(resolvers),
-                new CityStateZipSelectionEngine(resolvers)
-        );
-
-        this.phoneNumberGenerator = new PhoneNumberGenerator(
-                new AreaCodeSelectionEngine(resolvers)
-        );
-
-        this.emailAddressGenerator = new EmailAddressGenerator(
-                new UsernameSelectionEngine(resolvers),
-                new DomainSelectionEngine(resolvers),
-                new KeywordSelectionEngine(resolvers)
+        this(
+            new BirthdayGenerator(),
+            new FullNameGenerator(resolvers.selectors()),
+            new PostalAddressRecordGenerator(resolvers.selectors()),
+            new PhoneNumberGenerator(resolvers.selectors()),
+            new EmailAddressGenerator(resolvers.selectors())
         );
     }
 
@@ -136,19 +131,6 @@ public class PersonGenerator extends AbstractValueGenerator<PersonRecord>{
 
     private EmailAddressRecord generateEmailAddress(DatasetResolutionContext ctx, SelectionFilter filter) {
         return this.emailAddressGenerator.generate(ctx, filter);
-    }
-
-    //
-    private void generateEmailAddressAsync() {
-        ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
-        Runnable task = () -> {
-            System.out.println("Running in a virtual thread: " + Thread.currentThread().getName());
-            try {
-                Thread.sleep(1000); // Simulating a task
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        };
     }
 
     @Override

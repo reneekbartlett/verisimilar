@@ -19,6 +19,19 @@ import com.reneekbartlett.verisimilar.core.datasets.resolver.NicknameDatasetReso
 import com.reneekbartlett.verisimilar.core.datasets.resolver.StreetNameDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.StreetSuffixDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.UsernameDatasetResolver;
+import com.reneekbartlett.verisimilar.core.selector.engine.AddressTwoSelectionEngine;
+import com.reneekbartlett.verisimilar.core.selector.engine.AreaCodeSelectionEngine;
+import com.reneekbartlett.verisimilar.core.selector.engine.CityStateZipSelectionEngine;
+import com.reneekbartlett.verisimilar.core.selector.engine.DomainSelectionEngine;
+import com.reneekbartlett.verisimilar.core.selector.engine.FirstNameSelectionEngine;
+import com.reneekbartlett.verisimilar.core.selector.engine.KeywordSelectionEngine;
+import com.reneekbartlett.verisimilar.core.selector.engine.LastNameSelectionEngine;
+import com.reneekbartlett.verisimilar.core.selector.engine.MiddleNameSelectionEngine;
+import com.reneekbartlett.verisimilar.core.selector.engine.NicknameSelectionEngine;
+import com.reneekbartlett.verisimilar.core.selector.engine.StreetNameSelectionEngine;
+import com.reneekbartlett.verisimilar.core.selector.engine.StreetSuffixSelectionEngine;
+import com.reneekbartlett.verisimilar.core.selector.engine.UsernameSelectionEngine;
+import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelectionEngineRegistry;
 
 /***
  * 
@@ -187,5 +200,26 @@ public class DatasetResolverRegistry {
     
     public KeywordDatasetResolver keyword() {
         return keywordResolver;
+    }
+
+    // TODO:  use this instead of individual selectors?
+    public DatasetSelectionEngineRegistry selectors() {
+        return new DatasetSelectionEngineRegistry(
+                new FirstNameSelectionEngine(first()),
+                new MiddleNameSelectionEngine(middle()),
+                new LastNameSelectionEngine(last()),
+                new NicknameSelectionEngine(nickname()),
+
+                new StreetNameSelectionEngine(streetName()),
+                new StreetSuffixSelectionEngine(streetSuffix()),
+                new AddressTwoSelectionEngine(address2()),
+                new CityStateZipSelectionEngine(cityStateZip()),
+
+                new AreaCodeSelectionEngine(areaCode()),
+
+                new UsernameSelectionEngine(username()),
+                new DomainSelectionEngine(domain()),
+                new KeywordSelectionEngine(keyword())
+        );
     }
 }

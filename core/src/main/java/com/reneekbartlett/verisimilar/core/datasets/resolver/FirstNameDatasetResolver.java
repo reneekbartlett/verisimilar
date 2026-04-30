@@ -26,6 +26,9 @@ public class FirstNameDatasetResolver extends AbstractDatasetResolver<FirstNameD
 
     @Override
     public FirstNameDatasetResult loadForKey(FirstNameDatasetKey key) {
+        
+        //key.ethnicity();
+
         Map<NameKey, Map<String, Double>> datasets = HashMap.newHashMap(0);
 
         // Load both datasets (male + female) for the given ethnicity
@@ -35,12 +38,9 @@ public class FirstNameDatasetResolver extends AbstractDatasetResolver<FirstNameD
 
         for(Ethnicity ethnicity : ethnicities) {
             if(ethnicity != Ethnicity.UNKNOWN) {
-                // TODO:  Iterate genderIdentities
-                Map<String, Double> map1 = loadEthnicityDataset(GenderIdentity.FEMALE, ethnicity);
-                datasets.put(new NameKey(GenderIdentity.FEMALE, ethnicity), map1);
-
-                Map<String, Double> map2 = loadEthnicityDataset(GenderIdentity.MALE, ethnicity);
-                datasets.put(new NameKey(GenderIdentity.MALE, ethnicity), map2);
+                genderIdentities.forEach(gender -> {
+                    datasets.put(new NameKey(gender, ethnicity), loadEthnicityDataset(gender, ethnicity));
+                });
             }
         }
 

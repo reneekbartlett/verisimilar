@@ -7,7 +7,7 @@ import com.reneekbartlett.verisimilar.core.selector.engine.AddressTwoSelectionEn
 import com.reneekbartlett.verisimilar.core.selector.engine.CityStateZipSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.StreetNameSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.StreetSuffixSelectionEngine;
-import com.reneekbartlett.verisimilar.core.selector.engine.registry.PostalAddressSelectionEngineRegistry;
+import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelectionEngineRegistry;
 import com.reneekbartlett.verisimilar.core.model.CityStateZip;
 import com.reneekbartlett.verisimilar.core.model.PostalAddress;
 import com.reneekbartlett.verisimilar.core.model.StreetAddress;
@@ -28,21 +28,14 @@ public class PostalAddressRecordGenerator extends AbstractValueGenerator<PostalA
         this.streetAddressGenerator = new StreetAddressGenerator(streetNameSelector, streetSuffixSelector, addressTwoSelector);
     }
 
-    public PostalAddressRecordGenerator(PostalAddressSelectionEngineRegistry postalSelectorRegistry) {
-        this.cityStateZipGenerator = new CityStateZipGenerator(postalSelectorRegistry.cityStateZip());
-        this.streetAddressGenerator = new StreetAddressGenerator(postalSelectorRegistry.streetName(), 
-                postalSelectorRegistry.streetSuffix(), 
-                postalSelectorRegistry.addressTwo());
+    public PostalAddressRecordGenerator(DatasetSelectionEngineRegistry selectors) {
+        this.cityStateZipGenerator = new CityStateZipGenerator(selectors.cityStateZip());
+        this.streetAddressGenerator = new StreetAddressGenerator(selectors.streetName(), selectors.streetSuffix(), selectors.addressTwo());
     }
 
     @Override
     protected PostalAddress generateValue(DatasetResolutionContext ctx, SelectionFilter filter) {
         return generatePostalAddress(ctx, filter);
-    }
-
-    @Override
-    protected Class<PostalAddress> valueType() {
-        return PostalAddress.class;
     }
 
     private PostalAddress generatePostalAddress(DatasetResolutionContext ctx, SelectionFilter filter) {
@@ -66,5 +59,10 @@ public class PostalAddressRecordGenerator extends AbstractValueGenerator<PostalA
 
     private StreetAddress generateStreetAddress(DatasetResolutionContext ctx, SelectionFilter filter) {
         return streetAddressGenerator.generate(ctx, filter);
+    }
+
+    @Override
+    protected Class<PostalAddress> valueType() {
+        return PostalAddress.class;
     }
 }

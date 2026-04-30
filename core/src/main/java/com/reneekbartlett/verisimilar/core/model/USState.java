@@ -57,6 +57,7 @@ public enum USState {
     WV("West Virginia",39,0.001973),
     WY("Wyoming",50,0.001438),
     DC("District of Columbia",51,0.001399);
+    // TODO:  Add UNKNOWN with placeholder "ALL"
 
     private final String fullName;
     private final int rank;
@@ -78,6 +79,10 @@ public enum USState {
 
     public double getWeight() {
         return weight;
+    }
+
+    public String getPlaceholder() {
+        return this.name();
     }
 
     public static USState fromAbbreviation(String abbr) {
@@ -103,14 +108,26 @@ public enum USState {
     public static Set<String> names(Set<USState> states) {
         Set<String> stateNames = new HashSet<>();
         for(USState state : states) {
-            stateNames.add(state.name());
+            if(state.getPlaceholder() != "ALL") {
+                stateNames.add(state.name());
+            }
         }
         return stateNames;
     }
 
+    public static Set<USState> defaultDatasets(){
+        Set<USState> defaults = HashSet.newHashSet(0);
+        for(USState state : USState.values()) {
+            if(state.getPlaceholder() != "ALL") {
+                defaults.add(state);
+            }
+        }
+        return defaults;
+    }
+
     public static Map<USState, Double> defaultMap() {
         Map<USState, Double> defaultMap = new HashMap<>();
-        for(USState state : USState.values()) {
+        for(USState state : defaultDatasets()) {
             defaultMap.put(state, state.getWeight());
         }
         return defaultMap;

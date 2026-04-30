@@ -6,6 +6,7 @@ import java.util.Map;
 import com.reneekbartlett.verisimilar.core.datasets.key.StreetSuffixDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.result.StreetSuffixDatasetResult;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.StreetSuffixDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
@@ -30,6 +31,10 @@ public class StreetSuffixSelectionEngine extends AbstractSelectionEngine<StreetS
 
     public StreetSuffixSelectionEngine(DatasetResolverRegistry resolvers, SelectorStrategy<String> strategy) {
         super(resolvers, strategy);
+    }
+
+    public StreetSuffixSelectionEngine(StreetSuffixDatasetResolver resolver) {
+        super(resolver, DEFAULT_SELECTOR_STRATEGY);
     }
 
     protected void setup() {

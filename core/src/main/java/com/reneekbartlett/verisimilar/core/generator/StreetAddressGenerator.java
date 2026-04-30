@@ -17,11 +17,13 @@ import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorImpl;
 import com.reneekbartlett.verisimilar.core.selector.engine.AddressTwoSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.StreetNameSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.StreetSuffixSelectionEngine;
+import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelectionEngineRegistry;
 
 public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress>{
 
     private static final String[] ADDRESS2_UNIT_XTRA = { "A", "B", "C", "D", "E", "F", "N", "S", "E", "W" };
 
+    // TODO
     private static final String[] ADDRESS2_TEMPLATES = {
             "${UNIT_TYPE} ${UNIT}", // APARTMENT 1
             "${UNIT_TYPE} ${UNIT}${UNIT_XTRA}", // APARTMENT 1B
@@ -41,6 +43,10 @@ public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress
         this.streetNameSelector = streetNameSelector;
         this.streetSuffixSelector = streetSuffixSelector;
         this.addressTwoSelector = addressTwoSelector;
+    }
+
+    public StreetAddressGenerator(DatasetSelectionEngineRegistry selectors) {
+        this(selectors.streetName(), selectors.streetSuffix(), selectors.addressTwo());
     }
 
     @Override

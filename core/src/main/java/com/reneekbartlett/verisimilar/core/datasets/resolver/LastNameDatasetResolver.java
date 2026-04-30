@@ -2,6 +2,7 @@ package com.reneekbartlett.verisimilar.core.datasets.resolver;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.LastNameDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.loader.ResourceLoaderUtil;
@@ -24,25 +25,24 @@ public class LastNameDatasetResolver extends AbstractDatasetResolver<LastNameDat
     @Override
     public LastNameDatasetResult loadForKey(LastNameDatasetKey key) {
         //LOGGER.debug("loadForKey - key:{}", key);
-        Map<NameKey, Map<String, Double>> datasets = loadDatasetsByKey(key);
+
+        Set<Ethnicity> ethnicities = key.ethnicities();
+        if(ethnicities.isEmpty()) {
+            LOGGER.warn("Empty dataset.");
+        }
+
+        Map<NameKey, Map<String, Double>> datasets = HashMap.newHashMap(ethnicities.size());
+        for(Ethnicity ethnicity : ethnicities) {
+            Map<String, Double> map = loadDataset(ethnicity);
+            datasets.put(new NameKey(ethnicity), map);
+        }
+
         return new LastNameDatasetResult(datasets);
     }
 
-    private Map<NameKey, Map<String, Double>> loadDatasetsByKey(LastNameDatasetKey key) {
-        Map<NameKey, Map<String, Double>> datasets = HashMap.newHashMap(1);
-        if(key.ethnicity() != null) {
-            // datasets/cfg_fullname_last_%s.csv
-            String fileKey = key.ethnicity().equals(Ethnicity.UNKNOWN) ? "ALL" : key.ethnicity().name();
-            String path = String.format(DEFAULT_FILE_FORMAT, fileKey);
-            if (exists(path)) {
-                NameKey eKey = new NameKey(key.ethnicity());
-                Map<String, Double> eMap = super.load(path);
-                datasets.put(eKey, eMap);
-            } else {
-                LOGGER.warn("LastName Config file doesn't exist: " + path);
-            }
-        }
-        return datasets;
+    private Map<String, Double> loadDataset(Ethnicity ethnicity) {
+        String filePath = String.format(DEFAULT_FILE_FORMAT, ethnicity.getPlaceholder());
+        return load(filePath);
     }
 
     @Override

@@ -4,16 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public enum UsernameType {
+public enum KeywordType {
 
     KEYWORD1("KEYWORD1", 0.5000, "ALL"),
-    KEYWORD2("KEYWORD2", 0.5000, "XTRA");
+    KEYWORD2("KEYWORD2", 0.0250, "XTRA");
 
     private final String label;
     private final double weight;
     private final String placeholder;
 
-    private UsernameType(String label, double weight, String placeholder) {
+    private KeywordType(String label, double weight, String placeholder) {
         this.label = label;
         this.weight = weight;
         this.placeholder = placeholder;
@@ -26,22 +26,19 @@ public enum UsernameType {
     public double getWeight() {
         return weight;
     }
-    
+
     public String getPlaceholder() {
         return placeholder;
     }
 
-    public static Set<UsernameType> defaultDatasets(){
-        return Set.of(
-                UsernameType.KEYWORD1
-                //,UsernameType.KEYWORD2
-        );
+    public static Set<KeywordType> defaultDatasets(){
+        return Set.of(KeywordType.KEYWORD1);
     }
 
-    public static Map<UsernameType, Double> defaultMap() {
-        final Map<UsernameType, Double> defaultMap = HashMap.newHashMap(2);
-        defaultDatasets().forEach(usernameType -> {
-            defaultMap.put(usernameType, usernameType.getWeight());
+    public static Map<KeywordType, Double> defaultMap() {
+        final Map<KeywordType, Double> defaultMap = HashMap.newHashMap(1);
+        defaultDatasets().forEach(keywordType -> {
+            defaultMap.put(keywordType, keywordType.getWeight());
         });
         return defaultMap;
     }

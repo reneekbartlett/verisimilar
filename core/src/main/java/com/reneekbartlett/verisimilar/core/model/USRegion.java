@@ -1,5 +1,6 @@
 package com.reneekbartlett.verisimilar.core.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 // TODO: Implement
@@ -44,6 +45,14 @@ public enum USRegion {
 
     public Set<String> getStates() {
         return states;
+    }
+
+    public String getPlaceholder() {
+        return regionName;
+    }
+
+    public static Set<USRegion> defaultDatasets(){
+        return HashSet.newHashSet(0);
     }
 
     public static USRegion getRegionForState(String stateAbbreviation) {

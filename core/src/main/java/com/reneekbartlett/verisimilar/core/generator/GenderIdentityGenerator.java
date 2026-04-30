@@ -1,5 +1,6 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
+import com.reneekbartlett.verisimilar.core.datasets.key.GenderIdentityDatasetKey;
 import com.reneekbartlett.verisimilar.core.generator.api.AbstractValueGenerator;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
@@ -10,20 +11,21 @@ import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 public class GenderIdentityGenerator extends AbstractValueGenerator<GenderIdentity>{
 
     public GenderIdentityGenerator() {
-        // No SelectionEngine/GenderIdentityDatasetKey
+        // No SelectionEngine
     }
 
     @Override
     protected GenderIdentity generateValue(DatasetResolutionContext ctx, SelectionFilter criteria) {
-        return generateGenderIdentity(ctx, criteria);
+        GenderIdentityDatasetKey key = GenderIdentityDatasetKey.fromContext(ctx);
+        return generateGenderIdentity(key, criteria);
     }
 
-    private GenderIdentity generateGenderIdentity(DatasetResolutionContext ctx, SelectionFilter filter) {
+    private GenderIdentity generateGenderIdentity(GenderIdentityDatasetKey key, SelectionFilter filter) {
         if(filter != null && filter.equalToMap().containsKey(TemplateField.GENDER_IDENTITY)){
             return GenderIdentity.fromText(filter.equalToMap().get(TemplateField.GENDER_IDENTITY));
         }
 
-        UniformSelectorImpl<GenderIdentity> selector = new UniformSelectorImpl<>(GenderIdentity.defaultMap());
+        UniformSelectorImpl<GenderIdentity> selector = new UniformSelectorImpl<>(key.genders());
         return selector.select();
     }
 

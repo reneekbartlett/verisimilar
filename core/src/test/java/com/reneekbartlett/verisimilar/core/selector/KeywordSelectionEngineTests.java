@@ -35,7 +35,7 @@ public class KeywordSelectionEngineTests {
     public void GenerateKeyword_Random() {
         DatasetResolverRegistry resolvers = TestUtils.getEmailAddressDatasetResolverRegistry();
 
-        KeywordSelectionEngine keywordSelector = new KeywordSelectionEngine(resolvers.keyword(), TestUtils.UNIFORM_RANDOM);
+        KeywordSelectionEngine keywordSelector = new KeywordSelectionEngine(resolvers.keyword());
 
         String keyword1 = keywordSelector.select();
         LOGGER.debug("keyword1={}", keyword1);
@@ -47,10 +47,11 @@ public class KeywordSelectionEngineTests {
         DatasetResolverRegistry resolvers = TestUtils.getEmailAddressDatasetResolverRegistry();
         UsernameDatasetResolver usernameDatasetResolver = resolvers.username();
 
-        TemplateRegistryLoader templateLoader = new TemplateRegistryLoader();
-        TemplateRegistry templateRegistry = templateLoader.loadFromClasspath("templates/username-templates.yaml");
+        //TemplateRegistryLoader templateLoader = new TemplateRegistryLoader();
+        //TemplateRegistry templateRegistry = templateLoader.loadFromClasspath("templates/username-templates.yaml");
 
-        UsernameSelectionEngine usernameSelector = new UsernameSelectionEngine(usernameDatasetResolver, TestUtils.UNIFORM_RANDOM, templateRegistry);
+        //UsernameSelectionEngine usernameSelector = new UsernameSelectionEngine(usernameDatasetResolver, TestUtils.UNIFORM_RANDOM, templateRegistry);
+        UsernameSelectionEngine usernameSelector = new UsernameSelectionEngine(usernameDatasetResolver);
 
         String username1 = usernameSelector.select();
         LOGGER.debug("username1={}", username1);

@@ -1,41 +1,46 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
+import com.reneekbartlett.verisimilar.core.model.UsernameType;
+import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 
 /***
- * String[] usernameTypes, GenderIdentity gender
+ * Set<UsernameType>, Set<GenderIdentity> genders
  */
 public record UsernameDatasetKey(
         String id,
-        Set<String> usernameTypes,
-        GenderIdentity gender
+        Set<UsernameType> usernameTypes,
+        Set<GenderIdentity> genders
 ) implements DatasetKey {
 
     public static final String KEY_ID = "USERNAME";
 
     public static UsernameDatasetKey defaults() {
-        return new UsernameDatasetKey(KEY_ID, defaultUsernameTypes(), null);
+        return new UsernameDatasetKey(KEY_ID, UsernameType.defaultDatasets(), GenderIdentity.defaultDatasets());
     }
 
     public UsernameDatasetKey() {
-        this(KEY_ID, defaultUsernameTypes(), null);
+        this(KEY_ID, UsernameType.defaultDatasets(), GenderIdentity.defaultDatasets());
     }
 
-    public UsernameDatasetKey(Set<String> usernameTypes) {
-        this(KEY_ID, usernameTypes, null);
+    public UsernameDatasetKey(Set<UsernameType> usernameTypes) {
+        this(KEY_ID, usernameTypes, GenderIdentity.defaultDatasets());
     }
 
-    public static Set<String> defaultUsernameTypes() {
-        return Set.of("ALL");
+    public static UsernameDatasetKey fromContext(DatasetResolutionContext ctx) {
+        Set<UsernameType> usernameTypes = ctx.usernameTypes().orElse(UsernameType.defaultDatasets());
+        Set<GenderIdentity> genders = ctx.genders().orElse(GenderIdentity.defaultDatasets());
+        return new UsernameDatasetKey(KEY_ID, usernameTypes, genders);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(0).append(id);
-        if(usernameTypes != null) sb.append("$").append(String.join("$", usernameTypes));
-        if(gender != null) sb.append("$").append(gender.getLabel());
+        if(usernameTypes != null) sb.append("$").append(usernameTypes.stream().map(UsernameType::getPlaceholder).collect(Collectors.joining("|")));
+        if(genders != null) sb.append("$").append(genders.stream().map(GenderIdentity::getPlaceholder).collect(Collectors.joining("|")));
         return sb.toString();
     }
 }

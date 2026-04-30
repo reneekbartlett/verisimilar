@@ -8,6 +8,7 @@ import com.reneekbartlett.verisimilar.core.datasets.key.AreaCodeDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.result.AreaCodeDatasetResult;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.USState;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.AreaCodeDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
@@ -43,6 +44,10 @@ public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDat
 
     public AreaCodeSelectionEngine(DatasetResolverRegistry resolvers, SelectorStrategy<String> strategy) {
         super(resolvers, strategy);
+    }
+
+    public AreaCodeSelectionEngine(AreaCodeDatasetResolver resolver) {
+        super(resolver, DEFAULT_SELECTOR_STRATEGY);
     }
 
     @Override

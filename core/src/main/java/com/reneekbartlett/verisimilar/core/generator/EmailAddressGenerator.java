@@ -12,6 +12,7 @@ import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorImpl;
 import com.reneekbartlett.verisimilar.core.selector.engine.DomainSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.KeywordSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.UsernameSelectionEngine;
+import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelectionEngineRegistry;
 
 public class EmailAddressGenerator extends AbstractValueGenerator<EmailAddressRecord> {
 
@@ -25,6 +26,10 @@ public class EmailAddressGenerator extends AbstractValueGenerator<EmailAddressRe
     ) {
         this.usernameGenerator = new UsernameGenerator(usernameSelector);
         this.domainGenerator = new DomainGenerator(domainSelector);
+    }
+
+    public EmailAddressGenerator(DatasetSelectionEngineRegistry selectors) {
+        this(selectors.username(), selectors.domain(), selectors.keyword());
     }
 
     @Override

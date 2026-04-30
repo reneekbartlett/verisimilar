@@ -33,8 +33,8 @@ public class KeywordSelectionEngine extends AbstractSelectionEngine<KeywordDatas
         super(resolvers, strategy);
     }
 
-    public KeywordSelectionEngine(KeywordDatasetResolver resolver, SelectorStrategy<String> strategy) {
-        super(resolver, strategy);
+    public KeywordSelectionEngine(KeywordDatasetResolver resolver) {
+        super(resolver, DEFAULT_SELECTOR_STRATEGY);
     }
 
     protected void setup() {

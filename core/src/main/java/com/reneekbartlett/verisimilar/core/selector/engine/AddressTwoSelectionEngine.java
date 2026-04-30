@@ -5,6 +5,7 @@ import java.util.Map;
 import com.reneekbartlett.verisimilar.core.datasets.key.AddressTwoDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.result.AddressTwoDatasetResult;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.AddressTwoDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
@@ -37,6 +38,10 @@ public class AddressTwoSelectionEngine extends AbstractSelectionEngine<AddressTw
 
     public AddressTwoSelectionEngine(DatasetResolverRegistry resolvers, SelectorStrategy<String> strategy) {
         super(resolvers, strategy);
+    }
+
+    public AddressTwoSelectionEngine(AddressTwoDatasetResolver resolver) {
+        super(resolver, DEFAULT_SELECTOR_STRATEGY);
     }
 
     protected void setup() {

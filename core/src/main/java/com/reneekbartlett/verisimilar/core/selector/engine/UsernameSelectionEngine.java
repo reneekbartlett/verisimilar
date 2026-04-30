@@ -23,7 +23,6 @@ import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.UniformSelectorImpl;
 import com.reneekbartlett.verisimilar.core.selector.UniformSelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
-import com.reneekbartlett.verisimilar.core.templates.TemplateRegistry;
 import com.reneekbartlett.verisimilar.core.templates.loader.TemplateRegistryLoader;
 import com.reneekbartlett.verisimilar.core.templates.resolver.UsernameTemplatesResolver;
 import com.reneekbartlett.verisimilar.core.templates.resolver.UsernameTemplatesResolver.UsernameTemplatesResult;
@@ -63,12 +62,8 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
         super(resolvers, strategy);
     }
 
-    public UsernameSelectionEngine(
-            UsernameDatasetResolver usernameDatasetResolver, 
-            SelectorStrategy<String> strategy,
-            TemplateRegistry templateRegistry
-    ) {
-        super(usernameDatasetResolver, strategy);
+    public UsernameSelectionEngine(UsernameDatasetResolver usernameDatasetResolver) {
+        super(usernameDatasetResolver, DEFAULT_SELECTOR_STRATEGY);
     }
 
     protected void setup() {

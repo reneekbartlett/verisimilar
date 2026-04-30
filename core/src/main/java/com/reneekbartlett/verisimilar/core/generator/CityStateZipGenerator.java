@@ -13,6 +13,7 @@ import com.reneekbartlett.verisimilar.core.model.Zip4Range;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.selector.engine.CityStateZipSelectionEngine;
+import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelectionEngineRegistry;
 
 /***
  * Select from dataset with CITY$STATE$ZIP INFO TIED TOGETHER
@@ -26,23 +27,18 @@ public class CityStateZipGenerator extends AbstractValueGenerator<CityStateZip>{
         this.selector = selector;
     }
 
+    public CityStateZipGenerator(DatasetSelectionEngineRegistry selectors) {
+        this(selectors.cityStateZip());
+    }
+
     @Override
     protected CityStateZip generateValue(DatasetResolutionContext ctx, SelectionFilter criteria) {
         return generateCityStateZip(ctx, criteria);
     }
 
-    @Override
-    protected Class<CityStateZip> valueType() {
-        return CityStateZip.class;
-    }
-
     private CityStateZip generateCityStateZip(DatasetResolutionContext ctx, SelectionFilter filter) {
-        CityStateZipDatasetKey cityStateZipKey;
-        if(ctx.states() != null) {
-            cityStateZipKey = new CityStateZipDatasetKey(ctx.states());
-        } else {
-            cityStateZipKey = CityStateZipDatasetKey.defaults();
-        }
+        //CityStateZipDatasetKey cityStateZipKey = new CityStateZipDatasetKey(ctx.states().orElse(CityStateZipDatasetKey.defaults().states()));
+        CityStateZipDatasetKey cityStateZipKey = CityStateZipDatasetKey.fromContext(ctx);
 
         // TODO: Expand Handling of empty/null/errors
         String[] data;
@@ -132,10 +128,8 @@ public class CityStateZipGenerator extends AbstractValueGenerator<CityStateZip>{
         return generatePoBoxZip4Ranges(zip5, totalBoxes, 100);
     }
 
-    public static boolean validateState(String state) {
-        if(state.length() > 2) {
-            return false;
-        }
-        return true;
+    @Override
+    protected Class<CityStateZip> valueType() {
+        return CityStateZip.class;
     }
 }

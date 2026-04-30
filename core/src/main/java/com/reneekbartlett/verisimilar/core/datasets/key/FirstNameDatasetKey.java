@@ -3,9 +3,10 @@ package com.reneekbartlett.verisimilar.core.datasets.key;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.reneekbartlett.verisimilar.core.model.Decade;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
-import com.reneekbartlett.verisimilar.core.model.USState;
+import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 
 /***
  * 
@@ -13,44 +14,41 @@ import com.reneekbartlett.verisimilar.core.model.USState;
 public record FirstNameDatasetKey(
         String id,
         Set<GenderIdentity> genders,
-        Integer year,
-        USState state,
-        Ethnicity ethnicity
+        Set<Ethnicity> ethnicities,
+        Set<Decade> decades
 ) implements DatasetKey {
 
     public static final String KEY_ID = "FIRSTNAME";
 
+    public FirstNameDatasetKey(GenderIdentity gender) {
+        this(KEY_ID, Set.of(gender), Ethnicity.defaultDatasets(), Decade.defaultDatasets());
+    }
+
+    public FirstNameDatasetKey(Set<GenderIdentity> genders, Set<Ethnicity> ethnicities) {
+        this(KEY_ID, genders, ethnicities, Decade.defaultDatasets());
+    }
+
+    public FirstNameDatasetKey(Set<Ethnicity> ethnicities) {
+        this(KEY_ID, GenderIdentity.defaultDatasets(), ethnicities, Decade.defaultDatasets());
+    }
+
     public static FirstNameDatasetKey defaults() {
-        return new FirstNameDatasetKey(KEY_ID, null, null, null, null);
+        return new FirstNameDatasetKey(KEY_ID, GenderIdentity.defaultDatasets(), Ethnicity.defaultDatasets(), Decade.defaultDatasets());
     }
 
-    public FirstNameDatasetKey(GenderIdentity gender, Ethnicity ethnicity, USState state) {
-        this(KEY_ID, Set.of(gender), null, null, ethnicity);
-    }
-    
-    public FirstNameDatasetKey(Set<GenderIdentity> genders) {
-        this(KEY_ID, genders, null, null, null);
-    }
-
-    public FirstNameDatasetKey(GenderIdentity gender, Ethnicity ethnicity) {
-        this(KEY_ID, Set.of(gender), null, null, ethnicity);
-    }
-
-    public FirstNameDatasetKey(GenderIdentity gender, USState state) {
-        this(KEY_ID, Set.of(gender), null, state, null);
-    }
-
-    public FirstNameDatasetKey(Integer year) {
-        this(KEY_ID, null, year, null, null);
+    public static FirstNameDatasetKey fromContext(DatasetResolutionContext ctx) {
+        Set<GenderIdentity> genders = ctx.genders().orElse(GenderIdentity.defaultDatasets());
+        Set<Ethnicity> ethnicities = ctx.ethnicities().orElse(Ethnicity.defaultDatasets());
+        Set<Decade> decades = ctx.decades().orElse(Decade.defaultDatasets());
+        return new FirstNameDatasetKey(KEY_ID, genders, ethnicities, decades);
     }
 
     @Override
     public String toString() {
         StringBuilder sb =  new StringBuilder(0).append(id);
-        //if(gender != null) sb.append("$").append(gender.getLabel());
-        if(genders != null) sb.append("$").append(genders.stream().map(Enum::name).collect(Collectors.joining("|")));
-        if(year != null) sb.append("$").append(year);
-        if(ethnicity != null) sb.append("$").append(ethnicity.getLabel());
+        if(genders != null) sb.append("$").append(genders.stream().map(GenderIdentity::getPlaceholder).collect(Collectors.joining("|")));
+        if(ethnicities != null) sb.append("$").append(ethnicities.stream().map(Ethnicity::getPlaceholder).collect(Collectors.joining("|")));
+        if(decades != null) sb.append("$").append(decades.stream().map(Decade::getPlaceholder).collect(Collectors.joining("|")));
         return sb.toString();
     }
 }

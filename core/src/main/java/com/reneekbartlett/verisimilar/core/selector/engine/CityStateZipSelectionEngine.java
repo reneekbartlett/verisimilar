@@ -7,6 +7,7 @@ import com.reneekbartlett.verisimilar.core.datasets.key.CityStateZipDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.result.CityStateZipDatasetResult;
 import com.reneekbartlett.verisimilar.core.model.CityStateZip;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.CityStateZipDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
@@ -31,6 +32,10 @@ public class CityStateZipSelectionEngine extends AbstractSelectionEngine<CitySta
 
     public CityStateZipSelectionEngine(DatasetResolverRegistry resolvers, SelectorStrategy<String> strategy) {
         super(resolvers, strategy);
+    }
+
+    public CityStateZipSelectionEngine(CityStateZipDatasetResolver resolver) {
+        super(resolver, DEFAULT_SELECTOR_STRATEGY);
     }
 
     @Override

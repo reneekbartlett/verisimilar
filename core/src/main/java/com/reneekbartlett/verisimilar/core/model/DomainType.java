@@ -28,6 +28,10 @@ public enum DomainType {
         return weight;
     }
 
+    public String getPlaceholder() {
+        return label;
+    }
+
     public static Set<DomainType> defaultDatasets(){
         return Set.of(DomainType.B2C, DomainType.EDU, DomainType.GOV
                 //, DomainType.B2B, DomainType.DISPOSABLE

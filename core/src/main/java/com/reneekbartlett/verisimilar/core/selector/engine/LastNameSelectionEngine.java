@@ -8,6 +8,7 @@ import com.reneekbartlett.verisimilar.core.datasets.key.LastNameDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.result.LastNameDatasetResult;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.LastNameDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
@@ -37,6 +38,10 @@ public class LastNameSelectionEngine extends AbstractSelectionEngine<LastNameDat
             SelectorStrategy<String> strategy
     ) {
         super(resolvers, strategy);
+    }
+
+    public LastNameSelectionEngine(LastNameDatasetResolver resolver) {
+        super(resolver, DEFAULT_SELECTOR_STRATEGY);
     }
 
     protected void setup() {
