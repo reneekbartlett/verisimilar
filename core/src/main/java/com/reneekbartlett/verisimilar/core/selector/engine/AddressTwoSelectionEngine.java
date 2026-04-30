@@ -80,4 +80,9 @@ public class AddressTwoSelectionEngine extends AbstractSelectionEngine<AddressTw
     public Class<AddressTwoDatasetResult> resultType() {
         return AddressTwoDatasetResult.class;
     }
+
+    @Override
+    protected TemplateField field() {
+        return TemplateField.ADDRESS2;
+    }
 }

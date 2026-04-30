@@ -8,6 +8,7 @@ import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetRes
 import com.reneekbartlett.verisimilar.core.datasets.result.MiddleNameDatasetResult;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorImpl;
@@ -126,5 +127,10 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
     @Override
     public Class<MiddleNameDatasetResult> resultType() {
         return MiddleNameDatasetResult.class;
+    }
+
+    @Override
+    protected TemplateField field() {
+        return TemplateField.MIDDLE_NAME;
     }
 }

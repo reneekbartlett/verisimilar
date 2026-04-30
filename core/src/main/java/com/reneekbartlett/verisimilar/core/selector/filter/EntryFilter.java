@@ -68,10 +68,6 @@ public final class EntryFilter {
     private static Predicate<String> buildPredicate(SelectionFilter filter, TemplateField field) {
         Predicate<String> p = s -> true;
 
-        if(field != null) {
-            LOGGER.debug("field:{}", field.getPlaceholder());
-        }
-
         if (!filter.startsWithMap().isEmpty()) {
             //String prefixStr = filter.startsWith().get().toUpperCase();
             for(Entry<TemplateField,String> e : filter.startsWithMap().entrySet()) {
@@ -82,34 +78,37 @@ public final class EntryFilter {
             //filter.startsWithMap().forEach((templateField, filterValue) -> {});
         }
 
-        if (!filter.startsWith().isEmpty()) {
-            String prefixStr = filter.startsWith().get().toUpperCase();
-            p = p.and(s -> s.toUpperCase().startsWith(prefixStr));
-            LOGGER.debug("startsWith {}", prefixStr);
-        }
+//        if (!filter.startsWith().isEmpty()) {
+//            String prefixStr = filter.startsWith().get().toUpperCase();
+//            p = p.and(s -> s.toUpperCase().startsWith(prefixStr));
+//            LOGGER.debug("startsWith {}", prefixStr);
+//        }
 
-        if (filter.endsWith().isPresent()) {
-            String searchStr = filter.endsWith().get().toUpperCase();
-            p = p.and(s -> s.toUpperCase().endsWith(searchStr));
-            LOGGER.debug("endsWith {}", searchStr);
-        }
+//        if (filter.endsWith().isPresent()) {
+//            String searchStr = filter.endsWith().get().toUpperCase();
+//            p = p.and(s -> s.toUpperCase().endsWith(searchStr));
+//            LOGGER.debug("endsWith {}", searchStr);
+//        }
 
-        if (filter.contains().isPresent()) {
-            String containsStr = filter.contains().get().toUpperCase();
-            p = p.and(s -> s.toUpperCase().contains(containsStr));
-            LOGGER.debug("contains {}", containsStr);
-        }
-
-        if (filter.minLength().isPresent()) {
-            int min = filter.minLength().get();
-            p = p.and(s -> s.length() >= min);
-            LOGGER.debug("minLength {}", min);
-        }
-
-        if (filter.maxLength().isPresent()) {
-            int max = filter.maxLength().get();
-            p = p.and(s -> s.length() <= max);
-            LOGGER.debug("maxLength {}", max);
+        if(field != null) {
+            LOGGER.debug("field:{}", field.getPlaceholder());
+            if(filter.startsWithMap().containsKey(field)) {
+                String searchStr = filter.startsWithMap().get(field).toUpperCase();
+                p = p.and(s -> s.toUpperCase().startsWith(searchStr));
+                LOGGER.debug("contains {}", searchStr);
+            }
+    
+            if(filter.endsWithMap().containsKey(field)) {
+                String searchStr = filter.endsWithMap().get(field).toUpperCase();
+                p = p.and(s -> s.toUpperCase().endsWith(searchStr));
+                LOGGER.debug("contains {}", searchStr);
+            }
+    
+            if(filter.containsMap().containsKey(field)) {
+                String searchStr = filter.containsMap().get(field).toUpperCase();
+                p = p.and(s -> s.toUpperCase().contains(searchStr));
+                LOGGER.debug("contains {}", searchStr);
+            }
         }
 
         if (filter.customPredicates().isPresent()) {

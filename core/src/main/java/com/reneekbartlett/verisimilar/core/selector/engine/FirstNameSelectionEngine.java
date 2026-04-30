@@ -7,6 +7,7 @@ import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetRes
 import com.reneekbartlett.verisimilar.core.datasets.result.FirstNameDatasetResult;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorImpl;
@@ -154,5 +155,10 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
     @Override
     public Class<FirstNameDatasetResult> resultType() {
         return FirstNameDatasetResult.class;
+    }
+
+    @Override
+    protected TemplateField field() {
+        return TemplateField.FIRST_NAME;
     }
 }

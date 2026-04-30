@@ -81,6 +81,11 @@ public class KeywordSelectionEngine extends AbstractSelectionEngine<KeywordDatas
         return KeywordDatasetResult.class;
     }
 
+    @Override
+    protected TemplateField field() {
+        return TemplateField.KEYWORD1;
+    }
+
     public static SelectorStrategy<String> defaultSelectorStrategy(){
         return DEFAULT_SELECTOR_STRATEGY;
     }

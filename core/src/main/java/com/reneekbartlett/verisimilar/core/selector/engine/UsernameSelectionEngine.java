@@ -257,6 +257,11 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
     public Class<UsernameDatasetResult> resultType() {
         return UsernameDatasetResult.class;
     }
+    
+    @Override
+    protected TemplateField field() {
+        return TemplateField.USERNAME;
+    }
 
     public static SelectorStrategy<String> defaultSelectorStrategy(){
         return DEFAULT_SELECTOR_STRATEGY;
@@ -285,37 +290,5 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
         }
 
         return StringSubstitutor.replace(template, params);
-
-//        ThreadLocalRandom rand = ThreadLocalRandom.current();
-//        params.put("NUM10", String.valueOf(rand.nextInt(100)));
-//        params.put("NUM100", String.valueOf(rand.nextInt(1000)));
-//        params.put("NUM1000", String.valueOf(rand.nextInt(1000,9999)));
-//    
-//        //TemplateField.BIRTHDAY.getPlaceholder()
-//        if(params.containsKey("BIRTHDAY")) {
-//            LocalDate birthday = (LocalDate) params.get("BIRTHDAY");
-//            params.put("BIRTHDAY_YEAR", String.valueOf(birthday.getYear()));
-//            params.put("BIRTHDAY_YEAR_SHORT", String.valueOf(birthday.getYear()).substring(2));
-//            params.put("BIRTHDAY_DAY", String.valueOf(birthday.getDayOfMonth()));
-//    
-//            AstrologySign sign = AstrologySign.fromLocalDate(birthday);
-//            params.put("BIRTHDAY_SIGN", sign.name());
-//        } 
-//    
-//        if(params.containsKey("FIRST")) {
-//            String firstName = (String) params.get("FIRST");
-//            params.put("FIRST_INITIAL", firstName.charAt(0));
-//        }
-//    
-//        if(params.containsKey("LAST")) {
-//            String lastName = (String) params.get("LAST");
-//            params.put("LAST_INITIAL", lastName.charAt(0));
-//        }
-//    
-//        if(params.containsKey("MIDDLE")) {
-//            String middleName = (String) params.get("MIDDLE");
-//            params.put("MIDDLE_INITIAL", middleName.charAt(0));
-//        }
-
     }
 }

@@ -87,6 +87,11 @@ public class DomainSelectionEngine extends AbstractSelectionEngine<DomainDataset
         return DomainDatasetResult.class;
     }
 
+    @Override
+    protected TemplateField field() {
+        return TemplateField.DOMAIN;
+    }
+
     private DomainType getRandomDomainType() {
         RandomSelector<DomainType> domainTypeSelector = new WeightedSelectorImpl<>(domainTypesMap);
         return domainTypeSelector.select();

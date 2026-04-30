@@ -7,6 +7,7 @@ import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetRes
 import com.reneekbartlett.verisimilar.core.datasets.result.NicknameDatasetResult;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorStrategy;
@@ -58,5 +59,10 @@ public class NicknameSelectionEngine extends AbstractSelectionEngine<NicknameDat
     @Override
     public Class<NicknameDatasetResult> resultType() {
         return NicknameDatasetResult.class;
+    }
+
+    @Override
+    protected TemplateField field() {
+        return TemplateField.NICKNAME;
     }
 }

@@ -97,7 +97,8 @@ public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDat
         return AreaCodeDatasetResult.class;
     }
 
-    public TemplateField field() {
+    @Override
+    protected TemplateField field() {
         return TemplateField.AREA_CODE;
     }
 

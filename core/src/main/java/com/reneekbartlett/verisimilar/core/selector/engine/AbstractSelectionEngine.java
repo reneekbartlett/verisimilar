@@ -3,6 +3,7 @@ package com.reneekbartlett.verisimilar.core.selector.engine;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.DatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.datasets.result.DatasetResult;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.filter.EntryFilter;
@@ -63,6 +64,8 @@ public abstract class AbstractSelectionEngine<K,R> {
 
     public abstract Class<R> resultType();
 
+    protected abstract TemplateField field();
+
     /**
      * Applies SelectionFilter to the dataset map.
      */
@@ -71,6 +74,6 @@ public abstract class AbstractSelectionEngine<K,R> {
             return map;
         }
         LOGGER.debug("applyFilter started; filter:{}", filter);
-        return EntryFilter.apply(map, filter);
+        return EntryFilter.apply(map, filter, field());
     }
 }

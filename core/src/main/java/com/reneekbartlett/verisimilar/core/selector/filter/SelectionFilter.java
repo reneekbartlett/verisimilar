@@ -39,12 +39,6 @@ public record SelectionFilter(
         Optional<DomainType> domainType,
         Optional<String> domain,
 
-        //Optional<String> startsWith,
-        //Optional<String> endsWith,
-        //Optional<String> contains,
-        //Optional<Integer> minLength,
-        //Optional<Integer> maxLength,
-
         Optional<SelectionPredicate<String>> customPredicate,
         Optional<Set<SelectionPredicate<String>>> customPredicates,
 
@@ -76,15 +70,8 @@ public record SelectionFilter(
         domainType = domainType == null ? Optional.empty() : domainType;
         domain = domain == null ? Optional.empty() : domain;
 
-        //startsWith = startsWith == null ? Optional.empty() : startsWith;
-        //endsWith = endsWith == null ? Optional.empty() : endsWith;
-        //contains = contains == null ? Optional.empty() : contains;
-        //minLength = minLength == null ? Optional.empty() : minLength;
-        //maxLength = maxLength == null ? Optional.empty() : maxLength;
-
         customPredicate = customPredicate == null ? Optional.empty() : customPredicate;
         customPredicates = customPredicates == null ? Optional.empty() : customPredicates;
-
     }
 
     public Builder toBuilder() {
@@ -351,16 +338,6 @@ public record SelectionFilter(
             this.containsMap.put(field, value);
             return this;
         }
-
-//        public Builder minLength(Integer value) {
-//            this.minLength = value;
-//            return this;
-//        }
-//
-//        public Builder maxLength(Integer value) {
-//            this.maxLength = value;
-//            return this;
-//        }
 
         public Builder customPredicate(SelectionPredicate<String> predicate) {
             this.customPredicate = predicate;

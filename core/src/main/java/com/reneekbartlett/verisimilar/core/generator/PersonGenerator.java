@@ -2,6 +2,8 @@ package com.reneekbartlett.verisimilar.core.generator;
 
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.generator.api.AbstractValueGenerator;
@@ -116,24 +118,37 @@ public class PersonGenerator extends AbstractValueGenerator<PersonRecord>{
         return selector.select();
     }
 
-    private LocalDate generateBirthday(DatasetResolutionContext ctx, SelectionFilter criteria) {
-        return birthdayGenerator.generate(ctx, criteria);
+    private LocalDate generateBirthday(DatasetResolutionContext ctx, SelectionFilter filter) {
+        return birthdayGenerator.generate(ctx, filter);
     }
 
-    private FullName generateFullName(DatasetResolutionContext ctx, SelectionFilter criteria) {
-        return fullNameGenerator.generateValue(ctx, criteria);
+    private FullName generateFullName(DatasetResolutionContext ctx, SelectionFilter filter) {
+        return fullNameGenerator.generateValue(ctx, filter);
     }
 
     private PostalAddress generatePostalAddress(DatasetResolutionContext ctx, SelectionFilter filter) {
         return postalAddressGenerator.generate(ctx, filter);
     }
 
-    private PhoneNumber generatePhoneNumber(DatasetResolutionContext ctx, SelectionFilter criteria) {
-        return this.phoneNumberGenerator.generate(ctx, criteria);
+    private PhoneNumber generatePhoneNumber(DatasetResolutionContext ctx, SelectionFilter filter) {
+        return this.phoneNumberGenerator.generate(ctx, filter);
     }
 
-    private EmailAddressRecord generateEmailAddress(DatasetResolutionContext ctx, SelectionFilter criteria) {
-        return this.emailAddressGenerator.generate(ctx, criteria);
+    private EmailAddressRecord generateEmailAddress(DatasetResolutionContext ctx, SelectionFilter filter) {
+        return this.emailAddressGenerator.generate(ctx, filter);
+    }
+
+    //
+    private void generateEmailAddressAsync() {
+        ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
+        Runnable task = () -> {
+            System.out.println("Running in a virtual thread: " + Thread.currentThread().getName());
+            try {
+                Thread.sleep(1000); // Simulating a task
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        };
     }
 
     @Override

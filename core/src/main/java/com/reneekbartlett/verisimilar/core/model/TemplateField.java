@@ -5,6 +5,7 @@ public enum TemplateField {
     MIDDLE_NAME("MIDDLE"),
     LAST_NAME("LAST"),
     BIRTHDAY("BIRTHDAY"),
+    NICKNAME("NICKNAME"),
 
     GENDER_IDENTITY("GENDER_IDENTITY"),
 
