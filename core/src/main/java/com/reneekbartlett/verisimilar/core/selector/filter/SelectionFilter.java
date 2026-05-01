@@ -14,14 +14,20 @@ import com.reneekbartlett.verisimilar.core.model.Ethnicity;
 import com.reneekbartlett.verisimilar.core.model.FullName;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.model.PersonRecord;
+import com.reneekbartlett.verisimilar.core.model.PostalAddress;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.USRegion;
 import com.reneekbartlett.verisimilar.core.model.USState;
 
+/***
+ * 
+ */
 public record SelectionFilter(
         Optional<String> firstName,
         Optional<String> middleName,
         Optional<String> lastName,
+
+        Optional<String> nickName,
 
         Optional<GenderIdentity> gender,
         Optional<GenderIdentity[]> genders,
@@ -30,6 +36,7 @@ public record SelectionFilter(
         Optional<Integer> minYear,
         Optional<Integer> maxYear,
 
+        Optional<PostalAddress> postalAddress,
         Optional<Set<USState>> states,
         Optional<USState> state,
         Optional<Set<String>> zipCodes,
@@ -54,6 +61,8 @@ public record SelectionFilter(
         middleName = middleName == null? Optional.empty() : middleName;
         lastName = lastName == null? Optional.empty() : lastName;
 
+        nickName = nickName == null? Optional.empty() : nickName;
+
         gender = gender == null ? Optional.empty() : gender;
         genders = genders == null ? Optional.empty() : genders;
 
@@ -61,6 +70,7 @@ public record SelectionFilter(
         minYear = (minYear == null) ? Optional.empty() : minYear;
         maxYear = (maxYear == null) ? Optional.empty() : maxYear;
 
+        postalAddress = postalAddress == null ? Optional.empty() : postalAddress;
         states = states == null ? Optional.empty() : states;
         state = state == null ? Optional.empty() : state;
         zipCodes = zipCodes == null ? Optional.empty() : zipCodes;
@@ -80,33 +90,36 @@ public record SelectionFilter(
 
     public PersonRecord getPersonRecord() {
         FullName fullName = new FullName(firstName.orElse(""), middleName.orElse(""), lastName.orElse(""));
+        GenderIdentity genderIdentity = gender.orElse(GenderIdentity.GENDER_UNSPECIFIED);
         return new PersonRecord(
-                fullName, 
+                fullName,
+                genderIdentity,
                 birthday.orElse(null)
         );
     }
 
-    public Map<String, Object> getResolvedValues() {
-        Map<String, Object> values = new HashMap<>();
-        if(!firstName.isEmpty()) values.put("FIRST", firstName.get());
-        if(!middleName.isEmpty()) values.put("MIDDLE", middleName.get());
-        if(!lastName.isEmpty()) values.put("LAST", lastName.get());
+    public Map<TemplateField, Object> getResolvedValues() {
+        Map<TemplateField, Object> values = new HashMap<>();
+        if(!firstName.isEmpty()) values.put(TemplateField.FIRST_NAME, firstName.get());
+        if(!middleName.isEmpty()) values.put(TemplateField.MIDDLE_NAME, middleName.get());
+        if(!lastName.isEmpty()) values.put(TemplateField.LAST_NAME, lastName.get());
         if(!birthday.isEmpty()) {
-            values.put("BIRTHDAY", birthday.get());
+            values.put(TemplateField.BIRTHDAY, birthday.get());
         }
 
-        if(!domain.isEmpty()) values.put("DOMAIN", domain.get());
-        if(!gender.isEmpty()) values.put("GENDER", gender.get());
+        if(!domain.isEmpty()) values.put(TemplateField.DOMAIN, domain.get());
+        if(!gender.isEmpty()) values.put(TemplateField.GENDER_IDENTITY, gender.get());
         return values;
     }
 
     public boolean isEmpty() {
         return customPredicate.isEmpty() && customPredicates.isEmpty()
                 && firstName.isEmpty() && middleName.isEmpty() && lastName.isEmpty()
+                && nickName.isEmpty()
                 && gender.isEmpty()
                 && birthday.isEmpty()
-                && minYear.isEmpty()
-                && maxYear.isEmpty()
+                //&& minYear.isEmpty()
+                //&& maxYear.isEmpty()
                 && states.isEmpty()
                 && state.isEmpty()
                 && zipCodes.isEmpty()
@@ -125,21 +138,28 @@ public record SelectionFilter(
                 // FullName
                 Optional.empty(), Optional.empty(), Optional.empty(),
 
-                // Gender / Genders
-                Optional.empty(), Optional.empty(),
+                Optional.empty(), // nickName
 
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
+                Optional.empty(), // Gender
+                Optional.empty(), // Genders
+
+                Optional.empty(), // Birthday
+                Optional.empty(), Optional.empty(), // MinYear, MaxYear
+
+                Optional.empty(), // PostalAddress
+
+                Optional.empty(), // state
+                Optional.empty(), // states
+                Optional.empty(), // zipCodes
+                Optional.empty(), // region
+                Optional.empty(), // ethnicity
+
+                Optional.empty(), // domainType
+                Optional.empty(), // domain
+
+                Optional.empty(), // customPredicate
+                Optional.empty(), // customPredicates
+
                 HashMap.newHashMap(0),
                 HashMap.newHashMap(0),
                 HashMap.newHashMap(0),
@@ -159,6 +179,8 @@ public record SelectionFilter(
         private String middleName;
         private String lastName;
 
+        private String nickName;
+
         private GenderIdentity gender;
         private GenderIdentity[] genders;
 
@@ -166,6 +188,7 @@ public record SelectionFilter(
         private Integer minYear;
         private Integer maxYear;
 
+        private PostalAddress postalAddress;
         private Set<USState> states;
         private USState state;
         private Set<String> zipCodes;
@@ -173,9 +196,6 @@ public record SelectionFilter(
         private Ethnicity ethnicity;
         private DomainType domainType;
         private String domain;
-
-        //private Integer minLength;
-        //private Integer maxLength;
 
         private SelectionPredicate<String> customPredicate;
         private Set<SelectionPredicate<String>> customPredicates;
@@ -200,6 +220,7 @@ public record SelectionFilter(
             this.firstName = filter.firstName.orElse(null);
             this.middleName = filter.middleName.orElse(null);
             this.lastName = filter.lastName.orElse(null);
+            this.nickName = filter.nickName.orElse(null);
             this.birthday = filter.birthday.orElse(null);
 
             this.region = filter.region.orElse(null);
@@ -224,6 +245,12 @@ public record SelectionFilter(
         public Builder lastName(String value) {
             this.lastName = value;
             this.equalToMap.put(TemplateField.LAST_NAME, value);
+            return this;
+        }
+
+        public Builder nickName(String value) {
+            this.nickName = value;
+            this.equalToMap.put(TemplateField.NICKNAME, value);
             return this;
         }
 
@@ -253,6 +280,18 @@ public record SelectionFilter(
             return this;
         }
 
+        public Builder postalAddress(PostalAddress value) {
+            this.postalAddress = value;
+
+            this.state = USState.fromAbbreviation(value.state());
+            this.equalToMap.put(TemplateField.STATE, value.state());
+
+            this.zipCode(value.zip());
+            this.equalToMap.put(TemplateField.ZIP_CODE, value.zip());
+
+            return this;
+        }
+
         // TODO:  Check handling of abbreviations/full name.  Maybe switch to customPredicate.
         public Builder state(USState value) {
             this.state = value;
@@ -276,6 +315,7 @@ public record SelectionFilter(
         }
 
         public Builder zipCode(String value) {
+            this.zipCodes = Set.of(value);
             this.equalToMap.put(TemplateField.ZIP_CODE, value);
             return this;
         }
@@ -349,14 +389,16 @@ public record SelectionFilter(
                     Optional.ofNullable(firstName),
                     Optional.ofNullable(middleName),
                     Optional.ofNullable(lastName),
+                    Optional.ofNullable(nickName),
 
                     Optional.ofNullable(gender),
                     Optional.ofNullable(genders),
-                    Optional.ofNullable(birthday),
 
+                    Optional.ofNullable(birthday),
                     Optional.ofNullable(minYear),
                     Optional.ofNullable(maxYear),
 
+                    Optional.ofNullable(postalAddress),
                     Optional.ofNullable(states),
                     Optional.ofNullable(state),
                     Optional.ofNullable(zipCodes),
@@ -392,9 +434,16 @@ public record SelectionFilter(
         if(!firstName.isEmpty()) sb.append("firstName=" + this.firstName.get()+ FIELD_DELIM);
         if(!middleName.isEmpty()) sb.append("middleName=" + this.middleName.get()+ FIELD_DELIM);
         if(!lastName.isEmpty()) sb.append("lastName=" + this.lastName.get()+ FIELD_DELIM);
-        if(!gender.isEmpty()) sb.append("genders=" + this.gender.get().name() + FIELD_DELIM);
+        if(!nickName.isEmpty()) sb.append("nickName=" + this.nickName.get()+ FIELD_DELIM);
+        if(!gender.isEmpty()) sb.append("gender=" + this.gender.get().name() + FIELD_DELIM);
         if(!genders.isEmpty()) {
             sb.append("genders=" + Arrays.toString(Stream.of(genders.get()).map(GenderIdentity::name).toArray(String[]::new)) + FIELD_DELIM);
+        }
+        //if(!postalAddress.isEmpty()) {
+        //    sb.append("postalAddress=" + postalAddress.toString()) + FIELD_DELIM);
+        //}
+        if(!state.isEmpty()) {
+            sb.append("state=" + state.get().name() + FIELD_DELIM);
         }
         if(!states.isEmpty()) {
             sb.append("states=" + String.join("$", USState.names(states.get())) + FIELD_DELIM);

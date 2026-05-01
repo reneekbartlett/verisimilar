@@ -5,13 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.reneekbartlett.verisimilar.api.dto.PersonResponseDto;
-import com.reneekbartlett.verisimilar.core.generator.PersonGenerator;
-import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
+import com.reneekbartlett.verisimilar.core.generator.AsyncPersonGenerator;
+//import com.reneekbartlett.verisimilar.core.generator.PersonGenerator;
 import com.reneekbartlett.verisimilar.core.model.PersonRecord;
-import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
-
-import tools.jackson.databind.json.JsonMapper;
 
 @Service
 public class GeneratePersonService {
@@ -19,14 +16,12 @@ public class GeneratePersonService {
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(GeneratePersonService.class);
 
-    @SuppressWarnings("unused")
-    private final JsonMapper jsonMapper;
+    //private final JsonMapper jsonMapper;
+    //private final PersonGenerator personGenerator;
+    private final AsyncPersonGenerator asyncPersonGenerator;
 
-    private final PersonGenerator personGenerator;
-
-    public GeneratePersonService(PersonGenerator personGenerator, JsonMapper jsonMapper) {
-        this.personGenerator = personGenerator;
-        this.jsonMapper = jsonMapper;
+    public GeneratePersonService(AsyncPersonGenerator asyncPersonGenerator) {
+        this.asyncPersonGenerator = asyncPersonGenerator;
     }
 
     public PersonResponseDto generate() {
@@ -34,14 +29,11 @@ public class GeneratePersonService {
     }
 
     public PersonResponseDto generate(SelectionFilter filter) {
-        DatasetResolutionContext ctx = DatasetResolutionContext.builder().build();
-
-        PersonRecord person = personGenerator.generate(ctx, filter);
-
+        PersonRecord person = asyncPersonGenerator.generate(filter);
         return new PersonResponseDto(person.firstName(), person.middleName(), person.lastName(), 
                 person.birthday(),
-                // person.gender(),
-                GenderIdentity.GENDER_UNSPECIFIED, person.address1(), // String address1,
+                person.gender(),
+                person.address1(), // String address1,
                 person.address2(), // String address2,
                 person.city(), // String city,
                 person.state(), // String state,

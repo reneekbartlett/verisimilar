@@ -71,7 +71,7 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
         this.ethnicitiesMap = Ethnicity.defaultMap();
 
         // Extract specific datasets (Map<String,Double>), build selectors, and add to selectorsByNameKey
-        FirstNameDatasetResult firstNameDatasetResult = resolvers.first().resolve(FirstNameDatasetKey.defaults());
+        FirstNameDatasetResult firstNameDatasetResult = datasetResolver().resolve(FirstNameDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(firstNameDatasetResult.datasets().size());
         if(ethnicitiesMap.size() >= 1){
             for(Ethnicity ethnicity : ethnicitiesMap.keySet()){

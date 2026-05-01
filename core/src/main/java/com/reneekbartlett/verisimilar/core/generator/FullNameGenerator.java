@@ -39,10 +39,13 @@ public class FullNameGenerator extends AbstractValueGenerator<FullName>{
         // Generate LastName first.
         String lastName = generateLastName(ctx, filter);
 
+        GenderIdentity genderIdentity;
         if(!filter.equalToMap().containsKey(TemplateField.GENDER_IDENTITY)) {
-            GenderIdentity genderIdentity = new GenderIdentityGenerator().generate();
+            genderIdentity = new GenderIdentityGenerator().generate();
             filter = filter.toBuilder().gender(genderIdentity).build();
-            //LOGGER.debug("FullNameGenerator.generateValue - Add GenderIdentity to criteria: {}", genderIdentity.name());
+            LOGGER.debug("FullNameGenerator.generateValue - Add GenderIdentity to filter: {}", genderIdentity.name());
+        } else {
+            genderIdentity = GenderIdentity.fromText(filter.equalToMap().get(TemplateField.GENDER_IDENTITY));
         }
 
         //
@@ -59,7 +62,7 @@ public class FullNameGenerator extends AbstractValueGenerator<FullName>{
                 .build();
         String middleName = generateMiddleName(ctx, middleNameFilter);
 
-        return new FullName(firstName, middleName, lastName);
+        return new FullName(firstName, middleName, lastName, genderIdentity);
     }
 
     private String generateFirstName(DatasetResolutionContext ctx, SelectionFilter filter) {
@@ -74,20 +77,20 @@ public class FullNameGenerator extends AbstractValueGenerator<FullName>{
         return lastNameGenerator.generate(ctx, filter);
     }
 
-    @Override
-    protected FullName postProcess(FullName record) {
-        // Normalize capitalization
-        String fn = normalize(record.firstName());
-        String mn = normalize(record.middleName());
-        String ln = normalize(record.lastName());
-        //LOGGER.debug("postProcess");
-        return new FullName(fn, mn, ln);
-    }
-
-    private String normalize(String s) {
-        if (s == null || s.isBlank()) return s;
-        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
-    }
+//    @Override
+//    protected FullName postProcess(FullName record) {
+//        // Normalize capitalization
+//        String fn = normalize(record.firstName());
+//        String mn = normalize(record.middleName());
+//        String ln = normalize(record.lastName());
+//        //LOGGER.debug("postProcess");
+//        return new FullName(fn, mn, ln, record.gender());
+//    }
+//
+//    private String normalize(String s) {
+//        if (s == null || s.isBlank()) return s;
+//        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+//    }
 
     @Override
     protected Class<FullName> valueType() {

@@ -52,7 +52,7 @@ public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDat
 
     @Override
     protected void setup() {
-        AreaCodeDatasetResult result = resolvers.areaCode().resolve(AreaCodeDatasetKey.defaults());
+        AreaCodeDatasetResult result = datasetResolver().resolve(AreaCodeDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(result.datasets().size());
         result.datasets().forEach((nameKey, map) -> {
             RandomSelector<String> selector = strategy.buildSelector(map);

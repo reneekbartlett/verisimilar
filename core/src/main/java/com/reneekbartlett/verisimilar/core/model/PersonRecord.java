@@ -15,6 +15,10 @@ public record PersonRecord(
         this(fullName, null, null, null, null, null);
     }
 
+    public PersonRecord(FullName fullName, GenderIdentity gender, LocalDate birthday) {
+        this(fullName, gender, birthday, null, null, null);
+    }
+
     public PersonRecord(FullName fullName, LocalDate birthday) {
         this(fullName, null, birthday, null, null, null);
     }

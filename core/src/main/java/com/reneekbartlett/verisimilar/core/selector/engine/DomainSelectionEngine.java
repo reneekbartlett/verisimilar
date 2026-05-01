@@ -43,7 +43,7 @@ public class DomainSelectionEngine extends AbstractSelectionEngine<DomainDataset
 
     protected void setup() {
         this.domainTypesMap = DomainType.defaultMap();
-        DomainDatasetResult domainDatasetResult = resolvers.domain().resolve(DomainDatasetKey.defaults());
+        DomainDatasetResult domainDatasetResult = datasetResolver().resolve(DomainDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(domainDatasetResult.datasets().size());
         domainDatasetResult.datasets().forEach((nameKey, map) -> {
             RandomSelector<String> selector = strategy.buildSelector(map);

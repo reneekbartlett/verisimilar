@@ -67,7 +67,7 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
     }
 
     protected void setup() {
-        UsernameDatasetResult result = super.datasetResolver.resolve(UsernameDatasetKey.defaults());
+        UsernameDatasetResult result = datasetResolver().resolve(UsernameDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(result.datasets().size());
         result.datasets().forEach((nameKey, map) -> {
             RandomSelector<String> selector = strategy.buildSelector(map);

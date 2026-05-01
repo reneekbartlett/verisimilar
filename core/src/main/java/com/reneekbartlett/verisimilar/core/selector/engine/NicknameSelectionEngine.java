@@ -1,5 +1,6 @@
 package com.reneekbartlett.verisimilar.core.selector.engine;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.NicknameDatasetKey;
@@ -15,7 +16,7 @@ import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorStrategy;
 
 public class NicknameSelectionEngine extends AbstractSelectionEngine<NicknameDatasetKey, NicknameDatasetResult> {
     private static final SelectorStrategy<String> DEFAULT_SELECTOR_STRATEGY = new WeightedSelectorStrategy<>();
-    private Map<NameKey, RandomSelector<String>> selectorsByNameKey;
+    private Map<NameKey, RandomSelector<String>> selectorsByNameKey = HashMap.newHashMap(0);
 
     public record NameKey(GenderIdentity gender, Ethnicity ethnicity) {
         public NameKey(GenderIdentity gender) {
@@ -43,10 +44,11 @@ public class NicknameSelectionEngine extends AbstractSelectionEngine<NicknameDat
     }
 
     protected void setup() {
-        NicknameDatasetResult result = resolvers.nickname().resolve(NicknameDatasetKey.defaults());
+        NicknameDatasetResult result = datasetResolver().resolve(NicknameDatasetKey.defaults());
+        this.selectorsByNameKey = HashMap.newHashMap(result.datasets().size());
         result.datasets().forEach((nameKey, map) -> {
             RandomSelector<String> selector = strategy.buildSelector(map);
-            selectorsByNameKey.put(nameKey, selector);
+            this.selectorsByNameKey.put(nameKey, selector);
         });
         //LOGGER.debug("setup - result:{}", result.toString());
     }

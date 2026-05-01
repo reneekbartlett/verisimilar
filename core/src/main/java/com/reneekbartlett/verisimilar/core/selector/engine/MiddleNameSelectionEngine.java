@@ -59,7 +59,7 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
         this.ethnicitiesMap = Map.of(Ethnicity.UNKNOWN, 0.0001);
 
         // This DatasetResult contains both genders, so only call once.
-        MiddleNameDatasetResult middleNameDatasetResult = resolvers.middle().resolve(MiddleNameDatasetKey.defaults());
+        MiddleNameDatasetResult middleNameDatasetResult = datasetResolver().resolve(MiddleNameDatasetKey.defaults());
 
         this.selectorsByNameKey = HashMap.newHashMap(middleNameDatasetResult.datasets().size());
 

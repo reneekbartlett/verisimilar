@@ -14,7 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.reneekbartlett.verisimilar.api.util.FileUtils;
-import com.reneekbartlett.verisimilar.core.generator.PersonGenerator;
+import com.reneekbartlett.verisimilar.core.generator.AsyncPersonGenerator;
+//import com.reneekbartlett.verisimilar.core.generator.PersonGenerator;
 import com.reneekbartlett.verisimilar.core.io.AsyncFileWriter;
 import com.reneekbartlett.verisimilar.core.model.PersonRecord;
 
@@ -28,9 +29,9 @@ public class GenerateBulkService {
     private static final Long MAX_LINES = 10000L;
     private static final String OUTFILE_DIR = "/opt/reneekbartlett/outfiles/";
 
-    private PersonGenerator personGenerator;
+    private AsyncPersonGenerator personGenerator;
 
-    public GenerateBulkService(PersonGenerator personGenerator) {
+    public GenerateBulkService(AsyncPersonGenerator personGenerator) {
         this.personGenerator = personGenerator;
     }
 
@@ -105,5 +106,4 @@ public class GenerateBulkService {
         return outFiles;
     }
 
-    
 }

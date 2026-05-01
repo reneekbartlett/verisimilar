@@ -38,7 +38,7 @@ public class StreetNameSelectionEngine extends AbstractSelectionEngine<StreetNam
     }
 
     protected void setup() {
-        StreetNameDatasetResult streetNameDatasetResult = resolvers.streetName().resolve(StreetNameDatasetKey.defaults());
+        StreetNameDatasetResult streetNameDatasetResult = datasetResolver().resolve(StreetNameDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(streetNameDatasetResult.datasets().size());
         streetNameDatasetResult.datasets().forEach((nameKey, map) -> {
             RandomSelector<String> selector = strategy.buildSelector(map);

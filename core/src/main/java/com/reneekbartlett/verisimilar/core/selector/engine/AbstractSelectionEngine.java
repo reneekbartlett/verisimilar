@@ -16,13 +16,13 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractSelectionEngine<K,R> {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractSelectionEngine.class);
-    protected final DatasetResolverRegistry resolvers;
+    //private final DatasetResolverRegistry resolvers;
     protected final SelectorStrategy<String> strategy;
 
     protected DatasetResolver<K, R> datasetResolver;
 
     protected AbstractSelectionEngine(DatasetResolverRegistry resolvers, SelectorStrategy<String> strategy) {
-        this.resolvers = resolvers;
+        //this.resolvers = resolvers;
         this.datasetResolver = resolvers.getResolver(this.keyType());
         this.strategy = strategy;
         setup();
@@ -30,7 +30,7 @@ public abstract class AbstractSelectionEngine<K,R> {
 
     protected AbstractSelectionEngine(DatasetResolver<K, R> datasetResolver, SelectorStrategy<String> strategy) {
         this.datasetResolver = datasetResolver;
-        this.resolvers = null;
+        //this.resolvers = null;
         this.strategy = strategy;
         setup();
     }
@@ -65,6 +65,10 @@ public abstract class AbstractSelectionEngine<K,R> {
     public abstract Class<R> resultType();
 
     protected abstract TemplateField field();
+
+    protected DatasetResolver<K, R> datasetResolver(){
+        return this.datasetResolver;
+    }
 
     /**
      * Applies SelectionFilter to the dataset map.

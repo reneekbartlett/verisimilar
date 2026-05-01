@@ -12,8 +12,8 @@ import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.engine.KeywordSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.UsernameSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
-import com.reneekbartlett.verisimilar.core.templates.TemplateRegistry;
-import com.reneekbartlett.verisimilar.core.templates.loader.TemplateRegistryLoader;
+//import com.reneekbartlett.verisimilar.core.templates.TemplateRegistry;
+//import com.reneekbartlett.verisimilar.core.templates.loader.TemplateRegistryLoader;
 
 /***
  * TODO: This won't populate the template placeholder values yet (thats done in UsernameGenerator ATM)

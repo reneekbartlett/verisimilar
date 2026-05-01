@@ -40,7 +40,7 @@ public class CityStateZipSelectionEngine extends AbstractSelectionEngine<CitySta
 
     @Override
     protected void setup() {
-        CityStateZipDatasetResult result = resolvers.cityStateZip().resolve(CityStateZipDatasetKey.defaults());
+        CityStateZipDatasetResult result = datasetResolver().resolve(CityStateZipDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(result.datasets().size());
         result.datasets().forEach((nameKey, map) -> {
             RandomSelector<String> selector = strategy.buildSelector(map);

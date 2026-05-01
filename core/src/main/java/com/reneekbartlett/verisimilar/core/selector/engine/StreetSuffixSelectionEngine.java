@@ -38,7 +38,7 @@ public class StreetSuffixSelectionEngine extends AbstractSelectionEngine<StreetS
     }
 
     protected void setup() {
-        StreetSuffixDatasetResult streetSuffixDatasetResult = resolvers.streetSuffix().resolve(StreetSuffixDatasetKey.defaults());
+        StreetSuffixDatasetResult streetSuffixDatasetResult = datasetResolver().resolve(StreetSuffixDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(streetSuffixDatasetResult.datasets().size());
         streetSuffixDatasetResult.datasets().forEach((nameKey, map) -> {
             RandomSelector<String> selector = strategy.buildSelector(map);

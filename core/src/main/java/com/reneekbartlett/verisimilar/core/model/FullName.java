@@ -1,6 +1,10 @@
 package com.reneekbartlett.verisimilar.core.model;
 
-public record FullName(String firstName, String middleName, String lastName){
+public record FullName(String firstName, String middleName, String lastName, GenderIdentity gender){
+
+    public FullName(String firstName, String middleName, String lastName){
+        this(firstName, middleName, lastName, null);
+    }
 
     public static FullName empty() {
         return new FullName(null, null, null);
@@ -13,10 +17,11 @@ public record FullName(String firstName, String middleName, String lastName){
     @Override
     public String toString() {
         final String VALUE_DELIM = " ";
-        return new StringBuilder()
-            .append(this.firstName).append(VALUE_DELIM)
-            .append(this.middleName).append(VALUE_DELIM)
-            .append(this.lastName).append(VALUE_DELIM)
-            .toString().toUpperCase();
+        StringBuilder sb = new StringBuilder(0);
+        sb.append(this.firstName).append(VALUE_DELIM);
+        sb.append(this.middleName).append(VALUE_DELIM);
+        sb.append(this.lastName).append(VALUE_DELIM);
+        if(gender != null) sb.append(this.gender.name());
+        return sb.toString().toUpperCase();
     }
 }

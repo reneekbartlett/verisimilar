@@ -49,7 +49,7 @@ public class LastNameSelectionEngine extends AbstractSelectionEngine<LastNameDat
         //this.ethnicitiesMap = Map.of(Ethnicity.UNKNOWN, 0.0001);
 
         // Extract specific datasets (Map<String,Double>), build selectors, and add to selectorsByNameKey
-        LastNameDatasetResult lastNameDatasetResult = resolvers.last().resolve(LastNameDatasetKey.defaults());
+        LastNameDatasetResult lastNameDatasetResult = datasetResolver().resolve(LastNameDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(5);
         if(!ethnicitiesMap.isEmpty() && ethnicitiesMap.keySet().size() >= 1) {
             Set<Ethnicity> customEthnicities = ethnicitiesMap.keySet();
