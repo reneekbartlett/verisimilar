@@ -1,5 +1,6 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
+import java.util.EnumSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
@@ -36,7 +37,7 @@ public class PersonGeneratorTests {
         DatasetResolverRegistry resolvers = TestUtils.getDatasetResolverRegistry();
         PersonGenerator personGenerator = new PersonGenerator(resolvers);
 
-        Set<USState> states1 = Set.of(USState.MA);
+        EnumSet<USState> states1 = EnumSet.of(USState.MA);
         SelectionFilter filter1 = SelectionFilter.builder()
                 .gender(GenderIdentity.FEMALE)
                 .states(states1)
@@ -51,7 +52,7 @@ public class PersonGeneratorTests {
         Assertions.assertNotNull(person1);
 
         SelectionFilter filter2 = SelectionFilter.builder()
-                .gender(GenderIdentity.MALE).states(Set.of(USState.MA)).build();
+                .gender(GenderIdentity.MALE).states(EnumSet.of(USState.MA)).build();
         PersonRecord person2 = personGenerator.generate(filter2);
         LOGGER.debug("person2=" + person2.toString());
         Assertions.assertNotNull(person2);

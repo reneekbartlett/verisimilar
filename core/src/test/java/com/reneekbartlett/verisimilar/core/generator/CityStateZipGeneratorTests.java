@@ -1,5 +1,6 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
+import java.util.EnumSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
@@ -35,7 +36,7 @@ public class CityStateZipGeneratorTests {
         PostalAddressSelectionEngineRegistry registry = TestUtils.getPostalAddressSelectionEngineRegistry();
         CityStateZipGenerator cityStateZipGenerator = new CityStateZipGenerator(registry.cityStateZip());
 
-        Set<USState> states = Set.of(USState.MA);
+        EnumSet<USState> states = EnumSet.of(USState.MA);
         DatasetResolutionContext ctx = DatasetResolutionContext.builder()
                 .states(states).build();
         SelectionFilter filter = SelectionFilter.builder()
@@ -55,7 +56,7 @@ public class CityStateZipGeneratorTests {
         CityStateZipSelectionEngine cityStateZipSelector = new CityStateZipSelectionEngine(resolvers, TestUtils.UNIFORM_RANDOM);
         CityStateZipGenerator cityStateZipGenerator = new CityStateZipGenerator(cityStateZipSelector);
 
-        Set<USState> states = Set.of(USState.MA);
+        EnumSet<USState> states = EnumSet.of(USState.MA);
         Set<String> zipCodes = Set.of("01545");
         DatasetResolutionContext ctx = DatasetResolutionContext.builder()
                 //.states(states)

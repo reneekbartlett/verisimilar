@@ -1,8 +1,8 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -46,7 +46,7 @@ public class PhoneNumberGeneratorTests {
         AreaCodeSelectionEngine areaCodeSelector = new AreaCodeSelectionEngine(registry, TestUtils.UNIFORM_RANDOM);
         PhoneNumberGenerator phoneNumberGenerator = new PhoneNumberGenerator(areaCodeSelector);
 
-        Set<USState> states = Set.of(USState.MA);
+        EnumSet<USState> states = EnumSet.of(USState.MA);
         DatasetResolutionContext ctx = DatasetResolutionContext.builder().states(states).build();
         SelectionFilter criteria = SelectionFilter.builder().states(states).build();
 
@@ -66,7 +66,7 @@ public class PhoneNumberGeneratorTests {
         AreaCodeSelectionEngine areaCodeSelector = new AreaCodeSelectionEngine(registry, TestUtils.UNIFORM_RANDOM);
         PhoneNumberGenerator phoneNumberGenerator = new PhoneNumberGenerator(areaCodeSelector);
 
-        Set<USState> states = Set.of(USState.AK);
+        EnumSet<USState> states = EnumSet.of(USState.AK);
         DatasetResolutionContext ctx = DatasetResolutionContext.builder().states(states).build();
         SelectionFilter criteria = SelectionFilter.builder().states(states).build();
 

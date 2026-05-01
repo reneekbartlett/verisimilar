@@ -1,16 +1,16 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
-import java.util.Set;
+import java.util.EnumSet;
 import java.util.stream.Collectors;
 
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 
-public record GenderIdentityDatasetKey(String id, Set<GenderIdentity> genders) implements DatasetKey {
+public record GenderIdentityDatasetKey(String id, EnumSet<GenderIdentity> genders) implements DatasetKey {
 
     public static final String KEY_ID = "GENDER_IDENTITY";
 
-    public GenderIdentityDatasetKey(Set<GenderIdentity> genders) {
+    public GenderIdentityDatasetKey(EnumSet<GenderIdentity> genders) {
         this(KEY_ID, genders);
     }
 
@@ -23,7 +23,7 @@ public record GenderIdentityDatasetKey(String id, Set<GenderIdentity> genders) i
     }
 
     public static GenderIdentityDatasetKey fromContext(DatasetResolutionContext ctx) {
-        Set<GenderIdentity> genders = ctx.genders().orElse(GenderIdentity.defaultDatasets());
+        EnumSet<GenderIdentity> genders = ctx.genders().orElse(GenderIdentity.defaultDatasets());
         return new GenderIdentityDatasetKey(KEY_ID, genders);
     }
 

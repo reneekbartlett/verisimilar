@@ -1,8 +1,8 @@
 package com.reneekbartlett.verisimilar.core.datasets.resolver;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.LastNameDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.loader.ResourceLoaderUtil;
@@ -26,7 +26,7 @@ public class LastNameDatasetResolver extends AbstractDatasetResolver<LastNameDat
     public LastNameDatasetResult loadForKey(LastNameDatasetKey key) {
         //LOGGER.debug("loadForKey - key:{}", key);
 
-        Set<Ethnicity> ethnicities = key.ethnicities();
+        EnumSet<Ethnicity> ethnicities = key.ethnicities();
         if(ethnicities.isEmpty()) {
             LOGGER.warn("Empty dataset.");
         }

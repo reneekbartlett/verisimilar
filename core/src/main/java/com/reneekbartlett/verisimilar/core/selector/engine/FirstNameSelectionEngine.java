@@ -26,7 +26,6 @@ import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
  */
 public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameDatasetKey,FirstNameDatasetResult> {
 
-    //  For meta-selection (which selector to use at runtime)
     public record NameKey(GenderIdentity gender, Ethnicity ethnicity) {
         public NameKey(GenderIdentity gender) {
             this(gender, Ethnicity.UNKNOWN);
@@ -44,9 +43,7 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
 
     private Map<GenderIdentity, Double> genderIdentityMap;
     private RandomSelector<GenderIdentity> genderSelector;
-
     private Map<Ethnicity, Double> ethnicitiesMap;
-
     private Map<NameKey, RandomSelector<String>> selectorsByNameKey;
 
     public FirstNameSelectionEngine(DatasetResolverRegistry resolvers) {
@@ -98,7 +95,6 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
  
         NameKey nameKey = new NameKey(gender, ethnicity);
         RandomSelector<String> selector = selectorsByNameKey.get(nameKey);
-
         if (selector == null) {
             throw new IllegalStateException("No selector registered for " + nameKey);
         }
@@ -107,41 +103,12 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
             if(!filter.firstName().isEmpty()) {
                 return filter.firstName().get();
             }
-
             selector.setFilter(filter);
         }
 
         LOGGER.debug("select firstName - nameKey={}; strategyType={};", nameKey, strategy.getType());
         return selector.select();
     }
-
-//    @Override
-//    protected Map<String, Double> applyFilter(
-//            Map<String, Double> map,
-//            SelectionFilter filter
-//    ) {
-//        
-//        // TODO:  Not sure this is needed...
-//        // If criteria overrides gender → use that map instead
-//        if (filter.genders().isPresent()) {
-//            GenderIdentity[] genders = filter.genders().get();
-//            var result = resolvers.first().resolve(defaultKey());
-//
-//            // If multiple genders are provided, pick one randomly
-//            GenderIdentity g;
-//            if(genders.length > 1) {
-//                g = genderSelector.select();
-//            } else {
-//                g = genders[0];
-//            }
-//            map = g.isFemale() ? result.get(GenderIdentity.FEMALE) : result.get(GenderIdentity.MALE);
-//            LOGGER.debug("FirstNameSelectionEngine.applyFilter=true;  filter:{} ", filter);
-//        } else {
-//            LOGGER.debug("FirstNameSelectionEngine.applyFilter=FALSE; filter:{} ", filter);
-//        }
-//
-//        return super.applyFilter(map, filter);
-//    }
 
     @Override
     public FirstNameDatasetKey defaultKey() {

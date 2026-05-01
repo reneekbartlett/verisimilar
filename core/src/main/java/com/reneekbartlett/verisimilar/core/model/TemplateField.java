@@ -27,6 +27,7 @@ public enum TemplateField {
 
     AREA_CODE("AREA_CODE"),
     USERNAME("USERNAME"),
+    USERNAME_TYPE("USERNAME_TYPE"),
 
     DOMAIN("DOMAIN"),
     DOMAIN_TYPE("DOMAIN_TYPE"),

@@ -1,5 +1,6 @@
 package com.reneekbartlett.verisimilar.core.model;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -97,15 +98,11 @@ public enum USState {
         return null;
     }
 
-    public static Set<USState> all() {
-        Set<USState> allStates = new HashSet<>();
-        for(USState s : USState.values()){
-            allStates.add(s);
-        }
-        return allStates;
+    public static EnumSet<USState> all() {
+        return EnumSet.allOf(USState.class);
     }
 
-    public static Set<String> names(Set<USState> states) {
+    public static Set<String> names(EnumSet<USState> states) {
         Set<String> stateNames = new HashSet<>();
         for(USState state : states) {
             if(state.getPlaceholder() != "ALL") {
@@ -115,13 +112,9 @@ public enum USState {
         return stateNames;
     }
 
-    public static Set<USState> defaultDatasets(){
-        Set<USState> defaults = HashSet.newHashSet(0);
-        for(USState state : USState.values()) {
-            if(state.getPlaceholder() != "ALL") {
-                defaults.add(state);
-            }
-        }
+    public static EnumSet<USState> defaultDatasets(){
+        EnumSet<USState> defaults = EnumSet.allOf(USState.class);
+        defaults.removeIf(s -> s.getPlaceholder() == "ALL");
         return defaults;
     }
 

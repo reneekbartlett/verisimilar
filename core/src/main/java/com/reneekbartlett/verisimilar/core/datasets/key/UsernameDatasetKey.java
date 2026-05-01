@@ -1,6 +1,6 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
-import java.util.Set;
+import java.util.EnumSet;
 import java.util.stream.Collectors;
 
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
@@ -8,12 +8,12 @@ import com.reneekbartlett.verisimilar.core.model.UsernameType;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 
 /***
- * Set<UsernameType>, Set<GenderIdentity> genders
+ * EnumSet<UsernameType>, EnumSet<GenderIdentity> genders
  */
 public record UsernameDatasetKey(
         String id,
-        Set<UsernameType> usernameTypes,
-        Set<GenderIdentity> genders
+        EnumSet<UsernameType> usernameTypes,
+        EnumSet<GenderIdentity> genders
 ) implements DatasetKey {
 
     public static final String KEY_ID = "USERNAME";
@@ -26,13 +26,13 @@ public record UsernameDatasetKey(
         this(KEY_ID, UsernameType.defaultDatasets(), GenderIdentity.defaultDatasets());
     }
 
-    public UsernameDatasetKey(Set<UsernameType> usernameTypes) {
+    public UsernameDatasetKey(EnumSet<UsernameType> usernameTypes) {
         this(KEY_ID, usernameTypes, GenderIdentity.defaultDatasets());
     }
 
     public static UsernameDatasetKey fromContext(DatasetResolutionContext ctx) {
-        Set<UsernameType> usernameTypes = ctx.usernameTypes().orElse(UsernameType.defaultDatasets());
-        Set<GenderIdentity> genders = ctx.genders().orElse(GenderIdentity.defaultDatasets());
+        EnumSet<UsernameType> usernameTypes = ctx.usernameTypes().orElse(UsernameType.defaultDatasets());
+        EnumSet<GenderIdentity> genders = ctx.genders().orElse(GenderIdentity.defaultDatasets());
         return new UsernameDatasetKey(KEY_ID, usernameTypes, genders);
     }
 

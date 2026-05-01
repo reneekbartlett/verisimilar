@@ -23,9 +23,9 @@ public class UsernameGenerator extends AbstractStringGenerator {
 
     @Override
     protected String generateString(DatasetResolutionContext ctx, SelectionFilter filter) {
-        // TODO: ? Build the dataset key from the context
-        UsernameDatasetKey key = UsernameDatasetKey.defaults();
-        return generateUsername(key, filter);
+        UsernameDatasetKey key = UsernameDatasetKey.fromContext(ctx);
+        String username = filter.username().orElseGet(() -> generateUsername(key, filter));
+        return username.toUpperCase();
     }
 
     private String generateUsername(UsernameDatasetKey usernameDatasetKey, SelectionFilter filter) {

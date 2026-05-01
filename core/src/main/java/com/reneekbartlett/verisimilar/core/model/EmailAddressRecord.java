@@ -2,7 +2,7 @@ package com.reneekbartlett.verisimilar.core.model;
 
 import ch.qos.logback.core.util.StringUtil;
 
-public record EmailAddressRecord(String username, String domain, String type){
+public record EmailAddressRecord(String username, String domain, DomainType type){
 
     public EmailAddressRecord(String username, String domain) {
         this(username, domain, null);
@@ -13,7 +13,7 @@ public record EmailAddressRecord(String username, String domain, String type){
     }
 
     public static EmailAddressRecord placeholder() {
-        return new EmailAddressRecord("MAYOR", "BOSTON.GOV", "GOV");
+        return new EmailAddressRecord("MAYOR", "BOSTON.GOV", DomainType.GOV);
     }
 
     public String email() {
@@ -27,11 +27,11 @@ public record EmailAddressRecord(String username, String domain, String type){
 
     @Override
     public String toString() {
-        //final String VALUE_DELIM = " ";
-        return new StringBuilder()
-            .append(this.username).append("@")
-            .append(this.domain)//.append(VALUE_DELIM)
-            //.append(this.type)
-            .toString().toUpperCase();
+        final String VALUE_DELIM = " ";
+        StringBuilder sb = new StringBuilder(0);
+        sb.append(this.username).append("@");
+        sb.append(this.domain).append(VALUE_DELIM);
+        if(type != null) sb.append(this.type.getPlaceholder());
+        return sb.toString().toUpperCase();
     }
 }

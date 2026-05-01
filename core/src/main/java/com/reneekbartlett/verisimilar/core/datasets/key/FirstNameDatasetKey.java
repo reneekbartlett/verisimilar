@@ -1,6 +1,6 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
-import java.util.Set;
+import java.util.EnumSet;
 import java.util.stream.Collectors;
 
 import com.reneekbartlett.verisimilar.core.model.Decade;
@@ -13,22 +13,22 @@ import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
  */
 public record FirstNameDatasetKey(
         String id,
-        Set<GenderIdentity> genders,
-        Set<Ethnicity> ethnicities,
-        Set<Decade> decades
+        EnumSet<GenderIdentity> genders,
+        EnumSet<Ethnicity> ethnicities,
+        EnumSet<Decade> decades
 ) implements DatasetKey {
 
     public static final String KEY_ID = "FIRSTNAME";
 
     public FirstNameDatasetKey(GenderIdentity gender) {
-        this(KEY_ID, Set.of(gender), Ethnicity.defaultDatasets(), Decade.defaultDatasets());
+        this(KEY_ID, EnumSet.of(gender), Ethnicity.defaultDatasets(), Decade.defaultDatasets());
     }
 
-    public FirstNameDatasetKey(Set<GenderIdentity> genders, Set<Ethnicity> ethnicities) {
+    public FirstNameDatasetKey(EnumSet<GenderIdentity> genders, EnumSet<Ethnicity> ethnicities) {
         this(KEY_ID, genders, ethnicities, Decade.defaultDatasets());
     }
 
-    public FirstNameDatasetKey(Set<Ethnicity> ethnicities) {
+    public FirstNameDatasetKey(EnumSet<Ethnicity> ethnicities) {
         this(KEY_ID, GenderIdentity.defaultDatasets(), ethnicities, Decade.defaultDatasets());
     }
 
@@ -37,9 +37,9 @@ public record FirstNameDatasetKey(
     }
 
     public static FirstNameDatasetKey fromContext(DatasetResolutionContext ctx) {
-        Set<GenderIdentity> genders = ctx.genders().orElse(GenderIdentity.defaultDatasets());
-        Set<Ethnicity> ethnicities = ctx.ethnicities().orElse(Ethnicity.defaultDatasets());
-        Set<Decade> decades = ctx.decades().orElse(Decade.defaultDatasets());
+        EnumSet<GenderIdentity> genders = ctx.genders().orElse(GenderIdentity.defaultDatasets());
+        EnumSet<Ethnicity> ethnicities = ctx.ethnicities().orElse(Ethnicity.defaultDatasets());
+        EnumSet<Decade> decades = ctx.decades().orElse(Decade.defaultDatasets());
         return new FirstNameDatasetKey(KEY_ID, genders, ethnicities, decades);
     }
 

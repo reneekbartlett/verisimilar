@@ -1,8 +1,8 @@
 package com.reneekbartlett.verisimilar.core.model;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public enum Decade {
 
@@ -44,8 +44,8 @@ public enum Decade {
         return placeholder;
     }
 
-    public static Set<Decade> defaultDatasets(){
-        return Set.of(UNKNOWN);
+    public static EnumSet<Decade> defaultDatasets(){
+        return EnumSet.of(UNKNOWN);
     }
 
     public static Map<Decade, Double> defaultMap() {

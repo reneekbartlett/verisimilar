@@ -1,8 +1,8 @@
 package com.reneekbartlett.verisimilar.core.model;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public enum DomainType {
 
@@ -32,8 +32,8 @@ public enum DomainType {
         return label;
     }
 
-    public static Set<DomainType> defaultDatasets(){
-        return Set.of(DomainType.B2C, DomainType.EDU, DomainType.GOV
+    public static EnumSet<DomainType> defaultDatasets(){
+        return EnumSet.of(DomainType.B2C, DomainType.EDU, DomainType.GOV
                 //, DomainType.B2B, DomainType.DISPOSABLE
                 );
     }

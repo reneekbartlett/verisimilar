@@ -1,6 +1,6 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
-import java.util.Set;
+import java.util.EnumSet;
 import java.util.stream.Collectors;
 
 import com.reneekbartlett.verisimilar.core.model.KeywordType;
@@ -11,7 +11,7 @@ import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
  */
 public record KeywordDatasetKey(
         String id,
-        Set<KeywordType> keywordTypes
+        EnumSet<KeywordType> keywordTypes
 ) implements DatasetKey {
 
     public static final String KEY_ID = "KEYWORD";
@@ -24,12 +24,12 @@ public record KeywordDatasetKey(
         this(KEY_ID, KeywordType.defaultDatasets());
     }
 
-    public KeywordDatasetKey(Set<KeywordType> keywordTypes) {
+    public KeywordDatasetKey(EnumSet<KeywordType> keywordTypes) {
         this(KEY_ID, keywordTypes);
     }
 
     public static KeywordDatasetKey fromContext(DatasetResolutionContext ctx) {
-        Set<KeywordType> keywordTypes = ctx.keywordTypes().orElse(KeywordType.defaultDatasets());
+        EnumSet<KeywordType> keywordTypes = ctx.keywordTypes().orElse(KeywordType.defaultDatasets());
         return new KeywordDatasetKey(KEY_ID, keywordTypes);
     }
 

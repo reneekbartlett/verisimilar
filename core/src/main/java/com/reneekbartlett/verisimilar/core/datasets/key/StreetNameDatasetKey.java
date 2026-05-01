@@ -1,6 +1,6 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
-import java.util.Set;
+import java.util.EnumSet;
 import java.util.stream.Collectors;
 
 import com.reneekbartlett.verisimilar.core.model.USState;
@@ -8,7 +8,7 @@ import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 
 public record StreetNameDatasetKey(
         String id, 
-        Set<USState> states
+        EnumSet<USState> states
 ) implements DatasetKey {
 
     public static final String KEY_ID = "STREETNAME";
@@ -17,16 +17,16 @@ public record StreetNameDatasetKey(
         return new StreetNameDatasetKey(KEY_ID, null);
     }
 
-    public StreetNameDatasetKey(Set<USState> state) {
+    public StreetNameDatasetKey(EnumSet<USState> state) {
         this(KEY_ID, state);
     }
     
     public StreetNameDatasetKey(USState state) {
-        this(KEY_ID, Set.of(state));
+        this(KEY_ID, EnumSet.of(state));
     }
 
     public static StreetNameDatasetKey fromContext(DatasetResolutionContext ctx) {
-        Set<USState> states = ctx.states().orElse(USState.defaultDatasets());
+        EnumSet<USState> states = ctx.states().orElse(USState.defaultDatasets());
         return new StreetNameDatasetKey(KEY_ID, states);
     }
 

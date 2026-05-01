@@ -1,10 +1,10 @@
 package com.reneekbartlett.verisimilar.core.model;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public enum Generation {
@@ -54,8 +54,8 @@ public enum Generation {
         return displayName + " (" + getStartYear() + "-" + getEndYear() + ")";
     }
 
-    public static Set<Generation> defaultDatasets(){
-        return Set.of(UNKNOWN, BABY_BOOMER, GENERATION_X, MILLENNIAL, GENERATION_Z, GENERATION_ALPHA);
+    public static EnumSet<Generation> defaultDatasets(){
+        return EnumSet.of(UNKNOWN, BABY_BOOMER, GENERATION_X, MILLENNIAL, GENERATION_Z, GENERATION_ALPHA);
     }
 
     public static Map<Generation, Double> defaultMap() {

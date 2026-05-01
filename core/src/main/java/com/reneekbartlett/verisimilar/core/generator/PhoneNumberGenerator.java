@@ -5,7 +5,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import com.reneekbartlett.verisimilar.core.datasets.key.AreaCodeDatasetKey;
 import com.reneekbartlett.verisimilar.core.generator.api.AbstractValueGenerator;
 import com.reneekbartlett.verisimilar.core.model.PhoneNumber;
-import com.reneekbartlett.verisimilar.core.model.USState;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.util.FieldValidationUtils;
@@ -47,10 +46,7 @@ public class PhoneNumberGenerator extends AbstractValueGenerator<PhoneNumber> {
     }
 
     private String generateAreaCode(AreaCodeDatasetKey areaCodeKey, SelectionFilter filter) {
-        //Set<USState> usStates = filter.states().orElse(null);
-        String areaCode = areaCodeSelector.select(areaCodeKey, filter);
-        //LOGGER.debug("selected:{}", areaCode);
-        return areaCode;
+        return filter.areaCode().orElseGet(() -> areaCodeSelector.select(areaCodeKey, filter));
     }
 
     // TODO:  Configure option to just get random for backup cases?
@@ -58,13 +54,6 @@ public class PhoneNumberGenerator extends AbstractValueGenerator<PhoneNumber> {
     private String getRandomAreaCode() {
         int areaCode = ThreadLocalRandom.current().nextInt(200, 999+1);
         return String.valueOf(areaCode);
-    }
-    
-    // TODO Configure option to just get random for backup cases?
-    @SuppressWarnings("unused")
-    private USState getRandomState() {
-        USState[] options = USState.values();
-        return options[ThreadLocalRandom.current().nextInt(options.length)];
     }
 
     private String generateExchangeCode(SelectionFilter filter) {

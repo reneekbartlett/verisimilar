@@ -1,8 +1,8 @@
 package com.reneekbartlett.verisimilar.core.model;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public enum Ethnicity {
 
@@ -47,8 +47,8 @@ public enum Ethnicity {
         return placeholder;
     }
 
-    public static Set<Ethnicity> defaultDatasets(){
-        return Set.of(UNKNOWN, INDIAN);
+    public static EnumSet<Ethnicity> defaultDatasets(){
+        return EnumSet.of(UNKNOWN, INDIAN);
     }
 
     public static Map<Ethnicity, Double> defaultMap() {

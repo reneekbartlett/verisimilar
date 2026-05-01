@@ -1,6 +1,6 @@
 package com.reneekbartlett.verisimilar.core.model;
 
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 
 // TODO: Implement
@@ -51,8 +51,8 @@ public enum USRegion {
         return regionName;
     }
 
-    public static Set<USRegion> defaultDatasets(){
-        return HashSet.newHashSet(0);
+    public static EnumSet<USRegion> defaultDatasets(){
+        return EnumSet.noneOf(USRegion.class);
     }
 
     public static USRegion getRegionForState(String stateAbbreviation) {

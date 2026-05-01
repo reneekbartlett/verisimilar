@@ -1,9 +1,8 @@
 package com.reneekbartlett.verisimilar.core.datasets.resolver;
 
-import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.NicknameDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.loader.ResourceLoaderUtil;
@@ -16,8 +15,8 @@ public class NicknameDatasetResolver extends AbstractDatasetResolver<NicknameDat
 
     private static final String DEFAULT_FILE = "datasets/cfg_nickname_%s_%s.csv";
 
-    private Set<GenderIdentity> genderIdentities;
-    private Set<Ethnicity> ethnicities;
+    private EnumSet<GenderIdentity> genderIdentities;
+    private EnumSet<Ethnicity> ethnicities;
 
     public NicknameDatasetResolver(ResourceLoaderUtil loader) {
         super(loader);
@@ -26,7 +25,7 @@ public class NicknameDatasetResolver extends AbstractDatasetResolver<NicknameDat
     @Override
     public NicknameDatasetResult loadForKey(NicknameDatasetKey key) {
         this.genderIdentities = key.genders();
-        this.ethnicities = Collections.emptySet(); //Ethnicity.defaultDatasets();
+        this.ethnicities = EnumSet.noneOf(Ethnicity.class); //Ethnicity.defaultDatasets();
 
         Map<NameKey, Map<String, Double>> datasets = HashMap.newHashMap(0);
 

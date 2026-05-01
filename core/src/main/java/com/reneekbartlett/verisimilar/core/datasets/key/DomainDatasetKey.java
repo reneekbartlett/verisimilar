@@ -1,6 +1,6 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
-import java.util.Set;
+import java.util.EnumSet;
 import java.util.stream.Collectors;
 
 import com.reneekbartlett.verisimilar.core.model.Decade;
@@ -9,8 +9,8 @@ import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 
 public record DomainDatasetKey(
         String id,
-        Set<DomainType> domainTypes,
-        Set<Decade> decades
+        EnumSet<DomainType> domainTypes,
+        EnumSet<Decade> decades
 ) implements DatasetKey {
 
     public static final String KEY_ID = "DOMAINS";
@@ -20,10 +20,10 @@ public record DomainDatasetKey(
     }
 
     public DomainDatasetKey(DomainType domainType) {
-        this(KEY_ID, Set.of(domainType), Decade.defaultDatasets());
+        this(KEY_ID, EnumSet.of(domainType), Decade.defaultDatasets());
     }
 
-    public DomainDatasetKey(Set<Decade> decades) {
+    public DomainDatasetKey(EnumSet<Decade> decades) {
         this(KEY_ID, defaultDomainTypes(), decades);
     }
 
@@ -31,15 +31,15 @@ public record DomainDatasetKey(
         return new DomainDatasetKey(KEY_ID, defaultDomainTypes(), null);
     }
 
-    public static Set<DomainType> defaultDomainTypes() {
+    public static EnumSet<DomainType> defaultDomainTypes() {
         // TODO:  Add in DomainType.B2B, DomainType.DISPOSABLE
-        return Set.of(DomainType.B2C, DomainType.EDU, DomainType.GOV);
+        return EnumSet.of(DomainType.B2C, DomainType.EDU, DomainType.GOV);
     }
 
     // TODO:  Add to others?
     public static DomainDatasetKey fromContext(DatasetResolutionContext ctx) {
-        Set<DomainType> domainTypes = ctx.domainTypes().orElse(DomainType.defaultDatasets());
-        Set<Decade> decades = ctx.decades().orElse(Decade.defaultDatasets());
+        EnumSet<DomainType> domainTypes = ctx.domainTypes().orElse(DomainType.defaultDatasets());
+        EnumSet<Decade> decades = ctx.decades().orElse(Decade.defaultDatasets());
         return new DomainDatasetKey(KEY_ID, domainTypes, decades);
     }
 

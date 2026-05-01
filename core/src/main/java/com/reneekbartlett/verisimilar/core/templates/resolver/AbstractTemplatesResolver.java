@@ -1,5 +1,6 @@
 package com.reneekbartlett.verisimilar.core.templates.resolver;
 
+import java.util.EnumSet;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -26,11 +27,11 @@ public abstract class AbstractTemplatesResolver<K, R> implements TemplatesResolv
     }
 
     @Override
-    public Set<String> getTemplates(Set<TemplateField> populatedFields) {
+    public Set<String> getTemplates(EnumSet<TemplateField> populatedFields) {
         Set<String> filteredTemplates;
         if(templateRegistry == null) {
             // TODO: Check logic
-            filteredTemplates = TemplateRegistry.defaults().getTemplatesFor(Set.of(TemplateField.KEYWORD1));
+            filteredTemplates = TemplateRegistry.defaults().getTemplatesFor(EnumSet.of(TemplateField.KEYWORD1));
         } else {
             filteredTemplates = templateRegistry.getTemplatesFor(populatedFields);
         }

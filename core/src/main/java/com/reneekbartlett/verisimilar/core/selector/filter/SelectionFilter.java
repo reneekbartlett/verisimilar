@@ -1,13 +1,14 @@
 package com.reneekbartlett.verisimilar.core.selector.filter;
 
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 import com.reneekbartlett.verisimilar.core.model.DomainType;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
@@ -18,6 +19,7 @@ import com.reneekbartlett.verisimilar.core.model.PostalAddress;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.USRegion;
 import com.reneekbartlett.verisimilar.core.model.USState;
+import com.reneekbartlett.verisimilar.core.model.UsernameType;
 
 /***
  * 
@@ -30,14 +32,14 @@ public record SelectionFilter(
         Optional<String> nickName,
 
         Optional<GenderIdentity> gender,
-        Optional<GenderIdentity[]> genders,
+        Optional<EnumSet<GenderIdentity>> genders,
 
         Optional<LocalDate> birthday,
         Optional<Integer> minYear,
         Optional<Integer> maxYear,
 
         Optional<PostalAddress> postalAddress,
-        Optional<Set<USState>> states,
+        Optional<EnumSet<USState>> states,
         Optional<USState> state,
         Optional<Set<String>> zipCodes,
         Optional<USRegion> region,
@@ -45,6 +47,11 @@ public record SelectionFilter(
 
         Optional<DomainType> domainType,
         Optional<String> domain,
+
+        Optional<UsernameType> usernameType,
+        Optional<String> username,
+
+        Optional<String> areaCode,
 
         Optional<SelectionPredicate<String>> customPredicate,
         Optional<Set<SelectionPredicate<String>>> customPredicates,
@@ -77,8 +84,13 @@ public record SelectionFilter(
         region = region == null ? Optional.empty() : region;
         ethnicity = ethnicity == null ? Optional.empty() : ethnicity;
 
+        areaCode = areaCode == null ? Optional.empty() : areaCode;
+
         domainType = domainType == null ? Optional.empty() : domainType;
         domain = domain == null ? Optional.empty() : domain;
+
+        usernameType = usernameType == null ? Optional.empty() : usernameType;
+        username = username == null ? Optional.empty() : username;
 
         customPredicate = customPredicate == null ? Optional.empty() : customPredicate;
         customPredicates = customPredicates == null ? Optional.empty() : customPredicates;
@@ -157,6 +169,11 @@ public record SelectionFilter(
                 Optional.empty(), // domainType
                 Optional.empty(), // domain
 
+                Optional.empty(), // usernameType
+                Optional.empty(), // username
+
+                Optional.empty(), // areaCode
+
                 Optional.empty(), // customPredicate
                 Optional.empty(), // customPredicates
 
@@ -182,14 +199,14 @@ public record SelectionFilter(
         private String nickName;
 
         private GenderIdentity gender;
-        private GenderIdentity[] genders;
+        private EnumSet<GenderIdentity> genders;
 
         private LocalDate birthday;
         private Integer minYear;
         private Integer maxYear;
 
         private PostalAddress postalAddress;
-        private Set<USState> states;
+        private EnumSet<USState> states;
         private USState state;
         private Set<String> zipCodes;
         private USRegion region;
@@ -197,8 +214,13 @@ public record SelectionFilter(
         private DomainType domainType;
         private String domain;
 
+        private UsernameType usernameType;
+        private String username;
+
+        private String areaCode;
+
         private SelectionPredicate<String> customPredicate;
-        private Set<SelectionPredicate<String>> customPredicates;
+        private Set<SelectionPredicate<String>> customPredicates = HashSet.newHashSet(0);
 
         private Map<TemplateField, String> startsWithMap = HashMap.newHashMap(0);
         private Map<TemplateField, String> endsWithMap = HashMap.newHashMap(0);
@@ -260,7 +282,7 @@ public record SelectionFilter(
             return this;
         }
 
-        public Builder genders(GenderIdentity... genders) {
+        public Builder genders(EnumSet<GenderIdentity> genders) {
             this.genders = genders;
             return this;
         }
@@ -299,17 +321,13 @@ public record SelectionFilter(
             return this;
         }
 
-        public Builder states(Set<USState> values) {
+        public Builder states(EnumSet<USState> values) {
             this.states = values;
             Set<String> stateNames = new HashSet<>();
             for(USState state : values) {
                 stateNames.add("$"+state.name()+"$");
             }
             SelectionPredicate<String> p = (val) -> stateNames.stream().anyMatch(val::contains);
-            if(customPredicates == null) {
-                this.customPredicate = p;
-                this.customPredicates = new HashSet<>();
-            }
             this.customPredicates.add(p);
             return this;
         }
@@ -328,9 +346,6 @@ public record SelectionFilter(
                 zipCodeValues.add("$"+zipCode);
             }
             SelectionPredicate<String> p = (val) -> zipCodeValues.stream().anyMatch(val::contains);
-            if(this.customPredicates == null) {
-                this.customPredicates = new HashSet<>();
-            }
             this.customPredicates.add(p);
             return this;
         }
@@ -343,19 +358,42 @@ public record SelectionFilter(
 
         public Builder ethnicity(Ethnicity value) {
             this.ethnicity = value;
-            this.equalToMap.put(TemplateField.ETHNICITY, value.getLabel());
+            this.equalToMap.put(TemplateField.ETHNICITY, value.getPlaceholder());
             return this;
         }
 
         public Builder domainType(DomainType value) {
             this.domainType = value;
-            this.equalToMap.put(TemplateField.DOMAIN_TYPE, value.getLabel());
+            this.equalToMap.put(TemplateField.DOMAIN_TYPE, value.getPlaceholder());
             return this;
         }
 
         public Builder domain(String value) {
-            this.domain = value;
-            this.equalToMap.put(TemplateField.DOMAIN, value);
+            this.domain = StringUtils.deleteWhitespace(value);
+            this.equalToMap.put(TemplateField.DOMAIN, this.domain);
+            return this;
+        }
+
+        public Builder usernameType(UsernameType value) {
+            this.usernameType = value;
+            this.equalToMap.put(TemplateField.USERNAME_TYPE, value.getPlaceholder());
+            return this;
+        }
+
+        public Builder username(String value) {
+            if(value != null && !value.isBlank()) {
+                // TODO:  Format/validate.  i.e. trim, remove spaces
+                this.username = StringUtils.deleteWhitespace(value);
+                this.equalToMap.put(TemplateField.USERNAME, this.username);
+            }
+            return this;
+        }
+
+        public Builder areaCode(String value) {
+            if(value != null && !value.isBlank()) {
+                this.areaCode = StringUtils.deleteWhitespace(value);
+                this.equalToMap.put(TemplateField.AREA_CODE, this.areaCode);
+            }
             return this;
         }
 
@@ -406,6 +444,10 @@ public record SelectionFilter(
                     Optional.ofNullable(ethnicity),
                     Optional.ofNullable(domainType),
                     Optional.ofNullable(domain),
+                    Optional.ofNullable(usernameType),
+                    Optional.ofNullable(username),
+
+                    Optional.ofNullable(areaCode),
 
                     Optional.ofNullable(customPredicate),
                     Optional.ofNullable(customPredicates),
@@ -437,7 +479,8 @@ public record SelectionFilter(
         if(!nickName.isEmpty()) sb.append("nickName=" + this.nickName.get()+ FIELD_DELIM);
         if(!gender.isEmpty()) sb.append("gender=" + this.gender.get().name() + FIELD_DELIM);
         if(!genders.isEmpty()) {
-            sb.append("genders=" + Arrays.toString(Stream.of(genders.get()).map(GenderIdentity::name).toArray(String[]::new)) + FIELD_DELIM);
+            //sb.append("genders=" + Arrays.toString(Stream.of(genders.get()).map(GenderIdentity::name).toArray(String[]::new)) + FIELD_DELIM);
+            sb.append("genders=" + genders.get().stream().map(GenderIdentity::name).collect(Collectors.joining()) + FIELD_DELIM);
         }
         //if(!postalAddress.isEmpty()) {
         //    sb.append("postalAddress=" + postalAddress.toString()) + FIELD_DELIM);

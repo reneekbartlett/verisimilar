@@ -1,8 +1,8 @@
 package com.reneekbartlett.verisimilar.core.model;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /***
  * Single Family Residential (SFR): Detached homes without shared common interest (no HOA).
@@ -39,8 +39,8 @@ public enum AddressCategory {
         return weight;
     }
 
-    public static Set<AddressCategory> defaultDatasets(){
-        return Set.of(SINGLE_FAMILY, MULTI_FAMILY);
+    public static EnumSet<AddressCategory> defaultDatasets(){
+        return EnumSet.of(SINGLE_FAMILY, MULTI_FAMILY);
     }
 
     public static Map<AddressCategory, Double> defaultMap() {

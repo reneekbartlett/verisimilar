@@ -1,6 +1,7 @@
 package com.reneekbartlett.verisimilar.core.selector.engine;
 
 import java.time.LocalDate;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -103,8 +104,9 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
 
         Map<String, Object> allTemplateParams = new HashMap<>(personTemplateParams);
 
-        // TODO: Add 
-        Set<TemplateField> populatedFields = parameters.populatedFields();
+        // TODO: Add
+        // TODO:  Change to EnumSet
+        EnumSet<TemplateField> populatedFields = parameters.populatedFields();
 
         UsernameTemplatesResult templatesResult = templatesResolver.loadForFields(populatedFields);
         LOGGER.debug("templatesResult:{}", templatesResult.toString());
@@ -128,8 +130,9 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
     }
 
     public record TemplateParameters(Set<UsernameTemplateParam> usernameTemplateFields) {
-        public Set<TemplateField> populatedFields(){
-            return usernameTemplateFields.stream().map(x -> x.templateField).collect(Collectors.toSet());
+        public EnumSet<TemplateField> populatedFields(){
+            return usernameTemplateFields.stream().map(x -> x.templateField)
+                    .collect(Collectors.toCollection(() -> EnumSet.noneOf(TemplateField.class)));
         }
 
         public Map<String, Object> resolved(){

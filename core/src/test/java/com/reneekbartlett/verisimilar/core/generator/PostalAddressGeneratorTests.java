@@ -1,5 +1,6 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
+import java.util.EnumSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
@@ -33,7 +34,7 @@ public class PostalAddressGeneratorTests {
         PostalAddressSelectionEngineRegistry registry = TestUtils.getPostalAddressSelectionEngineRegistry();
         PostalAddressRecordGenerator postalAddressGenerator = new PostalAddressRecordGenerator(registry);
 
-        Set<USState> states = Set.of(USState.MA);
+        EnumSet<USState> states = EnumSet.of(USState.MA);
         //DatasetResolutionContext ctx = DatasetResolutionContext.builder().states(states).build();
         SelectionFilter filter = SelectionFilter.builder()
                 .states(states).build();
@@ -50,7 +51,7 @@ public class PostalAddressGeneratorTests {
         PostalAddressSelectionEngineRegistry registry = TestUtils.getPostalAddressSelectionEngineRegistry();
         PostalAddressRecordGenerator postalAddressGenerator = new PostalAddressRecordGenerator(registry);
 
-        Set<USState> states = Set.of(USState.MA, USState.CT, USState.NH );
+        EnumSet<USState> states = EnumSet.of(USState.MA, USState.CT, USState.NH );
         SelectionFilter filter = SelectionFilter.builder().states(states).build();
 
         PostalAddress postalAddress1 = postalAddressGenerator.generate(filter);
@@ -71,7 +72,7 @@ public class PostalAddressGeneratorTests {
         PostalAddressSelectionEngineRegistry registry = TestUtils.getPostalAddressSelectionEngineRegistry();
         PostalAddressRecordGenerator postalAddressGenerator = new PostalAddressRecordGenerator(registry);
 
-        Set<USState> states = Set.of(USState.MA);
+        EnumSet<USState> states = EnumSet.of(USState.MA);
         SelectionFilter filter = SelectionFilter.builder().states(states).zipCodes(Set.of("01545")).build();
 
         PostalAddress postalAddress = postalAddressGenerator.generate(filter);
@@ -89,7 +90,7 @@ public class PostalAddressGeneratorTests {
         PostalAddressRecordGenerator postalAddressGenerator = new PostalAddressRecordGenerator(registry);
 
         SelectionFilter filter = SelectionFilter.builder()
-                .states(Set.of(USState.MA))
+                .states(EnumSet.of(USState.MA))
                 //.zipCodes(Set.of("00000"))
                 .build();
 

@@ -1,8 +1,8 @@
 package com.reneekbartlett.verisimilar.core.model;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public enum KeywordType {
 
@@ -31,8 +31,8 @@ public enum KeywordType {
         return placeholder;
     }
 
-    public static Set<KeywordType> defaultDatasets(){
-        return Set.of(KeywordType.KEYWORD1);
+    public static EnumSet<KeywordType> defaultDatasets(){
+        return EnumSet.of(KeywordType.KEYWORD1);
     }
 
     public static Map<KeywordType, Double> defaultMap() {

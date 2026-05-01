@@ -1,8 +1,8 @@
 package com.reneekbartlett.verisimilar.core.selector.engine;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.LastNameDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.result.LastNameDatasetResult;
@@ -52,7 +52,8 @@ public class LastNameSelectionEngine extends AbstractSelectionEngine<LastNameDat
         LastNameDatasetResult lastNameDatasetResult = datasetResolver().resolve(LastNameDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(5);
         if(!ethnicitiesMap.isEmpty() && ethnicitiesMap.keySet().size() >= 1) {
-            Set<Ethnicity> customEthnicities = ethnicitiesMap.keySet();
+            // TODO:  revise?
+            EnumSet<Ethnicity> customEthnicities = EnumSet.copyOf(ethnicitiesMap.keySet());
             for(Ethnicity e : customEthnicities){
                 Map<String,Double> map = lastNameDatasetResult.get(new NameKey(e));
                 if(!map.isEmpty()) {

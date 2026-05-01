@@ -7,11 +7,11 @@ import com.reneekbartlett.verisimilar.core.templates.TemplateRegistry;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /***
  * 
@@ -27,9 +27,9 @@ public class TemplateRegistryLoader {
             }
 
             Map<String, List<String>> raw = yaml.load(in);
-            Map<Set<TemplateField>, TemplateSet> registry = new HashMap<>();
+            Map<EnumSet<TemplateField>, TemplateSet> registry = new HashMap<>();
             for (Map.Entry<String, List<String>> entry : raw.entrySet()) {
-                Set<TemplateField> fields = parseFieldSet(entry.getKey());
+                EnumSet<TemplateField> fields = parseFieldSet(entry.getKey());
                 TemplateSet set = new TemplateSet(new LinkedHashSet<>(entry.getValue()));
                 registry.put(fields, set);
             }
@@ -39,8 +39,8 @@ public class TemplateRegistryLoader {
         }
     }
 
-    private Set<TemplateField> parseFieldSet(String key) {
-        Set<TemplateField> fields = new LinkedHashSet<>();
+    private EnumSet<TemplateField> parseFieldSet(String key) {
+        EnumSet<TemplateField> fields = EnumSet.noneOf(TemplateField.class);
         for (String part : key.split(",")) {
             fields.add(TemplateField.valueOf(part.trim()));
         }

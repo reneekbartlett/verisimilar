@@ -1,5 +1,6 @@
 package com.reneekbartlett.verisimilar.core.templates;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -18,17 +19,17 @@ public class TemplateRegistry {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TemplateRegistry.class);
 
-    private final Map<Set<TemplateField>, TemplateSet> registry;
+    private final Map<EnumSet<TemplateField>, TemplateSet> registry;
 
-    public TemplateRegistry(Map<Set<TemplateField>, TemplateSet> registry) {
+    public TemplateRegistry(Map<EnumSet<TemplateField>, TemplateSet> registry) {
         this.registry = Map.copyOf(registry);
     }
 
-    public Map<Set<TemplateField>,TemplateSet> getTemplateMap(){
+    public Map<EnumSet<TemplateField>,TemplateSet> getTemplateMap(){
         return registry;
     }
 
-    public Set<String> getTemplatesFor(Set<TemplateField> fields) {
+    public Set<String> getTemplatesFor(EnumSet<TemplateField> fields) {
         Set<String> stringTemplates = new LinkedHashSet<>();
         registry.forEach((key, value) -> {
             if (fields.containsAll(key)) {
@@ -46,18 +47,18 @@ public class TemplateRegistry {
     }
 
     public static TemplateRegistry defaults() {
-        Map<Set<TemplateField>, TemplateSet> registry = new HashMap<>();
+        Map<EnumSet<TemplateField>, TemplateSet> registry = new HashMap<>();
         TemplateSet defaultTemplateSet = TemplateSet.of(
                 "${KEYWORD}.${NUM10}",
                 "${KEYWORD}${NUM10}",
                 "${KEYWORD}${NUM10}0",
                 "${KEYWORD}${NUM10}00"
         );
-        registry.put(Set.of(TemplateField.KEYWORD1, TemplateField.NUM10), defaultTemplateSet);
+        registry.put(EnumSet.of(TemplateField.KEYWORD1, TemplateField.NUM10), defaultTemplateSet);
         return new TemplateRegistry(registry);
     }
 
-    public static Map<Set<TemplateField>, TemplateSet> defaultTemplateMap() {
+    public static Map<EnumSet<TemplateField>, TemplateSet> defaultTemplateMap() {
         return defaults().getTemplateMap();
     }
 }

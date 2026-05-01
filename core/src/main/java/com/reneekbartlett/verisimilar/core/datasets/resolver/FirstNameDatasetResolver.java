@@ -1,8 +1,8 @@
 package com.reneekbartlett.verisimilar.core.datasets.resolver;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.FirstNameDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.loader.ResourceLoaderUtil;
@@ -15,8 +15,8 @@ public class FirstNameDatasetResolver extends AbstractDatasetResolver<FirstNameD
 
     private static final String DEFAULT_FILE = "datasets/cfg_fullname_first_%s_%s.csv";
 
-    private final Set<GenderIdentity> genderIdentities;
-    private final Set<Ethnicity> ethnicities;
+    private final EnumSet<GenderIdentity> genderIdentities;
+    private final EnumSet<Ethnicity> ethnicities;
 
     public FirstNameDatasetResolver(ResourceLoaderUtil loader) {
         super(loader);

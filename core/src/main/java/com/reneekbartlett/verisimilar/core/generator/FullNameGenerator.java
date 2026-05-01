@@ -33,8 +33,6 @@ public class FullNameGenerator extends AbstractValueGenerator<FullName>{
 
     @Override
     protected FullName generateValue(DatasetResolutionContext ctx, SelectionFilter filter) {
-        //LOGGER.debug("generateFullName - filter=" + filter.toString());
-
         //
         // Generate LastName first.
         String lastName = generateLastName(ctx, filter);

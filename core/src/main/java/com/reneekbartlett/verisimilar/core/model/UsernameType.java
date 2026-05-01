@@ -1,8 +1,8 @@
 package com.reneekbartlett.verisimilar.core.model;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public enum UsernameType {
 
@@ -31,8 +31,8 @@ public enum UsernameType {
         return placeholder;
     }
 
-    public static Set<UsernameType> defaultDatasets(){
-        return Set.of(
+    public static EnumSet<UsernameType> defaultDatasets(){
+        return EnumSet.of(
                 UsernameType.KEYWORD1
                 //,UsernameType.KEYWORD2
         );

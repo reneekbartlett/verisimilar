@@ -21,7 +21,7 @@ public record FullName(String firstName, String middleName, String lastName, Gen
         sb.append(this.firstName).append(VALUE_DELIM);
         sb.append(this.middleName).append(VALUE_DELIM);
         sb.append(this.lastName).append(VALUE_DELIM);
-        if(gender != null) sb.append(this.gender.name());
+        //if(gender != null) sb.append(this.gender.name());
         return sb.toString().toUpperCase();
     }
 }

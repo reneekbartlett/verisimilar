@@ -1,6 +1,6 @@
 package com.reneekbartlett.verisimilar.core.templates.resolver;
 
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -12,13 +12,13 @@ import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.templates.TemplateRegistry;
 import com.reneekbartlett.verisimilar.core.templates.loader.TemplateRegistryLoader;
 
-public class UsernameTemplatesResolver extends AbstractTemplatesResolver<Set<TemplateField>, TemplateRegistry> {
+public class UsernameTemplatesResolver extends AbstractTemplatesResolver<EnumSet<TemplateField>, TemplateRegistry> {
 
     private static final String TEMPLATES_FILE = "templates/username-templates.yaml";
 
     public record UsernameTemplatesResult(
-            Set<TemplateField> populatedfields,
-            Map<Set<TemplateField>, TemplateSet> templateMap
+            EnumSet<TemplateField> populatedfields,
+            Map<EnumSet<TemplateField>, TemplateSet> templateMap
     ) {
         // TODO:  change to Set<String> instead?
         public TemplateSet getTemplates() {
@@ -50,25 +50,25 @@ public class UsernameTemplatesResolver extends AbstractTemplatesResolver<Set<Tem
     }
 
     @Override
-    public Class<Set<TemplateField>> keyType() {
+    public Class<EnumSet<TemplateField>> keyType() {
         return null;
     }
 
     public UsernameTemplatesResult loadForFields(TemplateParameters templateParameters) {
-        Set<TemplateField> populatedFields = templateParameters.populatedFields();
+        EnumSet<TemplateField> populatedFields = templateParameters.populatedFields();
         return new UsernameTemplatesResult(populatedFields, super.templateRegistry.getTemplateMap());
     }
 
     //@Override
-    public UsernameTemplatesResult loadForFields(Set<TemplateField> populatedFields) {
+    public UsernameTemplatesResult loadForFields(EnumSet<TemplateField> populatedFields) {
         
         // TODO:
 
         return new UsernameTemplatesResult(populatedFields, super.templateRegistry.getTemplateMap());
     }
 
-    public Set<TemplateField> detectPopulatedFields(SelectionFilter filter) {
-        Set<TemplateField> fields = new HashSet<>();
+    public EnumSet<TemplateField> detectPopulatedFields(SelectionFilter filter) {
+        EnumSet<TemplateField> fields = EnumSet.noneOf(TemplateField.class);
         if (filter.firstName().isPresent()) fields.add(TemplateField.FIRST_NAME);
         if (filter.lastName().isPresent()) fields.add(TemplateField.LAST_NAME);
         if (filter.middleName().isPresent()) fields.add(TemplateField.MIDDLE_NAME);

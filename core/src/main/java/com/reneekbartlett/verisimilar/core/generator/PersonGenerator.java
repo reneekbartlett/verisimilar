@@ -1,7 +1,7 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.EnumSet;
 
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.generator.api.AbstractValueGenerator;
@@ -82,7 +82,7 @@ public class PersonGenerator extends AbstractValueGenerator<PersonRecord>{
         //DatasetResolutionContext.Builder stepTwoConstraint = DatasetResolutionContext.builder().states(Set.of(state)).gender(gender);
         SelectionFilter.Builder stepTwoCriteria = SelectionFilter.builder()
                 .birthday(birthday)
-                .states(Set.of(state))
+                .states(EnumSet.of(state))
                 .gender(gender);
 
         //FullName fullName = generateFullName(stepTwoConstraint.build(), stepTwoCriteria.build());

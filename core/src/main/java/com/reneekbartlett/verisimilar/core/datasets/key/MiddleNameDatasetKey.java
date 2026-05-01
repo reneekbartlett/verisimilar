@@ -1,6 +1,6 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
-import java.util.Set;
+import java.util.EnumSet;
 import java.util.stream.Collectors;
 
 import com.reneekbartlett.verisimilar.core.model.Decade;
@@ -15,8 +15,8 @@ import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
  */
 public record MiddleNameDatasetKey(
         String id,
-        Set<GenderIdentity> genders,
-        Set<Decade> decades
+        EnumSet<GenderIdentity> genders,
+        EnumSet<Decade> decades
 ) implements DatasetKey {
 
     public static final String KEY_ID = "MIDDLENAME";
@@ -25,18 +25,18 @@ public record MiddleNameDatasetKey(
         return new MiddleNameDatasetKey(KEY_ID, GenderIdentity.defaultDatasets(), Decade.defaultDatasets());
     }
 
-    public MiddleNameDatasetKey(Set<GenderIdentity> genders) {
+    public MiddleNameDatasetKey(EnumSet<GenderIdentity> genders) {
         this(KEY_ID, genders, Decade.defaultDatasets());
     }
 
-    public MiddleNameDatasetKey(Set<GenderIdentity> genders, Set<Decade> decades) {
+    public MiddleNameDatasetKey(EnumSet<GenderIdentity> genders, EnumSet<Decade> decades) {
         this(KEY_ID, genders, decades);
     }
 
     public static MiddleNameDatasetKey fromContext(DatasetResolutionContext ctx) {
-        Set<GenderIdentity> genders = ctx.genders().orElse(GenderIdentity.defaultDatasets());
+        EnumSet<GenderIdentity> genders = ctx.genders().orElse(GenderIdentity.defaultDatasets());
         //Set<Ethnicity> ethnicities = ctx.ethnicities().orElse(Ethnicity.defaultDatasets());
-        Set<Decade> decades = ctx.decades().orElse(Decade.defaultDatasets());
+        EnumSet<Decade> decades = ctx.decades().orElse(Decade.defaultDatasets());
         return new MiddleNameDatasetKey(KEY_ID, genders, decades);
     }
 

@@ -1,11 +1,9 @@
 package com.reneekbartlett.verisimilar.core.pipeline;
 
+import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-
 import com.reneekbartlett.verisimilar.core.model.Decade;
 import com.reneekbartlett.verisimilar.core.model.DomainType;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
@@ -24,17 +22,17 @@ import com.reneekbartlett.verisimilar.core.model.UsernameType;
  */
 public final class DatasetResolutionContext {
 
-    private final Optional<Set<Generation>> generations;
-    private final Optional<Set<Decade>> decades;
+    private final Optional<EnumSet<Generation>> generations;
+    private final Optional<EnumSet<Decade>> decades;
 
-    private final Optional<Set<GenderIdentity>> genders;
-    private final Optional<Set<Ethnicity>> ethnicities;
-    private final Optional<Set<USRegion>> regions;
-    private final Optional<Set<USState>> states;
+    private final Optional<EnumSet<GenderIdentity>> genders;
+    private final Optional<EnumSet<Ethnicity>> ethnicities;
+    private final Optional<EnumSet<USRegion>> regions;
+    private final Optional<EnumSet<USState>> states;
 
-    private final Optional<Set<DomainType>> domainTypes;
-    private final Optional<Set<UsernameType>> usernameTypes;
-    private final Optional<Set<KeywordType>> keywordTypes;
+    private final Optional<EnumSet<DomainType>> domainTypes;
+    private final Optional<EnumSet<UsernameType>> usernameTypes;
+    private final Optional<EnumSet<KeywordType>> keywordTypes;
 
     private DatasetResolutionContext(Builder b) {
         //
@@ -53,17 +51,17 @@ public final class DatasetResolutionContext {
         //this.values = Collections.unmodifiableMap(b.values);
     }
 
-    public Optional<Set<Generation>> generations() { return generations; }
-    public Optional<Set<Decade>> decades() { return decades; }
+    public Optional<EnumSet<Generation>> generations() { return generations; }
+    public Optional<EnumSet<Decade>> decades() { return decades; }
 
-    public Optional<Set<GenderIdentity>> genders() { return genders; }
-    public Optional<Set<Ethnicity>> ethnicities() { return ethnicities; }
-    public Optional<Set<USRegion>> regions() { return regions; }
-    public Optional<Set<USState>> states() { return states; }
+    public Optional<EnumSet<GenderIdentity>> genders() { return genders; }
+    public Optional<EnumSet<Ethnicity>> ethnicities() { return ethnicities; }
+    public Optional<EnumSet<USRegion>> regions() { return regions; }
+    public Optional<EnumSet<USState>> states() { return states; }
 
-    public Optional<Set<DomainType>> domainTypes() { return domainTypes; }
-    public Optional<Set<UsernameType>> usernameTypes() { return usernameTypes; }
-    public Optional<Set<KeywordType>> keywordTypes() { return keywordTypes; }
+    public Optional<EnumSet<DomainType>> domainTypes() { return domainTypes; }
+    public Optional<EnumSet<UsernameType>> usernameTypes() { return usernameTypes; }
+    public Optional<EnumSet<KeywordType>> keywordTypes() { return keywordTypes; }
 
     // TODO:  For setting custom data sets
     //private final Map<TemplateField, Map<String, Double>> values;
@@ -76,38 +74,41 @@ public final class DatasetResolutionContext {
     public static final class Builder {
         private final Map<TemplateField, Map<String, Double>> fieldValues = new HashMap<>();
 
-        private Set<Decade> decades = new HashSet<>();
-        private Set<Generation> generations = new HashSet<>();
-        private Set<GenderIdentity> genders = new HashSet<>();
-        private Set<Ethnicity> ethnicities = new HashSet<>();
-        private Set<USRegion> regions = new HashSet<>();
-        private Set<USState> states = new HashSet<>();
+        private EnumSet<Decade> decades = EnumSet.noneOf(Decade.class);
+        private EnumSet<Generation> generations = EnumSet.noneOf(Generation.class);
+        private EnumSet<GenderIdentity> genders = EnumSet.noneOf(GenderIdentity.class);
+        private EnumSet<Ethnicity> ethnicities = EnumSet.noneOf(Ethnicity.class);
+        private EnumSet<USRegion> regions = EnumSet.noneOf(USRegion.class);
+        private EnumSet<USState> states = EnumSet.noneOf(USState.class);
 
-        private Set<DomainType> domainTypes = new HashSet<>();
-        private Set<UsernameType> usernameTypes = new HashSet<>();
-        private Set<KeywordType> keywordTypes = new HashSet<>();
+        private EnumSet<DomainType> domainTypes= EnumSet.noneOf(DomainType.class);
+        private EnumSet<UsernameType> usernameTypes= EnumSet.noneOf(UsernameType.class);
+        private EnumSet<KeywordType> keywordTypes= EnumSet.noneOf(KeywordType.class);
 
         private Builder() {}
 
-        public Builder gender(GenderIdentity gender) { this.genders.add(gender); return this; }
-        public Builder genders(Set<GenderIdentity> genders) { this.genders.addAll(genders); return this; }
+        public Builder gender(GenderIdentity gender) { this.genders = EnumSet.of(gender); return this; }
+        public Builder genders(EnumSet<GenderIdentity> genders) { 
+            this.genders = genders;
+            return this; 
+        }
 
         public Builder decade(Decade decade) { this.decades.add(decade); return this; }
-        public Builder decades(Set<Decade> decade) { this.decades.addAll(decade); return this; }
+        public Builder decades(EnumSet<Decade> decade) { this.decades.addAll(decade); return this; }
 
         public Builder generation(Generation generation) { this.generations.add(generation); return this; }
-        public Builder generations(Set<Generation> generations) { this.generations.addAll(generations); return this; }
+        public Builder generations(EnumSet<Generation> generations) { this.generations.addAll(generations); return this; }
 
-        public Builder ethnicities(Set<Ethnicity> ethnicities ) { this.ethnicities.addAll(ethnicities); return this; }
+        public Builder ethnicities(EnumSet<Ethnicity> ethnicities ) { this.ethnicities.addAll(ethnicities); return this; }
         public Builder region(USRegion region) { this.regions.add(region); return this; }
-        public Builder regions(Set<USRegion> regions) { this.regions.addAll(regions); return this; }
+        public Builder regions(EnumSet<USRegion> regions) { this.regions.addAll(regions); return this; }
 
         public Builder state(USState state) { this.states.add(state); return this; }
-        public Builder states(Set<USState> states) { this.states.addAll(states); return this; }
+        public Builder states(EnumSet<USState> states) { this.states.addAll(states); return this; }
 
-        public Builder domainTypes(Set<DomainType> domainTypes) { this.domainTypes.addAll(domainTypes); return this; }
-        public Builder usernameTypes(Set<UsernameType> usernameTypes) { this.usernameTypes.addAll(usernameTypes); return this; }
-        public Builder keywordTypes(Set<KeywordType> keywordTypes) { this.keywordTypes.addAll(keywordTypes); return this; }
+        public Builder domainTypes(EnumSet<DomainType> domainTypes) { this.domainTypes.addAll(domainTypes); return this; }
+        public Builder usernameTypes(EnumSet<UsernameType> usernameTypes) { this.usernameTypes.addAll(usernameTypes); return this; }
+        public Builder keywordTypes(EnumSet<KeywordType> keywordTypes) { this.keywordTypes.addAll(keywordTypes); return this; }
 
         // TODO:  For setting custom weights/values for data sets
         public Builder put(TemplateField field, Map<String, Double> values) {

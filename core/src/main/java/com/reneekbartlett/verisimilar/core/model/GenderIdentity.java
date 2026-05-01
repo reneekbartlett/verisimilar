@@ -1,8 +1,8 @@
 package com.reneekbartlett.verisimilar.core.model;
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public enum GenderIdentity {
     MALE("MALE", 1, 0.4995, "male"),
@@ -71,12 +71,12 @@ public enum GenderIdentity {
         return null;
     }
 
-    public static Set<GenderIdentity> defaultDatasets(){
-        return Set.of(MALE, FEMALE);
+    public static EnumSet<GenderIdentity> defaultDatasets(){
+        return EnumSet.of(MALE, FEMALE);
     }
 
-    public static Set<GenderIdentity> defaults() {
-        return Set.of(MALE, FEMALE);
+    public static EnumSet<GenderIdentity> defaults() {
+        return EnumSet.of(MALE, FEMALE);
     }
 
     public static Map<GenderIdentity, Double> defaultMap() {
