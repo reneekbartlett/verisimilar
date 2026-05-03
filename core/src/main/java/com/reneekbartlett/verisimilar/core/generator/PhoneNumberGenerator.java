@@ -49,20 +49,6 @@ public class PhoneNumberGenerator extends AbstractValueGenerator<PhoneNumber> {
         return filter.areaCode().orElseGet(() -> areaCodeSelector.select(areaCodeKey, filter));
     }
 
-    // TODO:  Configure option to just get random for backup cases?
-    @SuppressWarnings("unused")
-    private String getRandomAreaCode() {
-        int areaCode = ThreadLocalRandom.current().nextInt(200, 999+1);
-        return String.valueOf(areaCode);
-    }
-
-    private String getRandomDigitString(int digits) {
-        int min = 0;
-        int max = 9;
-        int randomInt = ThreadLocalRandom.current().nextInt(200, 999+1);
-        return String.valueOf(randomInt);
-    }
-
     private String generateExchangeCode(SelectionFilter filter) {
         // Generate exchange code (NXX)
         int firstDigit = ThreadLocalRandom.current().nextInt(2, 10); // 2–9

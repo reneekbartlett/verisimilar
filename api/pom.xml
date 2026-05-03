@@ -14,11 +14,11 @@
 
   <dependencies>
         <!-- Core engine -->
-        <!--<dependency>
-            <groupId>com.reneekbartlett.verisimilar</groupId>
+        <dependency>
+            <groupId>com.reneekbartlett</groupId>
             <artifactId>verisimilar-core</artifactId>
             <version>1.0.0-SNAPSHOT</version>
-        </dependency>-->
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -39,6 +39,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -76,11 +80,17 @@
             <artifactId>spring-boot-starter-webmvc-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.reneekbartlett</groupId>
-            <artifactId>verisimilar-core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+        <!--<dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>-->
+
         <dependency>
             <groupId>tools.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
@@ -88,24 +98,46 @@
         </dependency>
   </dependencies>
 
-    <build>
-        <!--<sourceDirectory>src</sourceDirectory>
-        <testSourceDirectory>test</testSourceDirectory>-->
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>4.0.2</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <useSystemClassLoader>false</useSystemClassLoader>
-                    <skipTests>false</skipTests>
-                    <!--<argLine>-javaagent:${org.mockito:mockito-core:jar} -Xshare:off</argLine>-->
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <build>
+    <!--<sourceDirectory>src</sourceDirectory>-->
+    <!--<testSourceDirectory>test</testSourceDirectory>-->
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <!-- External Location, Not Included in Git sub-module -->
+        <directory>../../parent/config/verisimilar/api/</directory>
+        <filtering>false</filtering>
+        <includes>
+            <include>*.properties</include>
+            <include>*.yaml</include>
+        </includes>
+      </resource>
+    </resources>
+    <!--<testResources>
+      <testResource>
+        <directory>src/test/java/com/reneekbartlett/verisimilar/api/data</directory>
+        <targetPath>com/reneekbartlett/verisimilar/api/data</targetPath>
+      </testResource>
+    </testResources>-->
+
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>4.0.2</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <useSystemClassLoader>false</useSystemClassLoader>
+          <skipTests>true</skipTests>
+          <!--<argLine>-javaagent:${org.mockito:mockito-core:jar} -Xshare:off</argLine>-->
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

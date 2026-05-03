@@ -2,7 +2,6 @@ package com.reneekbartlett.verisimilar.core.selector.filter;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -18,23 +17,11 @@ public final class EntryFilter {
 
     private EntryFilter() {}
 
-//    public static <T> Map<T, Double> apply(Map<T, Double> values, SelectionFilter filter) {
-//        // todo get type
-//        Predicate<String> predicate = buildPredicate(filter, null);
-//        return values.entrySet().stream()
-//                .filter(e -> predicate.test((String) e.getKey()))
-//                .collect(Collectors.toMap(
-//                        Map.Entry::getKey,
-//                        Map.Entry::getValue
-//                ));
-//    }
-
     public static <T> Map<T, Double> apply(
             Map<T, Double> values,
             SelectionFilter filter,
             TemplateField field
     ) {
-        // todo get type
         Predicate<String> predicate = buildPredicate(filter, field);
         return values.entrySet().stream()
                 .filter(e -> predicate.test((String) e.getKey()))
@@ -42,16 +29,6 @@ public final class EntryFilter {
                         Map.Entry::getKey,
                         Map.Entry::getValue
                 ));
-    }
-
-    public static List<String> apply(
-            List<String> values,
-            SelectionFilter filter
-    ) {
-        Predicate<String> predicate = buildPredicate(filter, null);
-        return values.stream()
-                .filter(e -> predicate.test(e))
-                .collect(Collectors.toList());
     }
 
     public static List<String> apply(
@@ -72,28 +49,27 @@ public final class EntryFilter {
             Set<SelectionPredicate<String>> predicates = filter.customPredicates().get();
             for(SelectionPredicate<String> selectionPredicate : predicates) {
                 p = p.and(s-> selectionPredicate.test(s));
-                LOGGER.debug("selectionPredicate {}", selectionPredicate);
+                //LOGGER.debug("selectionPredicate {}", selectionPredicate);
             }
         }
 
         if(field != null) {
-            LOGGER.debug("field:{}", field.getPlaceholder());
             if(filter.startsWithMap().containsKey(field)) {
                 String searchStr = filter.startsWithMap().get(field).toUpperCase();
                 p = p.and(s -> s.toUpperCase().startsWith(searchStr));
-                LOGGER.debug("startsWith {}", searchStr);
+                //LOGGER.debug("field {} startsWith {}", field.getPlaceholder(), searchStr);
             }
     
             if(filter.endsWithMap().containsKey(field)) {
                 String searchStr = filter.endsWithMap().get(field).toUpperCase();
                 p = p.and(s -> s.toUpperCase().endsWith(searchStr));
-                LOGGER.debug("contains {}", searchStr);
+                //LOGGER.debug("field {} endsWith {}", field.getPlaceholder(), searchStr);
             }
     
             if(filter.containsMap().containsKey(field)) {
                 String searchStr = filter.containsMap().get(field).toUpperCase();
                 p = p.and(s -> s.toUpperCase().contains(searchStr));
-                LOGGER.debug("contains {}", searchStr);
+                //LOGGER.debug("field {} contains {}", field.getPlaceholder(), searchStr);
             }
         }
 

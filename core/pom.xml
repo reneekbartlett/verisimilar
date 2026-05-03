@@ -15,16 +15,13 @@
       <dependency>
         <groupId>jakarta.persistence</groupId>
         <artifactId>jakarta.persistence-api</artifactId>
-        <!--<version>3.2.0</version>-->
       </dependency>
       <dependency>
           <groupId>org.yaml</groupId>
           <artifactId>snakeyaml</artifactId>
-          <!--<version>2.6</version>-->
           <scope>compile</scope>
       </dependency>
   </dependencies>
-  
   <build>
     <resources>
             <resource>
@@ -36,16 +33,15 @@
                 <targetPath>com/reneekbartlett/verisimilar/core/data</targetPath>
             </resource>-->
             <resource>
-                <directory>../parent/config/verisimilar/</directory>
+                <directory>../../parent/config/verisimilar/core/</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
         <testResources>
             <testResource>
-                <directory>src/test/java/com/reneekbartlett/verisimilar/data</directory>
-                <targetPath>com/reneekbartlett/verisimilar/data</targetPath>
+                <directory>src/test/java/com/reneekbartlett/verisimilar/core/data</directory>
+                <targetPath>com/reneekbartlett/verisimilar/core/data</targetPath>
             </testResource>
         </testResources>
   </build>
-
 </project>
