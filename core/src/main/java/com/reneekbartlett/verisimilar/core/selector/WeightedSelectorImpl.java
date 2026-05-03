@@ -10,6 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.filter.EntryFilter;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
@@ -18,6 +19,7 @@ public final class WeightedSelectorImpl<T> implements RandomSelector<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(WeightedSelectorImpl.class);
 
     private final Map<T, Double> weights;
+    private final TemplateField field;
     private final List<T> items;
     private final double[] cumulative;
     private final int valueCount;
@@ -34,7 +36,7 @@ public final class WeightedSelectorImpl<T> implements RandomSelector<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public WeightedSelectorImpl(Map<T, Double> weights) {
+    public WeightedSelectorImpl(Map<T, Double> weights, TemplateField field) {
         Objects.requireNonNull(weights, "weights");
         if (weights.isEmpty()) {
             LOGGER.error("Weighted map cannot be empty");
@@ -42,6 +44,7 @@ public final class WeightedSelectorImpl<T> implements RandomSelector<T> {
         }
         this.weights = weights;
         Weights w = calcWeights(weights);
+        this.field = field;
         this.items = (List<T>) w.items;
         this.cumulative = w.itemWeights();
         this.valueCount = items.size();
@@ -53,7 +56,7 @@ public final class WeightedSelectorImpl<T> implements RandomSelector<T> {
         // Random value in [0.0, 1.0)
         double rand = ThreadLocalRandom.current().nextDouble();
         if(filter !=null && !filter.isEmpty()) {
-            Map<T, Double> filteredMap = EntryFilter.apply(this.weights, filter);
+            Map<T, Double> filteredMap = EntryFilter.apply(this.weights, filter, field);
             LOGGER.debug("select (filtered) - original.size():{}, filteredMap.size():{}, filter:{}"
                     , this.weights.size(), filteredMap.size(), filter);
             if(filteredMap.size() > 0) {

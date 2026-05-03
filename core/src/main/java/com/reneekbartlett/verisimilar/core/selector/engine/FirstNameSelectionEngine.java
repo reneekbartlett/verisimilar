@@ -64,7 +64,7 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
     @Override
     protected void setup() {
         this.genderIdentityMap = GenderIdentity.defaultMap();
-        this.genderSelector = new WeightedSelectorImpl<>(genderIdentityMap);
+        this.genderSelector = new WeightedSelectorImpl<>(genderIdentityMap, TemplateField.GENDER_IDENTITY);
         this.ethnicitiesMap = Ethnicity.defaultMap();
 
         // Extract specific datasets (Map<String,Double>), build selectors, and add to selectorsByNameKey
@@ -74,7 +74,7 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
             for(Ethnicity ethnicity : ethnicitiesMap.keySet()){
                 genderIdentityMap.keySet().forEach(gender -> {
                     NameKey nameKey = new NameKey(gender, ethnicity);
-                    RandomSelector<String> selector = strategy.buildSelector(firstNameDatasetResult.get(nameKey));
+                    RandomSelector<String> selector = strategy.buildSelector(firstNameDatasetResult.get(nameKey), field());
                     selectorsByNameKey.put(nameKey, selector);
                 });
             }
@@ -106,7 +106,7 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
             selector.setFilter(filter);
         }
 
-        LOGGER.debug("select firstName - nameKey={}; strategyType={};", nameKey, strategy.getType());
+        LOGGER.debug("select firstName - nameKey={}; strategyType={}; filter=[{}]", nameKey, strategy.getType(), filter);
         return selector.select();
     }
 

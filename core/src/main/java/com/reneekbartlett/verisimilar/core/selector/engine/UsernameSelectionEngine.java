@@ -71,7 +71,7 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
         UsernameDatasetResult result = datasetResolver().resolve(UsernameDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(result.datasets().size());
         result.datasets().forEach((nameKey, map) -> {
-            RandomSelector<String> selector = strategy.buildSelector(map);
+            RandomSelector<String> selector = strategy.buildSelector(map, field());
             selectorsByNameKey.put(nameKey, selector);
         });
     }
@@ -120,7 +120,7 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
 
         // Pick a template
         // TODO:  Backup?  "${KEYWORD}${NUM1000}"
-        UniformSelectorImpl<String> templateSelector = new UniformSelectorImpl<>(templateSet.toList());
+        UniformSelectorImpl<String> templateSelector = new UniformSelectorImpl<>(templateSet.toList(), null);
         String randomTemplate = templateSelector.select();
 
         String usernameFromTemplate = applyTemplate(randomTemplate, usernameKeyword1, allTemplateParams);

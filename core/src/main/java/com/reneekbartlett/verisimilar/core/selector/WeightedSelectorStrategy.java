@@ -1,14 +1,13 @@
 package com.reneekbartlett.verisimilar.core.selector;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 
 public class WeightedSelectorStrategy<T> implements SelectorStrategy<T> {
 
@@ -16,33 +15,26 @@ public class WeightedSelectorStrategy<T> implements SelectorStrategy<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(WeightedSelectorStrategy.class);
 
     @Override
-    public RandomSelector<T> buildSelector(Map<T, Double> weights){
-        return new WeightedSelectorImpl<>(weights);
+    public RandomSelector<T> buildSelector(Map<T, Double> weights, TemplateField field){
+        return new WeightedSelectorImpl<>(weights, field);
     }
 
     @Override
-    public RandomSelector<T> buildSelector(Set<T> values) {
+    public RandomSelector<T> buildSelector(Set<T> values, TemplateField field) {
         Map<T, Double> weights = HashMap.newHashMap(values.size());
         final double w = 1.0000/values.size();
         values.forEach(x -> weights.put(x, w));
-        return new WeightedSelectorImpl<>(weights);
+        return new WeightedSelectorImpl<>(weights, field);
     }
 
     @Override
-    public T select(Map<T, Double> map) {
-        RandomSelector<T> selector = new WeightedSelectorImpl<>(map);
+    public T select(Map<T, Double> map, TemplateField field) {
+        RandomSelector<T> selector = new WeightedSelectorImpl<>(map, field);
         return selector.select();
     }
 
     @Override
-    public T selectWithFilter(Map<T, Double> map, SelectionFilter filter) {
-        RandomSelector<T> selector = new WeightedSelectorImpl<>(map);
-        selector.setFilter(filter);
-        return selector.select();
-    }
-
-    @Override
-    public T select(T[] values) {
+    public T select(T[] values, TemplateField field) {
         Map<T, Double> valueMap = HashMap.newHashMap(values.length);
         Double w = 1.000;
         Double decreaseAmt = 0.001;
@@ -50,20 +42,7 @@ public class WeightedSelectorStrategy<T> implements SelectorStrategy<T> {
             valueMap.put(v, w);
             w = w-decreaseAmt;
         }
-        RandomSelector<T> selector = new WeightedSelectorImpl<>(valueMap);
-        return selector.select();
-    }
-
-    @Override
-    public T select(List<T> values) {
-        Map<T, Double> valueMap = HashMap.newHashMap(values.size());
-        Double w = 1.000;
-        Double decreaseAmt = 0.001;
-        for(T v : values) {
-            valueMap.put(v, w);
-            w = w-decreaseAmt;
-        }
-        RandomSelector<T> selector = new WeightedSelectorImpl<>(valueMap);
+        RandomSelector<T> selector = new WeightedSelectorImpl<>(valueMap, field);
         return selector.select();
     }
 

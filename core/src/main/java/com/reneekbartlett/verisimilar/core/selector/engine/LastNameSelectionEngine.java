@@ -57,7 +57,7 @@ public class LastNameSelectionEngine extends AbstractSelectionEngine<LastNameDat
             for(Ethnicity e : customEthnicities){
                 Map<String,Double> map = lastNameDatasetResult.get(new NameKey(e));
                 if(!map.isEmpty()) {
-                    RandomSelector<String> s1 = strategy.buildSelector(map);
+                    RandomSelector<String> s1 = strategy.buildSelector(map, field());
                     selectorsByNameKey.put(new NameKey(e), s1);
                 }
             }
@@ -66,6 +66,10 @@ public class LastNameSelectionEngine extends AbstractSelectionEngine<LastNameDat
 
     @Override
     public String select(LastNameDatasetKey key, SelectionFilter filter) {
+        if(filter != null && !filter.lastName().isEmpty()) {
+            return filter.lastName().get();
+        }
+
         // If Ethnicity is NOT supplied here, just select from generic dataset.
         Ethnicity ethnicity = filter.ethnicity().orElse(Ethnicity.UNKNOWN);
         if(!ethnicitiesMap.containsKey(ethnicity)) {

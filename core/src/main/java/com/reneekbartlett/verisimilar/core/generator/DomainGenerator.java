@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.DomainDatasetKey;
 import com.reneekbartlett.verisimilar.core.model.DomainType;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
@@ -45,7 +46,7 @@ public class DomainGenerator extends AbstractStringGenerator {
 
     private DomainType getRandomDomainType() {
         Map<DomainType, Double> domainTypesMap = DomainType.defaultMap();
-        RandomSelector<DomainType> selector = new WeightedSelectorImpl<>(domainTypesMap);
+        RandomSelector<DomainType> selector = new WeightedSelectorImpl<>(domainTypesMap, TemplateField.DOMAIN_TYPE);
         return selector.select();
     }
 }

@@ -15,7 +15,11 @@ import com.reneekbartlett.verisimilar.core.selector.UniformSelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
 public class CityStateZipSelectionEngine extends AbstractSelectionEngine<CityStateZipDatasetKey,CityStateZipDatasetResult> {
+    /***
+     * Default file has no weight, so use Uniform [AK,WILLOW$AK$99688]
+     */
     private static final SelectorStrategy<String> DEFAULT_SELECTOR_STRATEGY = new UniformSelectorStrategy<>();
+
     private Map<NameKey, RandomSelector<String>> selectorsByNameKey;
 
     public record NameKey() {
@@ -43,13 +47,25 @@ public class CityStateZipSelectionEngine extends AbstractSelectionEngine<CitySta
         CityStateZipDatasetResult result = datasetResolver().resolve(CityStateZipDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(result.datasets().size());
         result.datasets().forEach((nameKey, map) -> {
-            RandomSelector<String> selector = strategy.buildSelector(map);
+            RandomSelector<String> selector = strategy.buildSelector(map, field());
             selectorsByNameKey.put(nameKey, selector);
         });
     }
 
     @Override
     public String select(CityStateZipDatasetKey key, SelectionFilter filter) {
+        // If filter has all 3, use user inputs.
+        if(filter != null && filter.equalToMap().containsKey(TemplateField.STATE) 
+                && filter.equalToMap().containsKey(TemplateField.CITY)
+                && filter.equalToMap().containsKey(TemplateField.ZIP_CODE)
+        ) {
+            return new CityStateZip(
+                    filter.equalToMap().get(TemplateField.CITY),
+                    filter.equalToMap().get(TemplateField.STATE),
+                    filter.equalToMap().get(TemplateField.ZIP_CODE)
+            ).toString();
+        }
+
         // There are currently no CityStateZipSelectionEngine.NameKey parameters, so just get default.
         NameKey nameKey = new NameKey();
         RandomSelector<String> selector = selectorsByNameKey.get(nameKey);
@@ -57,19 +73,10 @@ public class CityStateZipSelectionEngine extends AbstractSelectionEngine<CitySta
             throw new IllegalStateException("No selector registered for " + nameKey);
         }
         if(filter != null && !filter.isEmpty()) {
-            if(filter.equalToMap().containsKey(TemplateField.STATE) 
-                    && filter.equalToMap().containsKey(TemplateField.CITY)
-                    && filter.equalToMap().containsKey(TemplateField.ZIP_CODE)
-            ) {
-                return new CityStateZip(
-                        filter.equalToMap().get(TemplateField.CITY),
-                        filter.equalToMap().get(TemplateField.STATE),
-                        filter.equalToMap().get(TemplateField.ZIP_CODE)
-                ).toString();
-            }
-
+            // If filter has all 3, use user inputs.
             if(filter.equalToMap().containsKey(TemplateField.CITY)) {
-                // TODO: Add Filtering
+                // TODO: Add Filtering / custom predicate?
+                filter = filter.toBuilder().startsWith(filter.city().get(),TemplateField.CITY).build(); 
             }
             selector.setFilter(filter);
         }
@@ -92,6 +99,7 @@ public class CityStateZipSelectionEngine extends AbstractSelectionEngine<CitySta
     }
 
     public TemplateField field() {
+        // TODO Change to ZIP/STATE?  Concat?
         return TemplateField.CITY;
     }
 }

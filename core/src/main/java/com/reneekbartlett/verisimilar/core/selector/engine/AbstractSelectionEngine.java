@@ -16,13 +16,10 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractSelectionEngine<K,R> {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractSelectionEngine.class);
-    //private final DatasetResolverRegistry resolvers;
     protected final SelectorStrategy<String> strategy;
-
-    protected DatasetResolver<K, R> datasetResolver;
+    protected final DatasetResolver<K, R> datasetResolver;
 
     protected AbstractSelectionEngine(DatasetResolverRegistry resolvers, SelectorStrategy<String> strategy) {
-        //this.resolvers = resolvers;
         this.datasetResolver = resolvers.getResolver(this.keyType());
         this.strategy = strategy;
         setup();
@@ -30,15 +27,19 @@ public abstract class AbstractSelectionEngine<K,R> {
 
     protected AbstractSelectionEngine(DatasetResolver<K, R> datasetResolver, SelectorStrategy<String> strategy) {
         this.datasetResolver = datasetResolver;
-        //this.resolvers = null;
         this.strategy = strategy;
         setup();
     }
 
     /** Main entry point: resolve → filter → select. */
     public String select(K key, SelectionFilter filter) {
+        if(filter != null && filter.equalToMap().containsKey(field())) {
+            String filterValue = filter.equalToMap().get(field());
+            return filterValue;
+        }
+
         DatasetResult dsResult = (DatasetResult) datasetResolver.resolve(key);
-        RandomSelector<String> randomSelector = strategy.buildSelector(dsResult.getDefault());
+        RandomSelector<String> randomSelector = strategy.buildSelector(dsResult.getDefault(), field());
         if (randomSelector == null) {
             throw new IllegalStateException("No selector registered for default NameKey.");
         }
@@ -74,7 +75,7 @@ public abstract class AbstractSelectionEngine<K,R> {
      * Applies SelectionFilter to the dataset map.
      */
     protected Map<String, Double> applyFilter(Map<String, Double> map, SelectionFilter filter) {
-        if(filter.customPredicate().isEmpty()) {
+        if(filter.isEmpty()) {
             return map;
         }
         LOGGER.debug("applyFilter started; filter:{}", filter);

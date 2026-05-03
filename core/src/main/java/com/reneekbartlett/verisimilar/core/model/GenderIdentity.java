@@ -47,7 +47,7 @@ public enum GenderIdentity {
     }
 
     public static GenderIdentity fromValue(int value) {
-        for (GenderIdentity gender : GenderIdentity.values()) {
+        for (GenderIdentity gender : EnumSet.allOf(GenderIdentity.class)) {
             if (gender.value == value) {
                 return gender;
             }

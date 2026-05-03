@@ -41,7 +41,7 @@ public class StreetNameSelectionEngine extends AbstractSelectionEngine<StreetNam
         StreetNameDatasetResult streetNameDatasetResult = datasetResolver().resolve(StreetNameDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(streetNameDatasetResult.datasets().size());
         streetNameDatasetResult.datasets().forEach((nameKey, map) -> {
-            RandomSelector<String> selector = strategy.buildSelector(map);
+            RandomSelector<String> selector = strategy.buildSelector(map, field());
             selectorsByNameKey.put(nameKey, selector);
         });
         LOGGER.debug("streetSuffixDatasetResult=[{}]", streetNameDatasetResult);

@@ -25,7 +25,7 @@ public class GenderIdentityGenerator extends AbstractValueGenerator<GenderIdenti
             return GenderIdentity.fromText(filter.equalToMap().get(TemplateField.GENDER_IDENTITY));
         }
 
-        UniformSelectorImpl<GenderIdentity> selector = new UniformSelectorImpl<>(key.genders());
+        UniformSelectorImpl<GenderIdentity> selector = new UniformSelectorImpl<>(key.genders(), TemplateField.GENDER_IDENTITY);
         return selector.select();
     }
 

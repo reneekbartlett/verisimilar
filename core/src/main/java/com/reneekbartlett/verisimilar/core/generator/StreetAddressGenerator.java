@@ -83,7 +83,7 @@ public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress
             return AddressCategory.fromLabel(filter.equalToMap().get(TemplateField.ADDRESS_CATEGORY));
         }
         Map<AddressCategory, Double> weightedMap = AddressCategory.defaultMap();
-        AddressCategory randomCategory = new WeightedSelectorImpl<>(weightedMap).select();
+        AddressCategory randomCategory = new WeightedSelectorImpl<>(weightedMap, TemplateField.ADDRESS_CATEGORY).select();
         LOGGER.debug("randomCategory:{}", randomCategory);
         return randomCategory;
     }

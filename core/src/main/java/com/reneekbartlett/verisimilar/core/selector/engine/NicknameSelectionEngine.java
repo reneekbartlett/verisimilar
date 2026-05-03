@@ -47,7 +47,7 @@ public class NicknameSelectionEngine extends AbstractSelectionEngine<NicknameDat
         NicknameDatasetResult result = datasetResolver().resolve(NicknameDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(result.datasets().size());
         result.datasets().forEach((nameKey, map) -> {
-            RandomSelector<String> selector = strategy.buildSelector(map);
+            RandomSelector<String> selector = strategy.buildSelector(map, field());
             this.selectorsByNameKey.put(nameKey, selector);
         });
         //LOGGER.debug("setup - result:{}", result.toString());

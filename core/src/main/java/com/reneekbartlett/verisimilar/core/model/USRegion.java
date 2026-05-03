@@ -52,11 +52,12 @@ public enum USRegion {
     }
 
     public static EnumSet<USRegion> defaultDatasets(){
+        // TODO:  Add defaults when xtra data is added
         return EnumSet.noneOf(USRegion.class);
     }
 
     public static USRegion getRegionForState(String stateAbbreviation) {
-        for (USRegion region : USRegion.values()) {
+        for (USRegion region : EnumSet.allOf(USRegion.class)) {
             if (region.states.contains(stateAbbreviation.toUpperCase())) {
                 return region;
             }

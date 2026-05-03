@@ -12,6 +12,7 @@ public class CityStateZipDatasetResolver extends AbstractDatasetResolver<CitySta
 
     /* Example: MA,Easthampton$MA$01027 */
     private static final String DEFAULT_FILE = "datasets/cfg_postaladdress_citystatezip_usstate_ALL.csv";
+    private static final String DEFAULT_FILE_FORMAT = "datasets/cfg_postaladdress_citystatezip_usstate_%s.csv";
 
     public CityStateZipDatasetResolver(ResourceLoaderUtil loader) {
         super(loader);

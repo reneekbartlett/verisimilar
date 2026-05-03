@@ -46,7 +46,7 @@ public class DomainSelectionEngine extends AbstractSelectionEngine<DomainDataset
         DomainDatasetResult domainDatasetResult = datasetResolver().resolve(DomainDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(domainDatasetResult.datasets().size());
         domainDatasetResult.datasets().forEach((nameKey, map) -> {
-            RandomSelector<String> selector = strategy.buildSelector(map);
+            RandomSelector<String> selector = strategy.buildSelector(map, field());
             selectorsByNameKey.put(nameKey, selector);
         });
     }
@@ -98,7 +98,7 @@ public class DomainSelectionEngine extends AbstractSelectionEngine<DomainDataset
     }
 
     private DomainType getRandomDomainType() {
-        RandomSelector<DomainType> domainTypeSelector = new WeightedSelectorImpl<>(domainTypesMap);
+        RandomSelector<DomainType> domainTypeSelector = new WeightedSelectorImpl<>(domainTypesMap, TemplateField.DOMAIN_TYPE);
         return domainTypeSelector.select();
     }
 }

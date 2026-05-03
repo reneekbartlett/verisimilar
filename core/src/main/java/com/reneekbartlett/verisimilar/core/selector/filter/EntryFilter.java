@@ -18,16 +18,16 @@ public final class EntryFilter {
 
     private EntryFilter() {}
 
-    public static <T> Map<T, Double> apply(Map<T, Double> values, SelectionFilter filter) {
-        // todo get type
-        Predicate<String> predicate = buildPredicate(filter, null);
-        return values.entrySet().stream()
-                .filter(e -> predicate.test((String) e.getKey()))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue
-                ));
-    }
+//    public static <T> Map<T, Double> apply(Map<T, Double> values, SelectionFilter filter) {
+//        // todo get type
+//        Predicate<String> predicate = buildPredicate(filter, null);
+//        return values.entrySet().stream()
+//                .filter(e -> predicate.test((String) e.getKey()))
+//                .collect(Collectors.toMap(
+//                        Map.Entry::getKey,
+//                        Map.Entry::getValue
+//                ));
+//    }
 
     public static <T> Map<T, Double> apply(
             Map<T, Double> values,
@@ -68,34 +68,20 @@ public final class EntryFilter {
     private static Predicate<String> buildPredicate(SelectionFilter filter, TemplateField field) {
         Predicate<String> p = s -> true;
 
-        if (!filter.startsWithMap().isEmpty()) {
-            //String prefixStr = filter.startsWith().get().toUpperCase();
-            for(Entry<TemplateField,String> e : filter.startsWithMap().entrySet()) {
-                String filterValue = e.getValue();
-                p = p.and(s -> s.toUpperCase().startsWith(filterValue));
-                LOGGER.debug("startsWithMap {}", filterValue);
+        if (filter.customPredicates().isPresent()) {
+            Set<SelectionPredicate<String>> predicates = filter.customPredicates().get();
+            for(SelectionPredicate<String> selectionPredicate : predicates) {
+                p = p.and(s-> selectionPredicate.test(s));
+                LOGGER.debug("selectionPredicate {}", selectionPredicate);
             }
-            //filter.startsWithMap().forEach((templateField, filterValue) -> {});
         }
-
-//        if (!filter.startsWith().isEmpty()) {
-//            String prefixStr = filter.startsWith().get().toUpperCase();
-//            p = p.and(s -> s.toUpperCase().startsWith(prefixStr));
-//            LOGGER.debug("startsWith {}", prefixStr);
-//        }
-
-//        if (filter.endsWith().isPresent()) {
-//            String searchStr = filter.endsWith().get().toUpperCase();
-//            p = p.and(s -> s.toUpperCase().endsWith(searchStr));
-//            LOGGER.debug("endsWith {}", searchStr);
-//        }
 
         if(field != null) {
             LOGGER.debug("field:{}", field.getPlaceholder());
             if(filter.startsWithMap().containsKey(field)) {
                 String searchStr = filter.startsWithMap().get(field).toUpperCase();
                 p = p.and(s -> s.toUpperCase().startsWith(searchStr));
-                LOGGER.debug("contains {}", searchStr);
+                LOGGER.debug("startsWith {}", searchStr);
             }
     
             if(filter.endsWithMap().containsKey(field)) {
@@ -109,16 +95,6 @@ public final class EntryFilter {
                 p = p.and(s -> s.toUpperCase().contains(searchStr));
                 LOGGER.debug("contains {}", searchStr);
             }
-        }
-
-        if (filter.customPredicates().isPresent()) {
-            Set<SelectionPredicate<String>> predicates = filter.customPredicates().get();
-            for(SelectionPredicate<String> selectionPredicate : predicates) {
-                p = p.and(s-> selectionPredicate.test(s));
-                LOGGER.debug("selectionPredicate {}", selectionPredicate);
-            }
-            //LOGGER.debug("customPredicates");
-            //boolean allTrue = filter.customPredicates().get().stream().allMatch(p -> p.test(value));
         }
 
         return p;

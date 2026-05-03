@@ -48,7 +48,7 @@ public class AddressTwoSelectionEngine extends AbstractSelectionEngine<AddressTw
         AddressTwoDatasetResult result = datasetResolver().resolve(AddressTwoDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(result.datasets().size());
         result.datasets().forEach((nameKey, map) -> {
-            RandomSelector<String> selector = strategy.buildSelector(map);
+            RandomSelector<String> selector = strategy.buildSelector(map, field());
             selectorsByNameKey.put(nameKey, selector);
         });
     }

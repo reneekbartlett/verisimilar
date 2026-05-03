@@ -12,6 +12,7 @@ import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.model.PersonRecord;
 import com.reneekbartlett.verisimilar.core.model.PhoneNumber;
 import com.reneekbartlett.verisimilar.core.model.PostalAddress;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.USState;
 
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
@@ -109,7 +110,7 @@ public class PersonGenerator extends AbstractValueGenerator<PersonRecord>{
     }
 
     private GenderIdentity generateGenderIdentity() {
-        RandomSelector<GenderIdentity> selector = new WeightedSelectorImpl<>(GenderIdentity.defaultMap());
+        RandomSelector<GenderIdentity> selector = new WeightedSelectorImpl<>(GenderIdentity.defaultMap(), TemplateField.GENDER_IDENTITY);
         return selector.select();
     }
 

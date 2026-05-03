@@ -1,6 +1,7 @@
 package com.reneekbartlett.verisimilar.core.model;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,7 +67,7 @@ public enum FullNameSuffix {
         if (text == null || text.isBlank()) return null;
         
         String cleanText = text.trim();
-        for (FullNameSuffix suffix : FullNameSuffix.values()) {
+        for (FullNameSuffix suffix : EnumSet.allOf(FullNameSuffix.class)) {
             // Check Enum Name (JR)
             if (suffix.name().equalsIgnoreCase(cleanText)) return suffix;
             // Check Display Name (Jr.)

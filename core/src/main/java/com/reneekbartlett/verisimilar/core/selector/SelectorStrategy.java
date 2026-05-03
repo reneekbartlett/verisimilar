@@ -1,23 +1,18 @@
 package com.reneekbartlett.verisimilar.core.selector;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 
 public interface SelectorStrategy<T> {
-    RandomSelector<T> buildSelector(Map<T, Double> weights);
+    RandomSelector<T> buildSelector(Map<T, Double> weights, TemplateField field);
 
-    RandomSelector<T> buildSelector(Set<T> weights);
+    RandomSelector<T> buildSelector(Set<T> weights, TemplateField field);
 
-    T select(Map<T, Double> map);
+    T select(Map<T, Double> map, TemplateField field);
 
-    T select(T[] values);
-
-    T select(List<T> valueList);
-
-    T selectWithFilter(Map<T, Double> map, SelectionFilter filter);
+    T select(T[] values, TemplateField field);
 
     String getType();
 }

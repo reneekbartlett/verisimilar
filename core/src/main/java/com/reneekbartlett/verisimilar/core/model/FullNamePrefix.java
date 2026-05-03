@@ -1,6 +1,7 @@
 package com.reneekbartlett.verisimilar.core.model;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,7 +58,7 @@ public enum FullNamePrefix {
 
         String cleanText = text.trim().replace(".", "");
 
-        for (FullNamePrefix prefix : FullNamePrefix.values()) {
+        for (FullNamePrefix prefix : EnumSet.allOf(FullNamePrefix.class)) {
             if (prefix.name().equalsIgnoreCase(cleanText)) return prefix;
             if (prefix.displayName.replace(".", "").equalsIgnoreCase(cleanText)) return prefix;
             for (String alias : prefix.aliases) {

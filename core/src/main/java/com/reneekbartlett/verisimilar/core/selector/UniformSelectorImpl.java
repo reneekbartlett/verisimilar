@@ -10,6 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.filter.EntryFilter;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
@@ -18,37 +19,41 @@ public final class UniformSelectorImpl<T> implements RandomSelector<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(UniformSelectorImpl.class);
 
     private final List<T> items;
+    private final TemplateField field;
     private final int valueCount;
 
     private SelectionFilter filter;
 
-    public UniformSelectorImpl(List<T> items) {
+    public UniformSelectorImpl(List<T> items, TemplateField field) {
         Objects.requireNonNull(items, "items");
         if (items.isEmpty()) {
             LOGGER.error("Items cannot be empty");
             throw new IllegalArgumentException("Items cannot be empty");
         }
         this.items = items;
+        this.field = field;
         this.valueCount = items.size();
     }
 
-    public UniformSelectorImpl(Set<T> items) {
+    public UniformSelectorImpl(Set<T> items, TemplateField field) {
         Objects.requireNonNull(items, "items");
         if (items.isEmpty()) {
             LOGGER.error("Items cannot be empty");
             throw new IllegalArgumentException("Items cannot be empty");
         }
         this.items = new ArrayList<>(items);
+        this.field = field;
         this.valueCount = items.size();
     }
 
-    public UniformSelectorImpl(Map<T, Double> weights) {
+    public UniformSelectorImpl(Map<T, Double> weights, TemplateField field) {
         Objects.requireNonNull(weights, "weights");
         if (weights.isEmpty()) {
             LOGGER.error("Weighted map cannot be empty");
             throw new IllegalArgumentException("Weighted map cannot be empty");
         }
         this.items = new ArrayList<>(weights.keySet());
+        this.field = field;
         this.valueCount = items.size();
     }
 
@@ -57,7 +62,7 @@ public final class UniformSelectorImpl<T> implements RandomSelector<T> {
     public T select() {
         if(filter !=null && !filter.isEmpty()) {
             List<String> stringList = items.stream().map(String::valueOf).toList();
-            List<String> filteredList = EntryFilter.apply(stringList, filter);
+            List<String> filteredList = EntryFilter.apply(stringList, filter, field);
             LOGGER.debug("select (filtered) - original.size():{}, filteredList.size():{}", stringList.size(), filteredList.size());
             if (!filteredList.isEmpty()) {
                 int index = ThreadLocalRandom.current().nextInt(filteredList.size());

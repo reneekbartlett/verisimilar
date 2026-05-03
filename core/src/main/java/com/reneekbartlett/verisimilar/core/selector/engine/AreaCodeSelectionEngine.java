@@ -55,7 +55,7 @@ public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDat
         AreaCodeDatasetResult result = datasetResolver().resolve(AreaCodeDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(result.datasets().size());
         result.datasets().forEach((nameKey, map) -> {
-            RandomSelector<String> selector = strategy.buildSelector(map);
+            RandomSelector<String> selector = strategy.buildSelector(map, field());
             selectorsByNameKey.put(nameKey, selector);
         });
         LOGGER.debug("AreaCodeDatasetResult=[{}]", result);
@@ -108,7 +108,7 @@ public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDat
     }
 
     private USState getRandomState() {
-        RandomSelector<USState> stateSelector = new UniformSelectorImpl<>(usStateOptions);
+        RandomSelector<USState> stateSelector = new UniformSelectorImpl<>(usStateOptions, TemplateField.STATE);
         return stateSelector.select();
     }
 }

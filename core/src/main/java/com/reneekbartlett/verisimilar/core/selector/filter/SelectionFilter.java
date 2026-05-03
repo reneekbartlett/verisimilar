@@ -39,6 +39,7 @@ public record SelectionFilter(
         Optional<Integer> maxYear,
 
         Optional<PostalAddress> postalAddress,
+        Optional<String> city,
         Optional<EnumSet<USState>> states,
         Optional<USState> state,
         Optional<Set<String>> zipCodes,
@@ -78,6 +79,7 @@ public record SelectionFilter(
         maxYear = (maxYear == null) ? Optional.empty() : maxYear;
 
         postalAddress = postalAddress == null ? Optional.empty() : postalAddress;
+        city = city == null ? Optional.empty() : city;
         states = states == null ? Optional.empty() : states;
         state = state == null ? Optional.empty() : state;
         zipCodes = zipCodes == null ? Optional.empty() : zipCodes;
@@ -130,8 +132,9 @@ public record SelectionFilter(
                 && nickName.isEmpty()
                 && gender.isEmpty()
                 && birthday.isEmpty()
-                //&& minYear.isEmpty()
-                //&& maxYear.isEmpty()
+                && minYear.isEmpty()
+                && maxYear.isEmpty()
+                && city.isEmpty()
                 && states.isEmpty()
                 && state.isEmpty()
                 && zipCodes.isEmpty()
@@ -160,6 +163,7 @@ public record SelectionFilter(
 
                 Optional.empty(), // PostalAddress
 
+                Optional.empty(), // city
                 Optional.empty(), // state
                 Optional.empty(), // states
                 Optional.empty(), // zipCodes
@@ -206,6 +210,7 @@ public record SelectionFilter(
         private Integer maxYear;
 
         private PostalAddress postalAddress;
+        private String city;
         private EnumSet<USState> states;
         private USState state;
         private Set<String> zipCodes;
@@ -244,6 +249,10 @@ public record SelectionFilter(
             this.lastName = filter.lastName.orElse(null);
             this.nickName = filter.nickName.orElse(null);
             this.birthday = filter.birthday.orElse(null);
+
+            this.city = filter.city.orElse(null);
+            this.state = filter.state.orElse(null);
+            this.zipCodes = filter.zipCodes.orElse(null);
 
             this.region = filter.region.orElse(null);
 
@@ -311,6 +320,12 @@ public record SelectionFilter(
             this.zipCode(value.zip());
             this.equalToMap.put(TemplateField.ZIP_CODE, value.zip());
 
+            return this;
+        }
+
+        public Builder city(String value) {
+            this.city = value;
+            this.equalToMap.put(TemplateField.CITY, value);
             return this;
         }
 
@@ -437,6 +452,7 @@ public record SelectionFilter(
                     Optional.ofNullable(maxYear),
 
                     Optional.ofNullable(postalAddress),
+                    Optional.ofNullable(city),
                     Optional.ofNullable(states),
                     Optional.ofNullable(state),
                     Optional.ofNullable(zipCodes),

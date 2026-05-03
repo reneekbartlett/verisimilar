@@ -41,7 +41,7 @@ public class KeywordSelectionEngine extends AbstractSelectionEngine<KeywordDatas
         KeywordDatasetResult keywordDatasetResult = datasetResolver().resolve(KeywordDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(keywordDatasetResult.datasets().size());
         keywordDatasetResult.datasets().forEach((nameKey, map) -> {
-            RandomSelector<String> selector = strategy.buildSelector(map);
+            RandomSelector<String> selector = strategy.buildSelector(map, field());
             this.selectorsByNameKey.put(nameKey, selector);
         });
         LOGGER.debug("setup - KeywordDatasetResult:{}", keywordDatasetResult.toString());

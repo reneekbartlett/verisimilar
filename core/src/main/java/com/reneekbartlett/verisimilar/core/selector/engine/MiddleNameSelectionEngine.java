@@ -53,7 +53,7 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
 
     protected void setup() {
         this.genderIdentityMap = GenderIdentity.defaultMap();
-        this.genderSelector = new WeightedSelectorImpl<>(genderIdentityMap);
+        this.genderSelector = new WeightedSelectorImpl<>(genderIdentityMap, TemplateField.GENDER_IDENTITY);
 
         // TODO:  Create cfg_fullname_middle_female_ETHNICITY.csv & cfg_fullname_middle_male_ETHNICITY.csv files.
         this.ethnicitiesMap = Map.of(Ethnicity.UNKNOWN, 0.0001);
@@ -68,7 +68,7 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
             for(Ethnicity ethnicity : ethnicitiesMap.keySet()){
                 genderIdentityMap.keySet().forEach(gender -> {
                     NameKey nameKey = new NameKey(gender, ethnicity);
-                    RandomSelector<String> selector = strategy.buildSelector(middleNameDatasetResult.get(nameKey));
+                    RandomSelector<String> selector = strategy.buildSelector(middleNameDatasetResult.get(nameKey), field());
                     selectorsByNameKey.put(nameKey, selector);
                 });
             }
@@ -79,6 +79,10 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
 
     @Override
     public String select(MiddleNameDatasetKey key, SelectionFilter filter) {
+        if(filter != null && !filter.middleName().isEmpty()) {
+            return filter.middleName().get();
+        }
+
         // If GenderIdentity is not specified, pick a random 1 then only return first letter.
         GenderIdentity gender = filter.gender().orElse(genderSelector.select());
 
