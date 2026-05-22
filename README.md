@@ -16,3 +16,12 @@ I have many, MANY ideas for future features, including:
 
 
 I am using just US data for now and my aim is to try to stay as diverse as possible.  STAY TUNED.
+
+
+# API Configuration
+-Dspring.config.additional-location=file:/src/repos/reneekbartlett/portfolio/parent/config/verisimilar/api/
+
+# API Requests
+
+http://localhost:8085/api/generate/person?api_key=A1B2C3D4E5
+
