@@ -38,7 +38,12 @@ public class BulkGeneratorController {
             @RequestParam(name = "lineCount", required = false) Long lineCount
     ) {
         try {
-            String[] out = bulkService.generateBulk(lineCount);
+            String[] out;
+            if(lineCount == null) {
+                out = bulkService.generateBulk();
+            } else {
+                out = bulkService.generateBulk(lineCount);
+            }
             return ResponseEntity.ok(out);
         } catch (Exception e) {
             LOGGER.error("Error.", e);
@@ -46,7 +51,8 @@ public class BulkGeneratorController {
         }
     }
 
-    public ResponseEntity<Resource> downloadFile() {
+    // TODO:  Not currently implemented.
+    private ResponseEntity<Resource> downloadFile() {
         ExportData data = new ExportData("Sample Report", "This is generated text content.");
         Resource resource = fileService.generateTextFile(data);
 

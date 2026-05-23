@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.reneekbartlett.verisimilar.api.dto.PersonResponseDto;
 import com.reneekbartlett.verisimilar.core.generator.AsyncPersonGenerator;
-//import com.reneekbartlett.verisimilar.core.generator.PersonGenerator;
 import com.reneekbartlett.verisimilar.core.model.PersonRecord;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
@@ -17,7 +16,6 @@ public class GeneratePersonService {
     private static final Logger LOGGER = LoggerFactory.getLogger(GeneratePersonService.class);
 
     //private final JsonMapper jsonMapper;
-    //private final PersonGenerator personGenerator;
     private final AsyncPersonGenerator asyncPersonGenerator;
 
     public GeneratePersonService(AsyncPersonGenerator asyncPersonGenerator) {

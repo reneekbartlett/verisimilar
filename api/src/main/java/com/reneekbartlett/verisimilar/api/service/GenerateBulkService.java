@@ -11,11 +11,11 @@ import java.util.concurrent.Semaphore;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.reneekbartlett.verisimilar.api.util.FileUtils;
 import com.reneekbartlett.verisimilar.core.generator.AsyncPersonGenerator;
-//import com.reneekbartlett.verisimilar.core.generator.PersonGenerator;
 import com.reneekbartlett.verisimilar.core.io.AsyncFileWriter;
 import com.reneekbartlett.verisimilar.core.model.PersonRecord;
 
@@ -25,14 +25,16 @@ public class GenerateBulkService {
     private final long DEFAULT_LINE_COUNT = 10;
     private static final Logger LOGGER = LoggerFactory.getLogger(GenerateBulkService.class);
 
-    //private static final String FIELD_DELIM = "\t";
-    private static final Long MAX_LINES = 10000L;
-    private static final String OUTFILE_DIR = "/opt/reneekbartlett/outfiles/";
+    @Value("${generator.bulk.max-lines:1000}")
+    private Long maxLines;
 
-    private AsyncPersonGenerator personGenerator;
+    @Value("${generator.bulk.outfile.dir:/tmp/verisimilar/outfiles/}")
+    private String outfileDir;
 
-    public GenerateBulkService(AsyncPersonGenerator personGenerator) {
-        this.personGenerator = personGenerator;
+    private AsyncPersonGenerator asyncPersonGenerator;
+
+    public GenerateBulkService(AsyncPersonGenerator asyncPersonGenerator) {
+        this.asyncPersonGenerator = asyncPersonGenerator;
     }
 
     /***
@@ -45,19 +47,34 @@ public class GenerateBulkService {
     }
 
     public String[] generateBulk(long count) throws Exception {
-        if(count > MAX_LINES) {
-            count = MAX_LINES;
-            LOGGER.info("Over max!  Limiting to " + MAX_LINES + " lines.");
+        if(count > maxLines) {
+            count = maxLines;
+            LOGGER.info("Over max!  Limiting to " + maxLines + " lines.");
         }
 
-        int fileCount;
+        int returnCount = (int)count;
+        String[] people = new String[returnCount];
+        for (int i = 0; i < count; i++) {
+            people[i] = asyncPersonGenerator.generate().toString();
+            //LOGGER.info(people[i].toString());
+        }
+        return people;
+    }
+
+    // TODO:  Not currently implemented.  Need to add OUTFILE_DIR as config property, other considerations.
+    public String[] generateBulkFile(long lineCount, int fileCount) throws Exception {
+        if(lineCount > maxLines) {
+            lineCount = maxLines;
+            LOGGER.info("Over max!  Limiting to " + maxLines + " lines.");
+        }
+
         int linesPerFile;
-        if(count >= Integer.MAX_VALUE) {
+        if(lineCount >= Integer.MAX_VALUE) {
             fileCount = 2;
             linesPerFile = Integer.MAX_VALUE;
         } else {
             fileCount = 1;
-            linesPerFile = (int)count;
+            linesPerFile = (int)lineCount;
         }
 
         String[] outFiles = new String[fileCount];
@@ -69,7 +86,7 @@ public class GenerateBulkService {
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             for(int x = 0; x < fileCount; x++) {
                 final int fileIndex = x;
-                Path filePath = Path.of(OUTFILE_DIR, "people_"+count+"_"+ts+"_"+fileIndex+".csv");
+                Path filePath = Path.of(outfileDir, "people_"+lineCount+"_"+ts+"_"+fileIndex+".csv");
 
                 // rename file, don't overwrite/append
                 if (Files.exists(filePath)) {
@@ -78,7 +95,7 @@ public class GenerateBulkService {
 
                 var people = new PersonRecord[linesPerFile];
                 for (int i = 0; i < linesPerFile; i++) {
-                    people[i] = personGenerator.generate();
+                    people[i] = asyncPersonGenerator.generate();
                     //LOGGER.info(people[i].toString());
                 }
 
@@ -97,7 +114,7 @@ public class GenerateBulkService {
                     }
                     return null;
                 });
-        
+
                 outFiles[x] = filePath.toString();
             }
         }
