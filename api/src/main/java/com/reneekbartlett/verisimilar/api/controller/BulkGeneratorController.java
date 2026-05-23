@@ -16,9 +16,6 @@ import com.reneekbartlett.verisimilar.api.service.GenerateBulkService;
 import com.reneekbartlett.verisimilar.api.service.FileOutputService;
 import com.reneekbartlett.verisimilar.api.service.FileOutputService.ExportData;
 
-//import io.micrometer.core.instrument.Timer;
-//import lombok.extern.slf4j.Slf4j;
-
 @RestController
 @RequestMapping("/api/generateBulk")
 public class BulkGeneratorController {

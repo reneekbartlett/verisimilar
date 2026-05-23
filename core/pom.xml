@@ -21,6 +21,27 @@
           <artifactId>snakeyaml</artifactId>
           <scope>compile</scope>
       </dependency>
+
+      <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-common</artifactId>
+            <version>1.17.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-encoding</artifactId>
+            <version>1.17.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-column</artifactId>
+            <version>1.17.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-hadoop</artifactId>
+            <version>1.17.0</version>
+        </dependency>
   </dependencies>
   <build>
     <resources>
@@ -28,12 +49,9 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
-            <!--<resource>
-                <directory>src/main/java/com/reneekbartlett/verisimilar/core/data</directory>
-                <targetPath>com/reneekbartlett/verisimilar/core/data</targetPath>
-            </resource>-->
             <resource>
-                <directory>../../parent/config/verisimilar/core/</directory>
+                <!--<directory>../../parent/config/verisimilar/core/</directory>-->
+                <directory>${verisimilar.core.config.dir}</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>

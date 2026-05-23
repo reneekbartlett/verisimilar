@@ -26,6 +26,10 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
         <main.basedir>${basedir}/../..</main.basedir>
+
+        <verisimilar.core.config.dir>../../parent/config/verisimilar/core/</verisimilar.core.config.dir>
+        <verisimilar.api.config.dir>../../parent/config/verisimilar/api/</verisimilar.api.config.dir>
+
         <m2eclipse.wtp.contextRoot>/</m2eclipse.wtp.contextRoot>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -58,81 +62,28 @@
             <artifactId>logback-classic</artifactId>
             <!-- <version>1.5.12</version> Use 1.3.x for JDK 8; 1.5.x for JDK 11+ -->
         </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
-            <scope>runtime</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
             <version>1.15.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.parquet</groupId>
-            <artifactId>parquet-common</artifactId>
-            <version>1.17.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.parquet</groupId>
-            <artifactId>parquet-encoding</artifactId>
-            <version>1.17.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.parquet</groupId>
-            <artifactId>parquet-column</artifactId>
-            <version>1.17.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.parquet</groupId>
-            <artifactId>parquet-hadoop</artifactId>
-            <version>1.17.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>tech.tablesaw</groupId>
-            <artifactId>tablesaw-core</artifactId>
-            <version>0.44.4</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>tech.tablesaw</groupId>
-            <artifactId>tablesaw-jsplot</artifactId>
-            <version>0.44.4</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
+        <!-- TODO: REMOVE? -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
 
-        <dependency>
+        <!-- NOT USED (YET) -->
+        <!--<dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
-        </dependency>
+        </dependency>-->
 
+        <!-- FOR TESTING -->
         <!--<dependency>
             <groupId>com.googlecode.libphonenumber</groupId>
             <artifactId>libphonenumber</artifactId>
@@ -146,16 +97,11 @@
         </dependency>
 
         <!--<dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-        </dependency>-->
-
-        <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
             <version>${testcontainers.version}</version>
             <scope>test</scope>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>org.testcontainers</groupId>
@@ -167,17 +113,10 @@
     </dependencies>
 
     <build>
-        <!--<sourceDirectory>src</sourceDirectory>
-        <testSourceDirectory>test</testSourceDirectory>-->
+        <!--<sourceDirectory>src</sourceDirectory>-->
+        <!--<testSourceDirectory>test</testSourceDirectory>-->
         <pluginManagement>
             <plugins>
-                <!--
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>4.0.2</version>
-                </plugin>
-                -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -200,8 +139,18 @@
 
     <profiles>
         <profile>
+            <id>dev</id>
+            <properties>
+                <application.security.allow-url-api-keys>true</application.security.allow-url-api-keys>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
             <id>test</id>
             <properties>
+                <application.security.allow-url-api-keys>true</application.security.allow-url-api-keys>
                 <!-- Hikari tuning for Testcontainers -->
                 <spring.datasource.hikari.max-lifetime>30000</spring.datasource.hikari.max-lifetime>
                 <spring.datasource.hikari.idle-timeout>10000</spring.datasource.hikari.idle-timeout>

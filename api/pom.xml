@@ -40,10 +40,55 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>tech.tablesaw</groupId>
+            <artifactId>tablesaw-core</artifactId>
+            <version>0.44.4</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>tech.tablesaw</groupId>
+            <artifactId>tablesaw-jsplot</artifactId>
+            <version>0.44.4</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -96,37 +141,28 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>tools.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>3.0.0-rc2</version>
-        </dependency>
+        </dependency>-->
   </dependencies>
 
   <build>
-    <!--<sourceDirectory>src</sourceDirectory>-->
-    <!--<testSourceDirectory>test</testSourceDirectory>-->
     <resources>
       <resource>
         <directory>src/main/resources</directory>
-        <filtering>false</filtering>
       </resource>
       <resource>
         <!-- External Location, Not Included in Git sub-module -->
-        <directory>../../parent/config/verisimilar/api/</directory>
-        <filtering>false</filtering>
+        <!--<directory>../../parent/config/verisimilar/api/</directory>-->
+        <directory>${verisimilar.core.api.dir}</directory>
         <includes>
-            <include>*.properties</include>
-            <include>*.yaml</include>
+            <!--<include>*.properties</include>-->
+            <include>api.yaml</include>
         </includes>
       </resource>
     </resources>
-    <!--<testResources>
-      <testResource>
-        <directory>src/test/java/com/reneekbartlett/verisimilar/api/data</directory>
-        <targetPath>com/reneekbartlett/verisimilar/api/data</targetPath>
-      </testResource>
-    </testResources>-->
 
     <plugins>
       <plugin>
