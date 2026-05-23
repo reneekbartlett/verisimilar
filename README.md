@@ -21,9 +21,9 @@ I am using just US data for now and my aim is to try to stay as diverse as possi
 
 ##### PLEASE NOTE:  Documentation is in progress and currently incomplete.  I'm working to configure for other environments, but right now there are some file paths / properties that hard coded to use my local environment.  If you want to actually pull and run, use at own risk. #####
 
-1) Build the api & core jars using /verisimilar/pom.xml in the parent module:
+1) Build the api & core jars using /verisimilar/pom.xml in the parent module.
 * verisimilar-api-1.0.0-SNAPSHOT.jar
-* verisimilar-api-1.0.0-SNAPSHOT.jar
+* verisimilar-core-1.0.0-SNAPSHOT.jar
 
 2) Update the properties file: /api/src/main/resources/api.properties 
 * Set the spring.config.import property to a yaml file
