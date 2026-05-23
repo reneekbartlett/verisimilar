@@ -13,8 +13,6 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan
 public class VerisimilarServiceApplication extends SpringBootServletInitializer {
 
-    //private Logger logger = LoggerFactory.getLogger(WebApplication.class);
-
     public static void main(String[] args) throws Exception {
         SpringApplication.run(VerisimilarServiceApplication.class, args);
     }
