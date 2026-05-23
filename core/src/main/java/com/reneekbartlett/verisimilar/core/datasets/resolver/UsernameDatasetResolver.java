@@ -13,7 +13,6 @@ public class UsernameDatasetResolver extends AbstractDatasetResolver<UsernameDat
 
     public UsernameDatasetResolver(ResourceLoaderUtil loader) {
         super(loader);
-        //this.allTemplates = allTemplates;
     }
 
     @Override
@@ -24,7 +23,6 @@ public class UsernameDatasetResolver extends AbstractDatasetResolver<UsernameDat
         for(String k : keywords) {
             usernameWeights.put(k, w);
         }
-        //return new UsernameDatasetResult(usernameWeights, allTemplates);
         return new UsernameDatasetResult(usernameWeights);
     }
 

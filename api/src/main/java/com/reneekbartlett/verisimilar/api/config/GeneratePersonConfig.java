@@ -8,13 +8,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class GeneratePersonConfig {
-//    @Bean
-//    public PersonGenerator personRecordGenerator(
-//            @Qualifier("datasetSelectionEngineRegistry") DatasetSelectionEngineRegistry datasetSelectionEngineRegistry
-//    ) {
-//        return new PersonGenerator(datasetSelectionEngineRegistry);
-//    }
-
     @Bean
     public AsyncPersonGenerator asyncPersonRecordGenerator(
             @Qualifier("datasetSelectionEngineRegistry") DatasetSelectionEngineRegistry datasetSelectionEngineRegistry

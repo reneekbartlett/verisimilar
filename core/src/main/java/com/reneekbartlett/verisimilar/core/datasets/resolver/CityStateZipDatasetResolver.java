@@ -11,7 +11,6 @@ import com.reneekbartlett.verisimilar.core.selector.engine.CityStateZipSelection
 public class CityStateZipDatasetResolver extends AbstractDatasetResolver<CityStateZipDatasetKey, CityStateZipDatasetResult> {
 
     /* Example: MA,Easthampton$MA$01027 */
-    private static final String DEFAULT_FILE = "datasets/cfg_postaladdress_citystatezip_usstate_ALL.csv";
     private static final String DEFAULT_FILE_FORMAT = "datasets/cfg_postaladdress_citystatezip_usstate_%s.csv";
 
     public CityStateZipDatasetResolver(ResourceLoaderUtil loader) {
@@ -37,7 +36,8 @@ public class CityStateZipDatasetResolver extends AbstractDatasetResolver<CitySta
     private Map<String,Double> loadValuesAsMap(CityStateZipDatasetKey key) {
         // TODO:  Use weights from USState enum?  USState[] states = USState.values();
         Map<String,Double> map = new HashMap<>();
-        Map<String,String> statesWithCityStateZip = loader.loadStringMap(DEFAULT_FILE, 1);
+        String filePath = String.format(DEFAULT_FILE_FORMAT, "ALL");
+        Map<String,String> statesWithCityStateZip = loader.loadStringMap(filePath, 1);
         for(String v : statesWithCityStateZip.keySet()) {
             map.put(v, 0.0001);
         }

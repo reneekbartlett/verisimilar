@@ -10,18 +10,9 @@ With my 10+ years experience as a Software Engineer for an email database servic
 I have many, MANY ideas for future features, including:
 * Data Reporting/Charting
 * User forms to allow custom weighting by features like Gender, Ethnicity, Region.
-* Data generation 'modes', i.e. a mode to generate a really toxic file of data
+* Data generation 'modes', i.e. a mode to generate a file containing 'toxic' data (i.e. domains known to get you blacklisted, SQL injection, bad characters, missing delimiters, partial lines, bad line endings, etc.)
 * Use of public data validation API's to validate generated data.
-* Add ZIP4 to Zipcode
+* Add ZIP4 to zipcode
 
 
 I am using just US data for now and my aim is to try to stay as diverse as possible.  STAY TUNED.
-
-
-# API Configuration
--Dspring.config.additional-location=file:/src/repos/reneekbartlett/portfolio/parent/config/verisimilar/api/
-
-# API Requests
-
-http://localhost:8085/api/generate/person?api_key=A1B2C3D4E5
-

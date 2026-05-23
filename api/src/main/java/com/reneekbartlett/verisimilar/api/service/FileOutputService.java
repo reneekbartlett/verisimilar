@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class FileOutputService {
-    
-    
-    
+
     public record ExportData(String title, String content) {}
 
     public InputStreamResource generateTextFile(ExportData data) {

@@ -4,7 +4,6 @@ import com.reneekbartlett.verisimilar.core.generator.EmailAddressGenerator;
 import com.reneekbartlett.verisimilar.core.generator.FullNameGenerator;
 import com.reneekbartlett.verisimilar.core.generator.PhoneNumberGenerator;
 import com.reneekbartlett.verisimilar.core.generator.PostalAddressRecordGenerator;
-//import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.generator.UsernameGenerator;
 import com.reneekbartlett.verisimilar.core.selector.engine.DomainSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.FirstNameSelectionEngine;

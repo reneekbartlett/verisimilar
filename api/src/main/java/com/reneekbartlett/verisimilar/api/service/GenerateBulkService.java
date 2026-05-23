@@ -92,7 +92,6 @@ public class GenerateBulkService {
                         LOGGER.info("Write complete! " + filePath);
                     } catch (CompletionException | IOException ex) {
                         LOGGER.error("Async write failed for " + filePath, ex);
-                        
                     } finally {
                         semaphore.release();
                     }

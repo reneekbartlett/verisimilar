@@ -11,7 +11,7 @@ import com.reneekbartlett.verisimilar.core.datasets.result.AddressTwoDatasetResu
  */
 public class AddressTwoDatasetResolver extends AbstractDatasetResolver<AddressTwoDatasetKey, AddressTwoDatasetResult> {
 
-    private static final String DEFAULT_FILE = "datasets/cfg_postaladdress_address2_unit_ALL.csv";
+    private static final String DEFAULT_FILE_FORMAT = "datasets/cfg_postaladdress_address2_unit_%s.csv";
 
     public AddressTwoDatasetResolver(ResourceLoaderUtil loader) {
         super(loader);
@@ -34,7 +34,7 @@ public class AddressTwoDatasetResolver extends AbstractDatasetResolver<AddressTw
     }
 
     private Map<String, Double> loadDataset(AddressTwoDatasetKey key) {
-        //LOGGER.debug("Loading default:" + DEFAULT_FILE);
-        return loader.loadWeightedMap(DEFAULT_FILE);
+        String filePath = String.format(DEFAULT_FILE_FORMAT, "ALL");
+        return loader.loadWeightedMap(filePath);
     }
 }

@@ -13,7 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
+//import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -49,7 +49,7 @@ public class SecurityConfig {
                     authFilter(),
                     UsernamePasswordAuthenticationFilter.class
             )
-            //.addFilterAfter(new RateLimitingFilter(rateLimitService),ApiKeyAuthFilter.class);
+            //.addFilterAfter(new RateLimitingFilter(rateLimitService), ApiKeyAuthFilter.class);
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/public/**").permitAll() // status
                 .requestMatchers("/api/generate/**").authenticated()
