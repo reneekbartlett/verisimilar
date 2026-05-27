@@ -1,6 +1,7 @@
 package com.reneekbartlett.verisimilar.core.model;
 
 import java.time.LocalDate;
+import java.util.EnumSet;
 
 public enum AstrologySign {
     ARIES("Aries", "March 21", "April 19"),
@@ -40,7 +41,7 @@ public enum AstrologySign {
     }
 
     public static AstrologySign fromName(String name) {
-        for (AstrologySign sign : values()) {
+        for (AstrologySign sign : EnumSet.allOf(AstrologySign.class)) {
             if (name.equalsIgnoreCase(sign.displayName)) {
                 return sign;
             }

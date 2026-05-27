@@ -52,12 +52,11 @@ public enum AddressCategory {
     }
 
     public static AddressCategory fromLabel(String label) {
-        for (AddressCategory cat : values()) {
+        for (AddressCategory cat : EnumSet.allOf(AddressCategory.class)) {
             if (cat.getLabel().equalsIgnoreCase(label)) {
                 return cat;
             }
         }
-        //throw new IllegalArgumentException("Invalid state abbreviation: " + abbr);
         return null;
     }
 }

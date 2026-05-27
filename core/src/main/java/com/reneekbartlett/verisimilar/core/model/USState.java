@@ -88,13 +88,12 @@ public enum USState {
 
     public static USState fromAbbreviation(String abbr) {
         if(abbr != null) {
-            for (USState s : values()) {
+            for (USState s : EnumSet.allOf(USState.class)) {
                 if (s.name().equalsIgnoreCase(abbr)) {
                     return s;
                 }
             }
         }
-        //throw new IllegalArgumentException("Invalid state abbreviation: " + abbr);
         return null;
     }
 

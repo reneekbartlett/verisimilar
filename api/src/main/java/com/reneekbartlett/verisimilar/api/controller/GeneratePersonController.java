@@ -2,9 +2,13 @@ package com.reneekbartlett.verisimilar.api.controller;
 
 import com.reneekbartlett.verisimilar.api.dto.PersonResponseDto;
 import com.reneekbartlett.verisimilar.api.service.GeneratePersonService;
+import com.reneekbartlett.verisimilar.api.util.JsonApiParser;
+import com.reneekbartlett.verisimilar.api.util.JsonApiParser.FilterConditions;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.model.USState;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.EnumSet;
 
@@ -25,17 +29,24 @@ public class GeneratePersonController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> generate(
+    public ResponseEntity<PersonResponseDto> generate(
             @RequestParam(name="gender", required=false) String gender,
-            @RequestParam(name="state", required=false) String state
+            @RequestParam(name="state", required=false) String state,
+            HttpServletRequest request
     ) {
-        SelectionFilter.Builder filter = SelectionFilter.builder();
-        if(GenderIdentity.fromText(gender) != null) filter.gender(GenderIdentity.fromText(gender));
-        if(USState.fromAbbreviation(state) != null) filter.states(EnumSet.of(USState.fromAbbreviation(state)));
+        SelectionFilter.Builder filterBuilder;
+        FilterConditions filters = JsonApiParser.parse(request.getParameterMap());
+        if (filters.size() > 0) {
+            filterBuilder = filters.toSelectionFilterBuilder();
+        } else {
+            filterBuilder = SelectionFilter.builder();
+        }
 
-        PersonResponseDto person = generateService.generate(filter.build());
+        if(GenderIdentity.fromText(gender) != null) filterBuilder.gender(GenderIdentity.fromText(gender));
+        if(USState.fromAbbreviation(state) != null) filterBuilder.states(EnumSet.of(USState.fromAbbreviation(state)));
 
-        return ResponseEntity.ok()
-                .body(person.toString());
+        PersonResponseDto person = generateService.generate(filterBuilder.build());
+
+        return ResponseEntity.ok().body(person);
     }
 }

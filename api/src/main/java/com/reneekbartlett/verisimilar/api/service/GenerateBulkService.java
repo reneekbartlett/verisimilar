@@ -52,6 +52,7 @@ public class GenerateBulkService {
             LOGGER.info("Over max!  Limiting to " + maxLines + " lines.");
         }
 
+        // TODO:  Check Fields to return
         int returnCount = (int)count;
         String[] people = new String[returnCount];
         for (int i = 0; i < count; i++) {

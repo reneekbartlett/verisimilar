@@ -69,7 +69,7 @@ public enum Generation {
 
     // TODO: Return list?
     public static Generation fromYear(int year) {
-        for (Generation gen : values()) {
+        for (Generation gen : EnumSet.allOf(Generation.class)) {
             if (year >= gen.startYear && year <= gen.endYear) {
                 return gen;
             }
@@ -87,9 +87,12 @@ public enum Generation {
     }
 
     public static List<Generation> getByCategory(boolean isMicro) {
-        return Arrays.stream(values())
+        return EnumSet.allOf(Generation.class).stream()
                 .filter(s -> s.isMicro == isMicro)
                 .collect(Collectors.toList());
+        //return Arrays.stream(values())
+        //        .filter(s -> s.isMicro == isMicro)
+        //        .collect(Collectors.toList());
     }
 
     public static boolean validateGeneration(Generation generation) throws IllegalArgumentException {

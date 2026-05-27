@@ -58,7 +58,7 @@ public enum GenderIdentity {
 
     public static GenderIdentity fromText(String text) {
         if(text != null) {
-            for (GenderIdentity g : values()) {
+            for (GenderIdentity g : EnumSet.allOf(GenderIdentity.class)) {
                 if (g.name().equalsIgnoreCase(text)) {
                     return g;
                 } else if (text.equalsIgnoreCase("F")) {

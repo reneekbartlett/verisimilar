@@ -58,6 +58,7 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Included for testing, possible future UI output -->
         <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-core</artifactId>

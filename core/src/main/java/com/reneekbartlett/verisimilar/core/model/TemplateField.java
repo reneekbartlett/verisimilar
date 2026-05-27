@@ -1,5 +1,7 @@
 package com.reneekbartlett.verisimilar.core.model;
 
+import java.util.EnumSet;
+
 public enum TemplateField {
     FIRST_NAME("FIRST"),
     MIDDLE_NAME("MIDDLE"),
@@ -59,15 +61,14 @@ public enum TemplateField {
         return placeholder;
     }
 
-    public static TemplateField fromValue(String templateValue) {
-        if(templateValue != null) {
-            for (TemplateField field : values()) {
-                if (field.name().equalsIgnoreCase(templateValue)) {
+    public static TemplateField fromValue(String value) {
+        if(value != null) {
+            for (TemplateField field : EnumSet.allOf(TemplateField.class)) {
+                if (field.name().equalsIgnoreCase(value) || field.getLabel().equalsIgnoreCase(value)) {
                     return field;
                 }
             }
         }
-        //throw new IllegalArgumentException("Invalid state abbreviation: " + abbr);
         return null;
     }
 }

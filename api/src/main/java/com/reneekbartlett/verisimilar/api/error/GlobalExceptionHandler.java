@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
     private ResponseEntity<ApiError> buildResponse(HttpStatus status, String message, WebRequest request) {
         String path = request.getDescription(false).replace("uri=", "");
         ApiError error = new ApiError(
-            Instant.now(),
+            Instant.now().toString(),
             status.value(),
             status.getReasonPhrase(),
             message,
@@ -67,7 +67,7 @@ public class GlobalExceptionHandler {
     }
 
     public record ApiError(
-            Instant timestamp,
+            String timestamp,
             int status,
             String error,
             String message,

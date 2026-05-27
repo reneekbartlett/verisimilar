@@ -15,7 +15,6 @@ public class GeneratePersonService {
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(GeneratePersonService.class);
 
-    //private final JsonMapper jsonMapper;
     private final AsyncPersonGenerator asyncPersonGenerator;
 
     public GeneratePersonService(AsyncPersonGenerator asyncPersonGenerator) {
@@ -31,13 +30,13 @@ public class GeneratePersonService {
         return new PersonResponseDto(person.firstName(), person.middleName(), person.lastName(), 
                 person.birthday(),
                 person.gender(),
-                person.address1(), // String address1,
-                person.address2(), // String address2,
-                person.city(), // String city,
-                person.state(), // String state,
-                person.zip(), // String zip,
-                person.emailAddress().email(), // String emailAddress,
-                person.phoneNumber().toString() // String phoneNumber
+                person.address1(),
+                person.address2(),
+                person.city(),
+                person.state(),
+                person.zip(),
+                person.emailAddress().email(),
+                person.phoneNumber().toString()
         );
     }
 }
