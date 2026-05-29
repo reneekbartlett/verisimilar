@@ -5,12 +5,14 @@ import com.reneekbartlett.verisimilar.api.service.GeneratePersonService;
 import com.reneekbartlett.verisimilar.api.util.JsonApiParser;
 import com.reneekbartlett.verisimilar.api.util.JsonApiParser.FilterConditions;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.USState;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.EnumSet;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +26,19 @@ public class GeneratePersonController {
 
     private final GeneratePersonService generateService;
 
+    private List<TemplateField> filterFields;
+
+    private final JsonApiParser jsonRequestParser;
+
     public GeneratePersonController(GeneratePersonService generateService) {
         this.generateService = generateService;
+        this.filterFields = List.of(TemplateField.FIRST_NAME, TemplateField.MIDDLE_NAME, TemplateField.LAST_NAME,
+                TemplateField.CITY,
+                TemplateField.STATE, 
+                TemplateField.GENDER_IDENTITY,
+                TemplateField.DOMAIN, TemplateField.DOMAIN_TYPE,
+                TemplateField.USERNAME, TemplateField.USERNAME_TYPE);
+        this.jsonRequestParser = new JsonApiParser(this.filterFields);
     }
 
     @GetMapping
@@ -35,7 +48,7 @@ public class GeneratePersonController {
             HttpServletRequest request
     ) {
         SelectionFilter.Builder filterBuilder;
-        FilterConditions filters = JsonApiParser.parse(request.getParameterMap());
+        FilterConditions filters = jsonRequestParser.parse(request.getParameterMap());
         if (filters.size() > 0) {
             filterBuilder = filters.toSelectionFilterBuilder();
         } else {

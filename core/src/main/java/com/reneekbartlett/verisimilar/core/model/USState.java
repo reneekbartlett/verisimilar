@@ -97,6 +97,17 @@ public enum USState {
         return null;
     }
 
+    public static USState fromText(String stateText) {
+        if(stateText != null) {
+            for (USState s : EnumSet.allOf(USState.class)) {
+                if (s.name().equalsIgnoreCase(stateText) || s.fullName.equalsIgnoreCase(stateText)) {
+                    return s;
+                }
+            }
+        }
+        return null;
+    }
+
     public static EnumSet<USState> all() {
         return EnumSet.allOf(USState.class);
     }
@@ -133,5 +144,16 @@ public enum USState {
             weightedMap.put(stateAbbr, stateWeight);
         }
         return weightedMap;
+    }
+
+    public static EnumSet<USState> convertToEnumSet(Set<String> states){
+        EnumSet<USState> stateEnumSet = EnumSet.noneOf(USState.class);
+        for(String stateAbbr : states) {
+            USState s = USState.fromText(stateAbbr);
+            if(s != null) {
+                stateEnumSet.add(s);
+            }
+        }
+        return stateEnumSet;
     }
 }

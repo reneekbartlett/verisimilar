@@ -3,6 +3,7 @@ package com.reneekbartlett.verisimilar.core.model;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public enum GenderIdentity {
     MALE("MALE", 1, 0.4995, "male"),
@@ -52,13 +53,13 @@ public enum GenderIdentity {
                 return gender;
             }
         }
-        //throw new IllegalArgumentException("Unknown gender identity value: " + value);
         return null;
     }
 
     public static GenderIdentity fromText(String text) {
         if(text != null) {
             for (GenderIdentity g : EnumSet.allOf(GenderIdentity.class)) {
+                // TODO:  Expand match values
                 if (g.name().equalsIgnoreCase(text)) {
                     return g;
                 } else if (text.equalsIgnoreCase("F")) {
@@ -87,4 +88,14 @@ public enum GenderIdentity {
         return defaultMap;
     }
 
+    public static EnumSet<GenderIdentity> convertToEnumSet(Set<String> genders){
+        EnumSet<GenderIdentity> genderEnumSet = EnumSet.noneOf(GenderIdentity.class);
+        for(String genderStr : genders) {
+            GenderIdentity g = GenderIdentity.fromText(genderStr);
+            if(g != null) {
+                genderEnumSet.add(g);
+            }
+        }
+        return genderEnumSet;
+    }
 }

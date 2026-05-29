@@ -11,6 +11,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.reneekbartlett.verisimilar.api.util.JsonApiParser;
 import com.reneekbartlett.verisimilar.api.util.JsonApiParser.FilterConditions;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
 public class JsonApiParserTests {
@@ -28,7 +29,9 @@ public class JsonApiParserTests {
 
         request.addParameters(params);
 
-        FilterConditions filters = JsonApiParser.parse(request.getParameterMap());
+        List<TemplateField> filterFields = List.of(TemplateField.FIRST_NAME, TemplateField.MIDDLE_NAME, TemplateField.LAST_NAME, 
+                TemplateField.STATE, TemplateField.GENDER_IDENTITY);
+        FilterConditions filters = JsonApiParser.parse(request.getParameterMap(), filterFields);
 
         LOGGER.debug("filters:{}", filters.size());
 

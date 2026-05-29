@@ -71,4 +71,30 @@ public enum TemplateField {
         }
         return null;
     }
+
+    public static EnumSet<TemplateField> stringFields(){
+        return EnumSet.of(FIRST_NAME, 
+                MIDDLE_NAME, 
+                LAST_NAME,
+                NICKNAME,
+                USERNAME, 
+                STREET_NAME,
+                CITY,
+                AREA_CODE,
+                KEYWORD1, KEYWORD2, KEYWORD3
+        );
+    }
+
+    public static EnumSet<TemplateField> dateFields(){
+        return EnumSet.of(BIRTHDAY);
+    }
+
+    public static EnumSet<TemplateField> enumFields(){
+        return EnumSet.of(STATE, GENDER_IDENTITY,
+                ETHNICITY, REGION,
+                USERNAME_TYPE,
+                DOMAIN_TYPE,
+                UNIT_TYPE
+        );
+    }
 }

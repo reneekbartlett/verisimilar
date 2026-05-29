@@ -60,7 +60,8 @@ public record SelectionFilter(
         Map<TemplateField, String> startsWithMap,
         Map<TemplateField, String> endsWithMap,
         Map<TemplateField, String> equalToMap,
-        Map<TemplateField, String> containsMap
+        Map<TemplateField, String> containsMap,
+        Map<TemplateField, Set<String>> inMap
 ) {
 
     public SelectionFilter {
@@ -145,7 +146,8 @@ public record SelectionFilter(
                 && startsWithMap.isEmpty()
                 && endsWithMap.isEmpty()
                 && equalToMap.isEmpty()
-                && containsMap.isEmpty();
+                && containsMap.isEmpty()
+                && inMap.isEmpty();
     }
 
     public static SelectionFilter empty() {
@@ -184,6 +186,7 @@ public record SelectionFilter(
                 HashMap.newHashMap(0),
                 HashMap.newHashMap(0),
                 HashMap.newHashMap(0),
+                HashMap.newHashMap(0),
                 HashMap.newHashMap(0)
         );
     }
@@ -191,6 +194,8 @@ public record SelectionFilter(
     // ------------------------------------------------------------
     // Builder
     // ------------------------------------------------------------
+    //
+    // TODO:  Decide if I want to keep individual fields are just use the maps (i.e. equalToMap, etc.)
     public static Builder builder() {
         return new Builder();
     }
@@ -229,9 +234,9 @@ public record SelectionFilter(
 
         private Map<TemplateField, String> startsWithMap = HashMap.newHashMap(0);
         private Map<TemplateField, String> endsWithMap = HashMap.newHashMap(0);
-
         private Map<TemplateField, String> equalToMap = HashMap.newHashMap(0);
         private Map<TemplateField, String> containsMap = HashMap.newHashMap(0);
+        private Map<TemplateField, Set<String>> inMap = HashMap.newHashMap(0);
 
         public Builder() {
             //
@@ -259,6 +264,7 @@ public record SelectionFilter(
             this.startsWithMap = filter.startsWithMap;
             this.endsWithMap = filter.endsWithMap;
             this.equalToMap = filter.equalToMap;
+            this.inMap = filter.inMap;
         }
 
         public Builder firstName(String value) {
@@ -293,6 +299,7 @@ public record SelectionFilter(
 
         public Builder genders(EnumSet<GenderIdentity> genders) {
             this.genders = genders;
+            //this.inMap.put(genders, TemplateField.GENDER_IDENTITY);
             return this;
         }
 
@@ -432,6 +439,11 @@ public record SelectionFilter(
             return this;
         }
 
+        public Builder in(Set<String> values, TemplateField field) {
+            this.inMap.put(field, values);
+            return this;
+        }
+
         public Builder customPredicate(SelectionPredicate<String> predicate) {
             this.customPredicate = predicate;
             return this;
@@ -471,7 +483,8 @@ public record SelectionFilter(
                     startsWithMap,
                     endsWithMap,
                     equalToMap,
-                    containsMap
+                    containsMap,
+                    inMap
             );
         };
     }
@@ -488,6 +501,18 @@ public record SelectionFilter(
         }
         if(!startsWithMap.isEmpty()) {
             sb.append("startsWithMap.size()=" + this.startsWithMap.size() + FIELD_DELIM);
+        }
+        if(!endsWithMap.isEmpty()) {
+            sb.append("endsWithMap.size()=" + this.endsWithMap.size() + FIELD_DELIM);
+        }
+        if(!containsMap.isEmpty()) {
+            sb.append("containsMap.size()=" + this.containsMap.size() + FIELD_DELIM);
+        }
+        if(!equalToMap.isEmpty()) {
+            sb.append("equalToMap.size()=" + this.equalToMap.size() + FIELD_DELIM);
+        }
+        if(!inMap.isEmpty()) {
+            sb.append("inMap.size()=" + this.inMap.size() + FIELD_DELIM);
         }
         if(!firstName.isEmpty()) sb.append("firstName=" + this.firstName.get()+ FIELD_DELIM);
         if(!middleName.isEmpty()) sb.append("middleName=" + this.middleName.get()+ FIELD_DELIM);

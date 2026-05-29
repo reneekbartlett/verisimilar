@@ -205,7 +205,7 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
 
     private TemplateParameters getTemplateParameters(SelectionFilter filter, String... keywords) {
         Set<UsernameTemplateParam> templateParams = new HashSet<>();
-        if (filter.firstName().isPresent()) 
+        if (filter.firstName().isPresent())
             templateParams.add(new UsernameTemplateParam(TemplateField.FIRST_NAME, filter.firstName().get()));
         if (filter.lastName().isPresent()) 
             templateParams.add(new UsernameTemplateParam(TemplateField.LAST_NAME, filter.lastName().get()));

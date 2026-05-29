@@ -1,25 +1,30 @@
 package com.reneekbartlett.verisimilar.api.util;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
+import com.reneekbartlett.verisimilar.core.model.USState;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.api.model.FilterOperator;
 
 public class JsonApiParser {
 
-    @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonApiParser.class);
 
     private static final Pattern BRACKET_PATTERN = Pattern.compile("(?<=\\[)(.*?)(?=\\])");
     private static final Pattern FILTER_PATTERN = Pattern.compile("filter\\[(.*?)\\](?:\\[(.*?)\\])?");
+
+    //private EnumSet<TemplateField> returnFields;
 
     public record FilterCondition(TemplateField field, FilterOperator operator, String value) {}
 
@@ -27,7 +32,11 @@ public class JsonApiParser {
         public int size() {
             return conditions != null ? conditions.size() : 0;
         }
+
         public SelectionFilter.Builder toSelectionFilterBuilder() {
+            EnumSet<TemplateField> stringFields = TemplateField.stringFields();
+            EnumSet<TemplateField> enumFields = TemplateField.enumFields();
+
             SelectionFilter.Builder filterBuilder = SelectionFilter.builder();
             for(FilterCondition filterCondition : conditions) {
                 switch(filterCondition.operator) {
@@ -35,16 +44,33 @@ public class JsonApiParser {
                         filterBuilder.startsWith(filterCondition.value(), filterCondition.field());
                         break;
                     case FilterOperator.ENDS_WITH:
+                        // TODO:  check if endsWithMap contains key for TemplateField
                         filterBuilder.endsWith(filterCondition.value(), filterCondition.field());
                         break;
                     case FilterOperator.EQUAL_TO:
+                        // TODO:  check if equalToMap contains key for TemplateField
                         filterBuilder.equalTo(filterCondition.value(), filterCondition.field());
                         break;
-                    //case FilterOperator.IN:
-                    //    for(String s : filterCondition.value().split(",")) {
-                    //        //filterBuilder.equalTo(filterCondition.value(), filterCondition.field());
-                    //    }
-                    //    break;
+                    case FilterOperator.CONTAINS:
+                        // TODO:  check if containsMap contains key for TemplateField
+                        filterBuilder.contains(filterCondition.value(), filterCondition.field());
+                        break;
+                    case FilterOperator.IN:
+                        TemplateField field = filterCondition.field();
+                        String[] valArray = filterCondition.value().split(",");
+                        if(enumFields.contains(field)) {
+                            if(field.equals(TemplateField.STATE)) {
+                                EnumSet<USState> states = USState.convertToEnumSet(Set.of(valArray));
+                                filterBuilder.states(states);
+                            } else if(field.equals(TemplateField.GENDER_IDENTITY)) {
+                                EnumSet<GenderIdentity> genders = GenderIdentity.convertToEnumSet(Set.of(valArray));
+                                filterBuilder.genders(genders);
+                            }
+                        } else if(stringFields.contains(field)) {
+                            Set<String> strVals = Set.of(valArray);
+                            filterBuilder.in(strVals, field);
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -53,15 +79,37 @@ public class JsonApiParser {
         }
     }
 
-    public static FilterConditions parse(Map<String, String[]> parameterMap) {
+    private final List<TemplateField> filterFields;
+
+    public JsonApiParser(List<TemplateField> filterFields) {
+        this.filterFields = filterFields;
+    }
+
+    public FilterConditions parse(Map<String, String[]> parameterMap) {
+        return parse(parameterMap, this.filterFields);
+    }
+
+    public static FilterConditions parse(Map<String, String[]> parameterMap, List<TemplateField> filterFields) {
         List<FilterCondition> conditions = new ArrayList<>();
         for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
             Matcher matcher = FILTER_PATTERN.matcher(entry.getKey());
             if (matcher.find()) {
                 TemplateField templateField = TemplateField.fromValue(matcher.group(1).toUpperCase());
-                FilterOperator operator = matcher.group(2) != null ? FilterOperator.fromKeyword(matcher.group(2)) : FilterOperator.EQUAL_TO;
-                String value = entry.getValue()[0]; // TODO:  Check multiple values?
-                conditions.add(new FilterCondition(templateField, operator, value));
+                if(templateField == null || !filterFields.contains(templateField)) {
+                    LOGGER.debug("TemplateField not supported: {}", templateField);
+                    continue;
+                }
+
+                FilterOperator operator = FilterOperator.fromKeyword(matcher.group(2));
+                if(operator == null) {
+                    LOGGER.debug("Operator not supported ({}).  Defaulting to EQUAL_TO.", matcher.group(2));
+                    operator = FilterOperator.EQUAL_TO;
+                }
+
+                if(entry.getValue().length >=1) {
+                    String value = entry.getValue()[0]; // TODO:  Check multiple values?
+                    conditions.add(new FilterCondition(templateField, operator, value));
+                }
             }
         }
         return new FilterConditions(conditions);

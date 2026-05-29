@@ -15,6 +15,10 @@ public class GenerateUsernameService {
         this.generator = generator;
     }
 
+    public String generate(SelectionFilter filter) {
+        return generator.generate(filter);
+    }
+
     public String generateUsername(
             @RequestParam(required = false)String first, 
             @RequestParam(required = false)String last, 

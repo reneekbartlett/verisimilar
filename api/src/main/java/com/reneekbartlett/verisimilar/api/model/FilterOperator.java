@@ -6,6 +6,7 @@ public enum FilterOperator {
     STARTS_WITH("startswith"),
     ENDS_WITH("endswith"),
     EQUAL_TO("eq"),
+    CONTAINS("contains"),
     IN("in");
 
     private final String keyword;
