@@ -3,6 +3,7 @@ package com.reneekbartlett.verisimilar.core.model;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public enum DomainType {
 
@@ -44,5 +45,27 @@ public enum DomainType {
             defaultMap.put(domainType, domainType.getWeight());
         });
         return defaultMap;
+    }
+
+    public static DomainType fromText(String textVal) {
+        if(textVal != null) {
+            for (DomainType t : EnumSet.allOf(DomainType.class)) {
+                if (t.getPlaceholder().equalsIgnoreCase(textVal)) {
+                    return t;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static EnumSet<DomainType> convertToEnumSet(Set<String> stringVals){
+        EnumSet<DomainType> typeEnumSet = EnumSet.noneOf(DomainType.class);
+        for(String typeStr : stringVals) {
+            DomainType t = DomainType.fromText(typeStr);
+            if(t != null) {
+                typeEnumSet.add(t);
+            }
+        }
+        return typeEnumSet;
     }
 }

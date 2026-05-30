@@ -48,10 +48,14 @@ public class CityStateZipGenerator extends AbstractValueGenerator<CityStateZip>{
                 LOGGER.warn("Check cityStateZip value: {}", String.join(" ", data));
             }
         } catch(Exception e) {
-            data = new String[] {"XXXX", "XX", "XXXXX" };
+            data = new String[] {"XXXXXXX", "XX", "XXXXX" };
+            // TODO: log error
         }
 
         // TODO:  PO BOX
+        //
+        
+        
         // TODO:  Add Zip 4 (more complicated than you'd think..)
         //for (Zip4Range r : generatePoBoxZip4Ranges(data[2], 600)) {
         //    LOGGER.debug(r.toString());

@@ -1,10 +1,10 @@
 package com.reneekbartlett.verisimilar.core.model;
 
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public enum Generation {
@@ -90,9 +90,6 @@ public enum Generation {
         return EnumSet.allOf(Generation.class).stream()
                 .filter(s -> s.isMicro == isMicro)
                 .collect(Collectors.toList());
-        //return Arrays.stream(values())
-        //        .filter(s -> s.isMicro == isMicro)
-        //        .collect(Collectors.toList());
     }
 
     public static boolean validateGeneration(Generation generation) throws IllegalArgumentException {
@@ -100,5 +97,27 @@ public enum Generation {
             throw new IllegalArgumentException("Unrecognized Generation value. Provided: " + generation);
         }
         return true;
+    }
+
+    public static Generation fromText(String textVal) {
+        if(textVal != null) {
+            for (Generation gen : EnumSet.allOf(Generation.class)) {
+                if (gen.name().equalsIgnoreCase(textVal) || gen.getDisplayName().equalsIgnoreCase(textVal)) {
+                    return gen;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static EnumSet<Generation> convertToEnumSet(Set<String> stringVals){
+        EnumSet<Generation> genEnumSet = EnumSet.noneOf(Generation.class);
+        for(String typeStr : stringVals) {
+            Generation gen = Generation.fromText(typeStr);
+            if(gen != null) {
+                genEnumSet.add(gen);
+            }
+        }
+        return genEnumSet;
     }
 }

@@ -88,6 +88,9 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
         }
 
         if(!filter.isEmpty()) {
+            if(filter.equalToMap().containsKey(field())) {
+                return filter.equalToMap().get(field());
+            }
             selector.setFilter(filter);
         }
 

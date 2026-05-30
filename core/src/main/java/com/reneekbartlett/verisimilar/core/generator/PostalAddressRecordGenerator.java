@@ -11,7 +11,6 @@ import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelec
 import com.reneekbartlett.verisimilar.core.model.CityStateZip;
 import com.reneekbartlett.verisimilar.core.model.PostalAddress;
 import com.reneekbartlett.verisimilar.core.model.StreetAddress;
-import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.USState;
 
 public class PostalAddressRecordGenerator extends AbstractValueGenerator<PostalAddress>{
@@ -45,8 +44,7 @@ public class PostalAddressRecordGenerator extends AbstractValueGenerator<PostalA
         // Create a new filter
         SelectionFilter streetAddressFilter = filter.toBuilder()
                 .state(USState.fromAbbreviation(cityStateZip.state()))
-                .equalTo(cityStateZip.city(), TemplateField.CITY)
-                .equalTo(cityStateZip.state(), TemplateField.STATE)
+                .city(cityStateZip.city())
                 .build();
         StreetAddress streetAddress = generateStreetAddress(ctx, streetAddressFilter);
 

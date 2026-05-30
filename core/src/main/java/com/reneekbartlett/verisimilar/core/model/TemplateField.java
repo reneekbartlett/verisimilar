@@ -1,56 +1,62 @@
 package com.reneekbartlett.verisimilar.core.model;
 
+import java.util.Date;
 import java.util.EnumSet;
 
 public enum TemplateField {
-    FIRST_NAME("FIRST"),
-    MIDDLE_NAME("MIDDLE"),
-    LAST_NAME("LAST"),
-    BIRTHDAY("BIRTHDAY"),
-    NICKNAME("NICKNAME"),
+    FIRST_NAME("FIRST", String.class),
+    MIDDLE_NAME("MIDDLE", String.class),
+    LAST_NAME("LAST", String.class),
+    BIRTHDAY("BIRTHDAY", Date.class),
+    NICKNAME("NICKNAME", String.class),
 
-    GENDER_IDENTITY("GENDER_IDENTITY"),
+    GENDER_IDENTITY("GENDER_IDENTITY", Enum.class),
 
-    ETHNICITY("ETHNICITY"),
+    ETHNICITY("ETHNICITY", Enum.class),
 
-    //KEYWORD("KEYWORD"),
-    KEYWORD1("KEYWORD1"),
-    KEYWORD2("KEYWORD2"),
-    KEYWORD3("KEYWORD3"),
-    KEYWORD_TYPE("KEYWORD_TYPE"),
+    GENERATION("GENERATION", Enum.class),
 
-    STREET_NAME("STREET_NAME"),
-    STREET_SUFFIX("STREET_SUFFIX"),
-    ADDRESS2("ADDRESS2"),
-    CITY("CITY"),
-    STATE("STATE"),
-    ZIP_CODE("ZIP_CODE"),
-    REGION("REGION"),
+    //KEYWORD("KEYWORD", String.class),
+    KEYWORD1("KEYWORD1", String.class),
+    KEYWORD2("KEYWORD2", String.class),
+    KEYWORD3("KEYWORD3", String.class),
+    KEYWORD_TYPE("KEYWORD_TYPE", Enum.class),
 
-    AREA_CODE("AREA_CODE"),
-    USERNAME("USERNAME"),
-    USERNAME_TYPE("USERNAME_TYPE"),
+    STREET_NAME("STREET_NAME", String.class),
+    STREET_SUFFIX("STREET_SUFFIX", String.class),
+    ADDRESS2("ADDRESS2", String.class),
+    CITY("CITY", String.class),
+    STATE("STATE", Enum.class),
+    ZIP_CODE("ZIP_CODE", String.class),
+    REGION("REGION", Enum.class),
 
-    DOMAIN("DOMAIN"),
-    DOMAIN_TYPE("DOMAIN_TYPE"),
+    AREA_CODE("AREA_CODE", String.class),
+    USERNAME("USERNAME", String.class),
+    USERNAME_TYPE("USERNAME_TYPE", Enum.class),
 
-    ADDRESS_CATEGORY("ADDRESS_CATEGORY"),
-    UNIT_TYPE("UNIT_TYPE"),
+    DOMAIN("DOMAIN", String.class),
+    DOMAIN_TYPE("DOMAIN_TYPE", Enum.class),
 
-    SEPARATOR("SEPARATOR"),
+    ADDRESS_CATEGORY("ADDRESS_CATEGORY", Enum.class),
+    UNIT_TYPE("UNIT_TYPE", Enum.class),
 
-    NUM10("NUM10"),
-    NUM100("NUM100"),
-    NUM1000("NUM1000");
+    SEPARATOR("SEPARATOR", String.class),
+
+    NUM10("NUM10", Integer.class),
+    NUM100("NUM100", Integer.class),
+    NUM1000("NUM1000", Integer.class);
 
     /***
      * Placeholder used in the StringTemplate
      */
     private final String placeholder;
+    
+    private final Class clazz;
 
     // TODO:  Add field for storing applicable Generator Classes?
-    private TemplateField(String placeholder) {
+    private <T> TemplateField(String placeholder, Class<T> clazz) {
         this.placeholder = placeholder;
+        this.clazz = clazz;
     }
 
     public String getPlaceholder() {
@@ -59,6 +65,10 @@ public enum TemplateField {
 
     public String getLabel() {
         return placeholder;
+    }
+
+    public <T> Class<T> getType() {
+        return clazz;
     }
 
     public static TemplateField fromValue(String value) {
@@ -72,6 +82,7 @@ public enum TemplateField {
         return null;
     }
 
+    // TODO:  Use clazz?
     public static EnumSet<TemplateField> stringFields(){
         return EnumSet.of(FIRST_NAME, 
                 MIDDLE_NAME, 

@@ -3,6 +3,7 @@ package com.reneekbartlett.verisimilar.core.model;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public enum Ethnicity {
 
@@ -57,5 +58,27 @@ public enum Ethnicity {
             defaultMap.put(ethnicity, 0.5000); // TODO:  use ethnicity.getWeight()
         }
         return defaultMap;
+    }
+
+    public static Ethnicity fromText(String textVal) {
+        if(textVal != null) {
+            for (Ethnicity eth : EnumSet.allOf(Ethnicity.class)) {
+                if (eth.name().equalsIgnoreCase(textVal) || eth.getPlaceholder().equalsIgnoreCase(textVal)) {
+                    return eth;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static EnumSet<Ethnicity> convertToEnumSet(Set<String> ethnicities){
+        EnumSet<Ethnicity> ethEnumSet = EnumSet.noneOf(Ethnicity.class);
+        for(String ethStr : ethnicities) {
+            Ethnicity eth = Ethnicity.fromText(ethStr);
+            if(eth != null) {
+                ethEnumSet.add(eth);
+            }
+        }
+        return ethEnumSet;
     }
 }

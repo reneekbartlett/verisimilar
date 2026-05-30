@@ -100,8 +100,8 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
         }
 
         if(filter != null && !filter.isEmpty()) {
-            if(filter.equalToMap().containsKey(TemplateField.FIRST_NAME)) {
-                return filter.equalToMap().get(TemplateField.FIRST_NAME);
+            if(filter.equalToMap().containsKey(field())) {
+                return filter.equalToMap().get(field());
             }
             selector.setFilter(filter);
         }

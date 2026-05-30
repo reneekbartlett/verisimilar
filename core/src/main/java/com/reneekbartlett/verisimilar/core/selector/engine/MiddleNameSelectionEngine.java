@@ -79,8 +79,8 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
 
     @Override
     public String select(MiddleNameDatasetKey key, SelectionFilter filter) {
-        if(filter != null && !filter.middleName().isEmpty()) {
-            return filter.middleName().get();
+        if(filter != null && filter.equalToMap().containsKey(field())) {
+            return filter.equalToMap().get(field());
         }
 
         // If GenderIdentity is not specified, pick a random 1 then only return first letter.
@@ -100,10 +100,6 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
         }
 
         if(filter != null && !filter.isEmpty()) {
-            if(!filter.middleName().isEmpty()) {
-                return filter.middleName().get();
-            }
-
             if(filter.gender().isEmpty()) {
                 // Just return first letter
                 return selector.select().substring(0, 1);

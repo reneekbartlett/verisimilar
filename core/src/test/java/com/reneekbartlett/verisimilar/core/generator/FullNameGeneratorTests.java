@@ -84,4 +84,31 @@ public class FullNameGeneratorTests {
         LOGGER.debug("fullName=" + fullName.toString());
         Assertions.assertNotNull(fullName);
     }
+
+    @Test
+    public void GeneratedFullName_Filter() {
+        //Map<String, String[]> params = HashMap.newHashMap(2);
+        //params.put("filter[FIRST_NAME][eq]", new String[]{"RENEE"});
+        //params.put("filter[LAST_NAME][eq]", new String[]{"BARTLETT"});
+        DatasetResolverRegistry resolvers = TestUtils.getNameDatasetResolverRegistry();
+        FirstNameSelectionEngine firstNameSelector = new FirstNameSelectionEngine(resolvers);
+        MiddleNameSelectionEngine middleNameSelector = new MiddleNameSelectionEngine(resolvers);
+        LastNameSelectionEngine lastNameSelector = new LastNameSelectionEngine(resolvers);
+        FullNameGenerator fullNameGenerator = new FullNameGenerator(firstNameSelector, middleNameSelector, lastNameSelector);
+
+        SelectionFilter.Builder filterBuilder = SelectionFilter.builder();
+        filterBuilder.firstName("RENEE");
+        filterBuilder.lastName("BARTLETT");
+        //filterBuilder.equalTo("RENEE", TemplateField.FIRST_NAME);
+        //filterBuilder.equalTo("BARTLETT", TemplateField.LAST_NAME);
+
+        FullName fullName = fullNameGenerator.generate(filterBuilder.build());
+
+        LOGGER.debug("fullName=" + fullName.toString());
+        Assertions.assertNotNull(fullName);
+        
+        Assertions.assertTrue(fullName.lastName().equalsIgnoreCase("BARTLETT"));
+        Assertions.assertTrue(fullName.firstName().equalsIgnoreCase("RENEE"));
+        // TODO ASSERT RENEE {} BARTLETT
+    }
 }

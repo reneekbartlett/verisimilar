@@ -112,7 +112,7 @@ public enum USState {
         return EnumSet.allOf(USState.class);
     }
 
-    public static Set<String> names(EnumSet<USState> states) {
+    public static Set<String> names(Set<USState> states) {
         Set<String> stateNames = new HashSet<>();
         for(USState state : states) {
             if(state.getPlaceholder() != "ALL") {

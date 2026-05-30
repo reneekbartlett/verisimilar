@@ -63,8 +63,8 @@ public class AddressTwoSelectionEngine extends AbstractSelectionEngine<AddressTw
         }
 
         if(filter != null && !filter.isEmpty()) {
-            if(filter.equalToMap().containsKey(TemplateField.ADDRESS2)) {
-                return filter.equalToMap().get(TemplateField.ADDRESS2);
+            if(filter.equalToMap().containsKey(field())) {
+                return filter.equalToMap().get(field());
             }
             selector.setFilter(filter);
         }

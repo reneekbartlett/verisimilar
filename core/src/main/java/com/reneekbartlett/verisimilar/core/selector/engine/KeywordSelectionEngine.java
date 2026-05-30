@@ -57,6 +57,7 @@ public class KeywordSelectionEngine extends AbstractSelectionEngine<KeywordDatas
         }
 
         if(filter != null && !filter.isEmpty()) {
+            // TODO: FIELDS
             if(filter.equalToMap().containsKey(TemplateField.KEYWORD1)) {
                 return filter.equalToMap().get(TemplateField.KEYWORD1);
             }

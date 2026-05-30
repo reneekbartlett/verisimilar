@@ -3,6 +3,7 @@ package com.reneekbartlett.verisimilar.core.model;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public enum KeywordType {
 
@@ -41,5 +42,27 @@ public enum KeywordType {
             defaultMap.put(keywordType, keywordType.getWeight());
         });
         return defaultMap;
+    }
+
+    public static KeywordType fromText(String textVal) {
+        if(textVal != null) {
+            for (KeywordType t : EnumSet.allOf(KeywordType.class)) {
+                if (t.getPlaceholder().equalsIgnoreCase(textVal)) {
+                    return t;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static EnumSet<KeywordType> convertToEnumSet(Set<String> keywordTypes){
+        EnumSet<KeywordType> keywordEnumSet = EnumSet.noneOf(KeywordType.class);
+        for(String keywordStr : keywordTypes) {
+            KeywordType t = KeywordType.fromText(keywordStr);
+            if(t != null) {
+                keywordEnumSet.add(t);
+            }
+        }
+        return keywordEnumSet;
     }
 }

@@ -52,17 +52,21 @@ public class PostalAddressGeneratorTests {
         PostalAddressRecordGenerator postalAddressGenerator = new PostalAddressRecordGenerator(registry);
 
         EnumSet<USState> states = EnumSet.of(USState.MA, USState.CT, USState.NH );
-        SelectionFilter filter = SelectionFilter.builder().states(states).build();
 
-        PostalAddress postalAddress1 = postalAddressGenerator.generate(filter);
+        //SelectionFilter filter = SelectionFilter.builder().states(states).build();
+
+        SelectionFilter filter1 = SelectionFilter.builder().states(states).build();
+        PostalAddress postalAddress1 = postalAddressGenerator.generate(filter1);
         LOGGER.debug(postalAddress1.toString());
         Assertions.assertTrue(states.contains(USState.fromAbbreviation(postalAddress1.state())));
 
-        PostalAddress postalAddress2 = postalAddressGenerator.generate(filter);
+        SelectionFilter filter2 = SelectionFilter.builder().states(states).build();
+        PostalAddress postalAddress2 = postalAddressGenerator.generate(filter2);
         LOGGER.debug(postalAddress2.toString());
         Assertions.assertTrue(states.contains(USState.fromAbbreviation(postalAddress2.state())));
 
-        PostalAddress postalAddress3 = postalAddressGenerator.generate(filter);
+        SelectionFilter filter3 = SelectionFilter.builder().states(states).build();
+        PostalAddress postalAddress3 = postalAddressGenerator.generate(filter3);
         LOGGER.debug(postalAddress3.toString());
         Assertions.assertTrue(states.contains(USState.fromAbbreviation(postalAddress3.state())));
     }
@@ -101,5 +105,38 @@ public class PostalAddressGeneratorTests {
         Assertions.assertNotNull(postalAddress);
         Assertions.assertTrue(postalAddress.state().equalsIgnoreCase("MA"));
         //Assertions.assertTrue(postalAddress.zip().equalsIgnoreCase("01545"));
+    }
+
+    @Test
+    public void GeneratePostalAddress_InFilter() {
+        PostalAddressSelectionEngineRegistry registry = TestUtils.getPostalAddressSelectionEngineRegistry();
+        PostalAddressRecordGenerator postalAddressGenerator = new PostalAddressRecordGenerator(registry);
+
+        Set<USState> states = EnumSet.of(USState.MA, USState.CT, USState.NH);
+        SelectionFilter.Builder filterBuilder = SelectionFilter.builder();
+        filterBuilder.states(states);
+
+        PostalAddress postalAddress = postalAddressGenerator.generate(filterBuilder.build());
+
+        LOGGER.debug("postalAddress=" + postalAddress.toString());
+        Assertions.assertNotNull(postalAddress);
+        Assertions.assertTrue(states.contains(USState.fromAbbreviation(postalAddress.state())));
+
+    }
+    
+    @Test
+    public void GeneratePostalAddress_StreetFilter() {
+        PostalAddressSelectionEngineRegistry registry = TestUtils.getPostalAddressSelectionEngineRegistry();
+        PostalAddressRecordGenerator postalAddressGenerator = new PostalAddressRecordGenerator(registry);
+
+        SelectionFilter.Builder filterBuilder = SelectionFilter.builder();
+        filterBuilder.streetName("MAIN");
+
+        PostalAddress postalAddress = postalAddressGenerator.generate(filterBuilder.build());
+
+        LOGGER.debug("postalAddress=" + postalAddress.toString());
+        Assertions.assertNotNull(postalAddress);
+        Assertions.assertTrue(postalAddress.address1().toUpperCase().contains(" MAIN "));
+
     }
 }

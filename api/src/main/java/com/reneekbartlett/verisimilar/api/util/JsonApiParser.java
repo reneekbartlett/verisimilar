@@ -12,8 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
+import com.reneekbartlett.verisimilar.core.model.KeywordType;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.USState;
+import com.reneekbartlett.verisimilar.core.selector.filter.InternalFilter;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.api.model.FilterOperator;
 
@@ -38,44 +40,62 @@ public class JsonApiParser {
             EnumSet<TemplateField> enumFields = TemplateField.enumFields();
 
             SelectionFilter.Builder filterBuilder = SelectionFilter.builder();
+            InternalFilter.Builder internalFilterBuilder = InternalFilter.getBuilder();
             for(FilterCondition filterCondition : conditions) {
                 switch(filterCondition.operator) {
                     case FilterOperator.STARTS_WITH:
                         filterBuilder.startsWith(filterCondition.value(), filterCondition.field());
+                        internalFilterBuilder.startsWith(filterCondition.value(), filterCondition.field());
                         break;
                     case FilterOperator.ENDS_WITH:
                         // TODO:  check if endsWithMap contains key for TemplateField
                         filterBuilder.endsWith(filterCondition.value(), filterCondition.field());
+                        internalFilterBuilder.endsWith(filterCondition.value(), filterCondition.field());
                         break;
-                    case FilterOperator.EQUAL_TO:
-                        // TODO:  check if equalToMap contains key for TemplateField
-                        filterBuilder.equalTo(filterCondition.value(), filterCondition.field());
-                        break;
+                    
                     case FilterOperator.CONTAINS:
                         // TODO:  check if containsMap contains key for TemplateField
                         filterBuilder.contains(filterCondition.value(), filterCondition.field());
+                        internalFilterBuilder.contains(filterCondition.value(), filterCondition.field());
+                        break;
+                    case FilterOperator.EQUAL_TO:
+                        // TODO:  check if equalToMap contains key for TemplateField
+                        // 
+                        //filterBuilder.equalTo(filterCondition.value(), filterCondition.field());
+                        
+                        internalFilterBuilder.equalTo(filterCondition.value(), filterCondition.field());
                         break;
                     case FilterOperator.IN:
                         TemplateField field = filterCondition.field();
                         String[] valArray = filterCondition.value().split(",");
                         if(enumFields.contains(field)) {
+                            // KEYWORD_TYPE, DOMAIN_TYPE, USERNAME_TYPE
+                            // ADDRESS_CATEGORY, UNIT_TYPE
+                            // USREGION
                             if(field.equals(TemplateField.STATE)) {
                                 EnumSet<USState> states = USState.convertToEnumSet(Set.of(valArray));
                                 filterBuilder.states(states);
                             } else if(field.equals(TemplateField.GENDER_IDENTITY)) {
                                 EnumSet<GenderIdentity> genders = GenderIdentity.convertToEnumSet(Set.of(valArray));
                                 filterBuilder.genders(genders);
+                            } else if(field.equals(TemplateField.KEYWORD_TYPE)) {
+                                //EnumSet<KeywordType> keywordTypes = KeywordType.convertToEnumSet(Set.of(valArray));
+                                //filterBuilder.keywordTypes(keywordTypes);
+                            } else if(field.equals(TemplateField.GENERATION)) {
+                                //filterBuilder
                             }
                         } else if(stringFields.contains(field)) {
                             Set<String> strVals = Set.of(valArray);
                             filterBuilder.in(strVals, field);
+                            internalFilterBuilder.in(strVals, field);
                         }
                         break;
                     default:
                         break;
                 }
             }
-            return filterBuilder;
+            //return filterBuilder;
+            return internalFilterBuilder;
         }
     }
 

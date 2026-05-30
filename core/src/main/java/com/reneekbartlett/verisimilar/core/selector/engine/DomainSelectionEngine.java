@@ -63,8 +63,8 @@ public class DomainSelectionEngine extends AbstractSelectionEngine<DomainDataset
         }
 
         if(filter != null && !filter.isEmpty()) {
-            if(filter.equalToMap().containsKey(TemplateField.DOMAIN)) {
-                return filter.equalToMap().get(TemplateField.DOMAIN);
+            if(filter.equalToMap().containsKey(field())) {
+                return filter.equalToMap().get(field());
             }
 
             selector.setFilter(filter);

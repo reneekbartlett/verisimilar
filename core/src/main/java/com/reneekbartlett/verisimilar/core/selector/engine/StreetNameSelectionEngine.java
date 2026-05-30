@@ -57,8 +57,8 @@ public class StreetNameSelectionEngine extends AbstractSelectionEngine<StreetNam
         }
 
         if(filter != null && !filter.isEmpty()) {
-            if(filter.equalToMap().containsKey(TemplateField.STREET_NAME)) {
-                return filter.equalToMap().get(TemplateField.STREET_NAME);
+            if(filter.equalToMap().containsKey(field())) {
+                return filter.equalToMap().get(field());
             }
 
             //if(filter.startsWithMap().containsKey(TemplateField.STREET_NAME)) {

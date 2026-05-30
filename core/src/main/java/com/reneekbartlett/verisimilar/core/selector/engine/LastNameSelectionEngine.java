@@ -66,8 +66,10 @@ public class LastNameSelectionEngine extends AbstractSelectionEngine<LastNameDat
 
     @Override
     public String select(LastNameDatasetKey key, SelectionFilter filter) {
-        if(filter != null && !filter.lastName().isEmpty()) {
-            return filter.lastName().get();
+        if(filter != null && !filter.isEmpty()) {
+            if(filter.equalToMap().containsKey(TemplateField.LAST_NAME)) {
+                return filter.equalToMap().get(TemplateField.LAST_NAME);
+            }
         }
 
         // If Ethnicity is NOT supplied here, just select from generic dataset.

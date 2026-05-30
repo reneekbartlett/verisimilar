@@ -3,6 +3,7 @@ package com.reneekbartlett.verisimilar.core.model;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public enum UsernameType {
 
@@ -44,5 +45,27 @@ public enum UsernameType {
             defaultMap.put(usernameType, usernameType.getWeight());
         });
         return defaultMap;
+    }
+
+    public static UsernameType fromText(String textVal) {
+        if(textVal != null) {
+            for (UsernameType t : EnumSet.allOf(UsernameType.class)) {
+                if (t.getPlaceholder().equalsIgnoreCase(textVal)) {
+                    return t;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static EnumSet<UsernameType> convertToEnumSet(Set<String> stringVals){
+        EnumSet<UsernameType> typeEnumSet = EnumSet.noneOf(UsernameType.class);
+        for(String typeStr : stringVals) {
+            UsernameType t = UsernameType.fromText(typeStr);
+            if(t != null) {
+                typeEnumSet.add(t);
+            }
+        }
+        return typeEnumSet;
     }
 }

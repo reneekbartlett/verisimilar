@@ -1,9 +1,6 @@
 package com.reneekbartlett.verisimilar.api;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -14,8 +11,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.reneekbartlett.verisimilar.api.controller.GeneratePersonController;
@@ -24,7 +19,6 @@ import com.reneekbartlett.verisimilar.api.security.api.ApiKeyAuthProvider;
 import com.reneekbartlett.verisimilar.api.security.api.ApiKeyAuthenticationToken;
 import com.reneekbartlett.verisimilar.api.security.api.ApiKeyProperties;
 import com.reneekbartlett.verisimilar.api.security.api.ApiKeyService;
-import com.reneekbartlett.verisimilar.api.security.api.ApiKeyProperties.ApiKeyConfig;
 import com.reneekbartlett.verisimilar.api.security.config.SecurityConfig;
 import com.reneekbartlett.verisimilar.api.service.GeneratePersonService;
 

@@ -50,8 +50,8 @@
                 <filtering>true</filtering>
             </resource>
             <resource>
-                <!--<directory>../../parent/config/verisimilar/core/</directory>-->
-                <directory>${verisimilar.core.config.dir}</directory>
+                <directory>../../parent/config/verisimilar/core/</directory>
+                <!--<directory>${verisimilar.core.config.dir}</directory>-->
                 <filtering>true</filtering>
             </resource>
         </resources>

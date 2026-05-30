@@ -76,7 +76,8 @@ public class CityStateZipSelectionEngine extends AbstractSelectionEngine<CitySta
             // If filter has all 3, use user inputs.
             if(filter.equalToMap().containsKey(TemplateField.CITY)) {
                 // TODO: Add Filtering / custom predicate?
-                filter = filter.toBuilder().startsWith(filter.city().get(),TemplateField.CITY).build(); 
+                String city = filter.equalToMap().get(TemplateField.CITY);
+                filter = filter.toBuilder().startsWith(city,TemplateField.CITY).build();
             }
             selector.setFilter(filter);
         }

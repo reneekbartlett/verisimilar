@@ -64,4 +64,26 @@ public enum USRegion {
         }
         throw new IllegalArgumentException("Invalid state abbreviation: " + stateAbbreviation);
     }
+
+    public static USRegion fromText(String textVal) {
+        if(textVal != null) {
+            for (USRegion reg : EnumSet.allOf(USRegion.class)) {
+                if (reg.getPlaceholder().equalsIgnoreCase(textVal)) {
+                    return reg;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static EnumSet<USRegion> convertToEnumSet(Set<String> regions){
+        EnumSet<USRegion> regEnumSet = EnumSet.noneOf(USRegion.class);
+        for(String regStr : regions) {
+            USRegion reg = USRegion.fromText(regStr);
+            if(reg != null) {
+                regEnumSet.add(reg);
+            }
+        }
+        return regEnumSet;
+    }
 }

@@ -88,9 +88,9 @@ public enum GenderIdentity {
         return defaultMap;
     }
 
-    public static EnumSet<GenderIdentity> convertToEnumSet(Set<String> genders){
+    public static EnumSet<GenderIdentity> convertToEnumSet(Set<String> stringVals){
         EnumSet<GenderIdentity> genderEnumSet = EnumSet.noneOf(GenderIdentity.class);
-        for(String genderStr : genders) {
+        for(String genderStr : stringVals) {
             GenderIdentity g = GenderIdentity.fromText(genderStr);
             if(g != null) {
                 genderEnumSet.add(g);

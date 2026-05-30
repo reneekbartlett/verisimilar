@@ -156,8 +156,8 @@
       </resource>
       <resource>
         <!-- External Location, Not Included in Git sub-module -->
-        <!--<directory>../../parent/config/verisimilar/api/</directory>-->
-        <directory>${verisimilar.core.api.dir}</directory>
+        <directory>../../parent/config/verisimilar/api/</directory>
+        <!--<directory>${verisimilar.core.api.dir}</directory>-->
         <includes>
             <!--<include>*.properties</include>-->
             <include>api.yaml</include>
@@ -176,7 +176,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <useSystemClassLoader>false</useSystemClassLoader>
-          <skipTests>true</skipTests>
+          <skipTests>false</skipTests>
           <!--<argLine>-javaagent:${org.mockito:mockito-core:jar} -Xshare:off</argLine>-->
         </configuration>
       </plugin>

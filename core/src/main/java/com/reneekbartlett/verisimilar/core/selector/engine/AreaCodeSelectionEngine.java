@@ -1,8 +1,8 @@
 package com.reneekbartlett.verisimilar.core.selector.engine;
 
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.AreaCodeDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.result.AreaCodeDatasetResult;
@@ -22,7 +22,7 @@ import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
  */
 public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDatasetKey, AreaCodeDatasetResult> {
     private static final SelectorStrategy<String> DEFAULT_SELECTOR_STRATEGY = new UniformSelectorStrategy<>();
-    private EnumSet<USState> usStateOptions;
+    private Set<USState> usStateOptions; // EnumSet
     private Map<NameKey, RandomSelector<String>> selectorsByNameKey;
 
     //  For meta-selection (which selector to use at runtime)
@@ -71,7 +71,10 @@ public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDat
         }
 
         // Then check if State is assigned.
-        this.usStateOptions = filter.states().orElse(USState.defaultDatasets());
+
+        //this.usStateOptions = filter.inMap().getOrDefault(TemplateField.STATE, USState.defaultDatasets());
+        this.usStateOptions = (Set<USState>) filter.inEnumMap().getOrDefault(TemplateField.STATE, USState.defaultDatasets());
+        //this.usStateOptions = filter.states().orElse(USState.defaultDatasets());
         USState usState = filter.state().orElseGet(this::getRandomState);
 
         NameKey nameKey = new NameKey(usState.name());
