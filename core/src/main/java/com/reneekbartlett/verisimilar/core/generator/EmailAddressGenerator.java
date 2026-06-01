@@ -1,6 +1,5 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
-import com.reneekbartlett.verisimilar.core.generator.api.AbstractValueGenerator;
 import com.reneekbartlett.verisimilar.core.model.EmailAddressRecord;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
@@ -50,6 +49,12 @@ public class EmailAddressGenerator extends AbstractValueGenerator<EmailAddressRe
 
     private String generateUsername(DatasetResolutionContext ctx, SelectionFilter filter) {
         return usernameGenerator.generate(filter);
+    }
+
+    @Override
+    protected EmailAddressRecord postProcess(EmailAddressRecord emailAddressRecord) {
+        // TODO:  Validate Handle
+        return emailAddressRecord;
     }
 
     @Override

@@ -1,100 +1,100 @@
-Apartment,1.0
-Unit,1.0
-Suite,1.0
-Floor,1.0
-Room,1.0
-Building,1.0
-Basement,1.0
-Penthouse,0.75
-Loft,0.75
-Studio,0.75
-Flat,0.75
-Level,0.75
-Block,0.75
-Wing,0.75
-Tower,0.75
-Cabin,0.5
-Cottage,0.5
-Villa,0.5
-House,0.5
-Duplex,0.5
-Triplex,0.5
-Quadplex,0.5
-Townhouse,0.5
-Rowhouse,0.5
-Condo,0.5
-Dorm,0.5
-Dormitory,0.5
-Bungalow,0.5
-Chalet,0.5
-Annex,0.5
-Extension,0.5
-Rear,0.5
-Front,0.5
-Upper,0.5
-Lower,0.5
-Side,0.5
-Office,0.5
-Department,0.5
-Section,0.5
-Division,0.5
-Hall,0.5
-Lobby,0.5
-Mezzanine,0.5
-Pod,0.25
-Module,0.25
-Bay,0.25
-Shed,0.25
-Garage,0.25
-Hangar,0.25
-Warehouse,0.25
-Shop,0.25
-Store,0.25
-Kiosk,0.25
-Stand,0.25
-Stall,0.25
-Booth,0.25
-Trailer,0.25
-Mobile Home,0.25
-Lot,0.25
-Parcel,0.25
-Space,0.25
-Pad,0.25
-Slip,0.25
-Berth,0.25
-Dock,0.25
-Pier,0.25
-Wharf,0.25
-Yard,0.25
-Courtyard,0.25
-Garden,0.25
-Terrace,0.25
-Porch,0.25
-Deck,0.25
-Patio,0.25
-Lanai,0.25
-Veranda,0.25
-Carriage House,0.25
-Coach House,0.25
-Gatehouse,0.25
-Guest House,0.25
-Caretaker Unit,0.25
-Servant Quarters,0.25
-Staff Quarters,0.25
-In-Law Suite,0.25
-Accessory Dwelling Unit,0.25
+APARTMENT,1.0
+UNIT,1.0
+SUITE,1.0
+FLOOR,1.0
+ROOM,1.0
+BUILDING,1.0
+BASEMENT,1.0
+PENTHOUSE,0.75
+LOFT,0.75
+STUDIO,0.75
+FLAT,0.75
+LEVEL,0.75
+BLOCK,0.75
+WING,0.75
+TOWER,0.75
+CABIN,0.5
+COTTAGE,0.5
+VILLA,0.5
+HOUSE,0.5
+DUPLEX,0.5
+TRIPLEX,0.5
+QUADPLEX,0.5
+TOWNHOUSE,0.5
+ROWHOUSE,0.5
+CONDO,0.5
+DORM,0.5
+DORMITORY,0.5
+BUNGALOW,0.5
+CHALET,0.5
+ANNEX,0.5
+EXTENSION,0.5
+REAR,0.5
+FRONT,0.5
+UPPER,0.5
+LOWER,0.5
+SIDE,0.5
+OFFICE,0.5
+DEPARTMENT,0.5
+SECTION,0.5
+DIVISION,0.5
+HALL,0.5
+LOBBY,0.5
+MEZZANINE,0.5
+POD,0.25
+MODULE,0.25
+BAY,0.25
+SHED,0.25
+GARAGE,0.25
+HANGAR,0.25
+WAREHOUSE,0.25
+SHOP,0.25
+STORE,0.25
+KIOSK,0.25
+STAND,0.25
+STALL,0.25
+BOOTH,0.25
+TRAILER,0.25
+MOBILE HOME,0.25
+LOT,0.25
+PARCEL,0.25
+SPACE,0.25
+PAD,0.25
+SLIP,0.25
+BERTH,0.25
+DOCK,0.25
+PIER,0.25
+WHARF,0.25
+YARD,0.25
+COURTYARD,0.25
+GARDEN,0.25
+TERRACE,0.25
+PORCH,0.25
+DECK,0.25
+PATIO,0.25
+LANAI,0.25
+VERANDA,0.25
+CARRIAGE HOUSE,0.25
+COACH HOUSE,0.25
+GATEHOUSE,0.25
+GUEST HOUSE,0.25
+CARETAKER UNIT,0.25
+SERVANT QUARTERS,0.25
+STAFF QUARTERS,0.25
+IN-LAW SUITE,0.25
+ACCESSORY DWELLING UNIT,0.25
 ADU,0.25
-Casita,0.25
-Hacienda,0.25
-Suite A,0.25
-Suite B,0.25
-Suite C,0.25
-Unit A,0.25
-Unit B,0.25
-Unit C,0.25
-Room A,0.25
-Room B,0.25
-Room C,0.25
-Floor 1,0.25
-Floor 2,0.25
-Floor 3,0.25
+CASITA,0.25
+HACIENDA,0.25
+SUITE A,0.25
+SUITE B,0.25
+SUITE C,0.25
+UNIT A,0.25
+UNIT B,0.25
+UNIT C,0.25
+ROOM A,0.25
+ROOM B,0.25
+ROOM C,0.25
+FLOOR 1,0.25
+FLOOR 2,0.25
+FLOOR 3,0.25

@@ -57,7 +57,7 @@ public final class WeightedSelectorImpl<T> implements RandomSelector<T> {
         double rand = ThreadLocalRandom.current().nextDouble();
         if(filter !=null && !filter.isEmpty()) {
             Map<T, Double> filteredMap = EntryFilter.apply(this.weights, filter, field);
-            LOGGER.debug("select (filtered) - original.size():{}, filteredMap.size():{}, filter:{}"
+            LOGGER.trace("select (filtered) - original.size():{}, filteredMap.size():{}, filter:{}"
                     , this.weights.size(), filteredMap.size(), filter);
             if(filteredMap.size() > 0) {
                 Weights filteredWeights = calcWeights(filteredMap);

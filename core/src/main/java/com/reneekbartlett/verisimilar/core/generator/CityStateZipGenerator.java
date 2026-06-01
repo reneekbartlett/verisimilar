@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.CityStateZipDatasetKey;
-import com.reneekbartlett.verisimilar.core.generator.api.AbstractValueGenerator;
 import com.reneekbartlett.verisimilar.core.model.CityStateZip;
 import com.reneekbartlett.verisimilar.core.model.Zip4Range;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
@@ -36,11 +35,14 @@ public class CityStateZipGenerator extends AbstractValueGenerator<CityStateZip>{
         return generateCityStateZip(ctx, criteria);
     }
 
-    private CityStateZip generateCityStateZip(DatasetResolutionContext ctx, SelectionFilter filter) {
-        //CityStateZipDatasetKey cityStateZipKey = new CityStateZipDatasetKey(ctx.states().orElse(CityStateZipDatasetKey.defaults().states()));
-        CityStateZipDatasetKey cityStateZipKey = CityStateZipDatasetKey.fromContext(ctx);
+    @Override
+    protected Class<CityStateZip> valueType() {
+        return CityStateZip.class;
+    }
 
-        // TODO: Expand Handling of empty/null/errors
+    private CityStateZip generateCityStateZip(DatasetResolutionContext ctx, SelectionFilter filter) {
+        // TODO: CityStateZipDatasetKey cityStateZipKey = new CityStateZipDatasetKey(ctx.states().orElse(CityStateZipDatasetKey.defaults().states()));
+        CityStateZipDatasetKey cityStateZipKey = CityStateZipDatasetKey.fromContext(ctx);
         String[] data;
         try {
             data = selector.select(cityStateZipKey, filter).split("\\$");
@@ -49,19 +51,20 @@ public class CityStateZipGenerator extends AbstractValueGenerator<CityStateZip>{
             }
         } catch(Exception e) {
             data = new String[] {"XXXXXXX", "XX", "XXXXX" };
-            // TODO: log error
+            LOGGER.error("ERROR: {}", e.getMessage());
         }
 
-        // TODO:  PO BOX
-        //
-        
-        
-        // TODO:  Add Zip 4 (more complicated than you'd think..)
-        //for (Zip4Range r : generatePoBoxZip4Ranges(data[2], 600)) {
-        //    LOGGER.debug(r.toString());
-        //}
+        // TODO:  Add Zip4 (more complicated than you'd think..)
+        //testZip4(data[1]);
 
         return new CityStateZip(data[0], data[1], data[2]);
+    }
+
+    @SuppressWarnings("unused")
+    private void testZip4(String state) {
+        for (Zip4Range r : generatePoBoxZip4Ranges(state, 600)) {
+            LOGGER.debug(r.toString());
+        }
     }
 
     /**
@@ -85,7 +88,8 @@ public class CityStateZipGenerator extends AbstractValueGenerator<CityStateZip>{
         };
 
         for (int[] block : blocks) {
-            ranges.add(new Zip4Range(zip5, String.format("%04d", block[0]), String.format("%04d", block[1]), "STREET", "Synthetic street-level ZIP+4 block"));
+            ranges.add(new Zip4Range(zip5, 
+                    String.format("%04d", block[0]), String.format("%04d", block[1]), "STREET", "Synthetic street-level ZIP+4 block"));
         }
 
         return ranges;
@@ -132,8 +136,4 @@ public class CityStateZipGenerator extends AbstractValueGenerator<CityStateZip>{
         return generatePoBoxZip4Ranges(zip5, totalBoxes, 100);
     }
 
-    @Override
-    protected Class<CityStateZip> valueType() {
-        return CityStateZip.class;
-    }
 }

@@ -39,6 +39,8 @@ public enum TemplateField {
 
     ADDRESS_CATEGORY("ADDRESS_CATEGORY", Enum.class),
     UNIT_TYPE("UNIT_TYPE", Enum.class),
+    UNIT_NUMBER("UNIT_NUMBER", Integer.class),
+    UNIT_XTRA("UNIT_XTRA", String.class),
 
     SEPARATOR("SEPARATOR", String.class),
 

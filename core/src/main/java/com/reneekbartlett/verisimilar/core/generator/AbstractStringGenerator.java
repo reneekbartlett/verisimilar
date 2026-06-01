@@ -3,7 +3,6 @@ package com.reneekbartlett.verisimilar.core.generator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.reneekbartlett.verisimilar.core.generator.api.AbstractValueGenerator;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 

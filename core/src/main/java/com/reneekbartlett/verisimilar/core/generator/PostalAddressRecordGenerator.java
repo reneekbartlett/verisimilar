@@ -1,6 +1,5 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
-import com.reneekbartlett.verisimilar.core.generator.api.AbstractValueGenerator;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.selector.engine.AddressTwoSelectionEngine;

@@ -71,7 +71,7 @@ public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDat
         }
 
         // Then check if State is assigned.
-
+        // TODO
         //this.usStateOptions = filter.inMap().getOrDefault(TemplateField.STATE, USState.defaultDatasets());
         this.usStateOptions = (Set<USState>) filter.inEnumMap().getOrDefault(TemplateField.STATE, USState.defaultDatasets());
         //this.usStateOptions = filter.states().orElse(USState.defaultDatasets());

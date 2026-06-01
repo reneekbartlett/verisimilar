@@ -1,4 +1,4 @@
-package com.reneekbartlett.verisimilar.api;
+package com.reneekbartlett.verisimilar.api.util;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import com.reneekbartlett.verisimilar.api.util.JsonApiParser;
 import com.reneekbartlett.verisimilar.api.util.JsonApiParser.FilterConditions;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;

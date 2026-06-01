@@ -88,8 +88,9 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
         }
 
         if(!filter.isEmpty()) {
-            if(filter.equalToMap().containsKey(field())) {
-                return filter.equalToMap().get(field());
+            String valueFilter = filter.equalToMap().get(field());
+            if (valueFilter != null) {
+                return valueFilter;
             }
             selector.setFilter(filter);
         }
@@ -108,15 +109,12 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
         Map<String, Object> allTemplateParams = new HashMap<>(personTemplateParams);
 
         // TODO: Add
-        // TODO:  Change to EnumSet
         EnumSet<TemplateField> populatedFields = parameters.populatedFields();
 
         UsernameTemplatesResult templatesResult = templatesResolver.loadForFields(populatedFields);
         LOGGER.debug("templatesResult:{}", templatesResult.toString());
 
         TemplateSet templateSet = templatesResult.getTemplates();
-        // Add default? 
-
         if(templateSet.templates().size() == 0) {
             LOGGER.warn("No Templates...");
         }
@@ -149,7 +147,6 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
             }
 
             if(resolvedValueParams.containsKey("BIRTHDAY")) {
-                //LocalDate birthday = (LocalDate) resolvedValueParams.get("BIRTHDAY");
                 LocalDate birthday = LocalDate.parse((String)resolvedValueParams.get("BIRTHDAY"));
                 AstrologySign sign = AstrologySign.fromLocalDate(birthday);
                 resolvedValueParams.put("BIRTHDAY_YEAR", String.valueOf(birthday.getYear()));
@@ -172,8 +169,6 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
                  String middleName = (String) resolvedValueParams.get("MIDDLE");
                  resolvedValueParams.put("MIDDLE_INITIAL", middleName.charAt(0));
             }
-            
-            
 
             return resolvedValueParams;
         }

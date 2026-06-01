@@ -20,7 +20,6 @@ public class FirstNameGenerator extends AbstractStringGenerator {
 
     @Override
     protected String generateString(DatasetResolutionContext ctx, SelectionFilter filter) {
-        // TODO:  Evaluate use of DatasetResolutionContext and DatasetKey's.
         FirstNameDatasetKey key = FirstNameDatasetKey.fromContext(ctx);
         return generateFirstName(key, filter);
     }

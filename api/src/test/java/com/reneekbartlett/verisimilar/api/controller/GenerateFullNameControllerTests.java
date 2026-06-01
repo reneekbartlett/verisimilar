@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 @WebMvcTest(controllers = GenerateFullNameController.class)
 @Import({SecurityConfig.class, ApiKeyProperties.class})
 // TODO:  https://docs.spring.io/spring-security/reference/servlet/test/method.html
-//@Disabled
+@org.junit.jupiter.api.Disabled
 public class GenerateFullNameControllerTests {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GenerateFullNameControllerTests.class);

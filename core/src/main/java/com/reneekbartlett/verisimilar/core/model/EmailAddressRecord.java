@@ -8,6 +8,11 @@ public record EmailAddressRecord(String username, String domain, DomainType type
         this(username, domain, null);
     }
 
+    @Override
+    public DomainType type() {
+        return type == null ? DomainType.B2C : type;
+    }
+
     public static EmailAddressRecord empty() {
         return new EmailAddressRecord(null, null, null);
     }

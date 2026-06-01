@@ -1,8 +1,10 @@
 <configuration scan="true" scanPeriod="20 seconds">
+    <property name="LOG_DIR" value="/opt/reneekbartlett/logs" />
+    <springProperty scope="context" name="LOG_DIR_SPRING" source="logging.file-path" defaultValue="logs"/>
     <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/src/repos/reneekbartlett/portfolio/parent/logs/verisimilar-core.log</file>
+        <file>${LOG_DIR}/verisimilar-api.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>/src/repos/reneekbartlett/portfolio/parent/logs/verisimilar-core.%i.log.gz</fileNamePattern>
+            <fileNamePattern>${LOG_DIR}/verisimilar-api.%i.log.gz</fileNamePattern>
             <minIndex>1</minIndex>
             <maxIndex>5</maxIndex>
         </rollingPolicy>
@@ -34,7 +36,10 @@
             <pattern>%msg%n</pattern>
         </encoder>
     </appender>
-    <root level="INFO">
+    <!--<logger name="com.reneekbartlett.verisimilar.api" level="DEBUG" additivity="false">
+        <appender-ref ref="STDOUT_DATA" />
+    </logger>-->
+    <root level="DEBUG">
         <appender-ref ref="STDOUT_DATA" />
         <appender-ref ref="ROLLING_FILE" />
     </root>

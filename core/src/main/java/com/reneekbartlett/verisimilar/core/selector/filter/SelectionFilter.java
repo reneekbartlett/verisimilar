@@ -45,6 +45,8 @@ public record SelectionFilter(
         Optional<String> streetName,
         Optional<String> streetSuffix,
 
+        Optional<String> address2,
+
         Optional<String> city,
 
         Optional<USState> state,
@@ -75,6 +77,10 @@ public record SelectionFilter(
         Map<TemplateField, Set<?>> inEnumMap
 ) {
 
+    public Set<String> getDomains(){
+        return HashSet.newHashSet(0);
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SelectionFilter.class);
 
     public SelectionFilter {
@@ -96,6 +102,8 @@ public record SelectionFilter(
 
         streetName = streetName == null ? Optional.empty() : streetName;
         streetSuffix = streetSuffix == null ? Optional.empty() : streetSuffix;
+
+        address2 = address2 == null ? Optional.empty() : address2;
 
         city = city == null ? Optional.empty() : city;
 
@@ -161,6 +169,8 @@ public record SelectionFilter(
                 && minYear.isEmpty()
                 && maxYear.isEmpty()
                 && streetName.isEmpty()
+                && streetSuffix.isEmpty()
+                && address2.isEmpty()
                 && city.isEmpty()
                 && states.isEmpty()
                 && state.isEmpty()
@@ -179,7 +189,9 @@ public record SelectionFilter(
     public static SelectionFilter empty() {
         return new SelectionFilter(
                 // FullName
-                Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.empty(), 
+                Optional.empty(), 
+                Optional.empty(),
 
                 Optional.empty(), // nickName
 
@@ -192,6 +204,9 @@ public record SelectionFilter(
                 Optional.empty(), // PostalAddress
                 Optional.empty(), // streetName
                 Optional.empty(), // streetSuffix
+
+                Optional.empty(), // address2
+
                 Optional.empty(), // city
 
                 Optional.empty(), // state
@@ -234,7 +249,6 @@ public record SelectionFilter(
         private String firstName;
         private String middleName;
         private String lastName;
-
         private String nickName;
 
         private GenderIdentity gender;
@@ -244,9 +258,12 @@ public record SelectionFilter(
         private Integer minYear;
         private Integer maxYear;
 
+        //TODO:  ADDRESS_CATEGORY, UNIT_TYPE
         private PostalAddress postalAddress;
         private String streetName;
         private String streetSuffix;
+        private String address2;
+
         private String city;
 
         private USState state;
@@ -256,12 +273,14 @@ public record SelectionFilter(
 
         private USRegion region;
         private Ethnicity ethnicity;
+
         private DomainType domainType;
         private String domain;
 
         private UsernameType usernameType;
         private String username;
 
+        //TODO:  PHONE_NUMBER_TYPE
         private String areaCode;
 
         protected SelectionPredicate<String> customPredicate;
@@ -274,16 +293,14 @@ public record SelectionFilter(
 
         protected Map<TemplateField, String> equalToMap = HashMap.newHashMap(0);
         protected Map<TemplateField, Set<String>> inMap = HashMap.newHashMap(0);
+        protected final Map<TemplateField, Set<?>> inEnumMap = new HashMap<>();
 
         public Builder() {
             //
         }
 
-        // Maps a Class type to a Set of that specific type
-        private final Map<TemplateField, Set<?>> inEnumMap = new HashMap<>();
-
         @SuppressWarnings("unchecked")
-        public <T> Set<T> getSet(TemplateField field, Class<T> type) {
+        public <T> Set<T> getInEnumSet(TemplateField field, Class<T> type) {
             return (Set<T>) inEnumMap.computeIfAbsent(field, k -> new HashSet<T>());
         }
 
@@ -304,6 +321,8 @@ public record SelectionFilter(
             this.streetName = filter.streetName.orElse(null);
             this.streetSuffix = filter.streetSuffix.orElse(null);
 
+            this.address2 = filter.address2.orElse(null);
+
             this.city = filter.city.orElse(null);
 
             this.state = filter.state.orElse(null);
@@ -313,15 +332,17 @@ public record SelectionFilter(
 
             this.region = filter.region.orElse(null);
 
+            this.areaCode = filter.areaCode.orElse(null);
+
             this.startsWithMap = filter.startsWithMap();
             this.endsWithMap = filter.endsWithMap();
             this.containsMap = filter.containsMap();
 
             // TODO:  I don't think these need to get copied...
             this.equalToMap = filter.equalToMap();
-            //this.inMap = filter.inMap();
+            this.inMap = filter.inMap();
 
-            LOGGER.debug(this.toString());
+            //LOGGER.debug(this.toString());
         }
 
         public Builder firstName(String value) {
@@ -397,6 +418,12 @@ public record SelectionFilter(
         public Builder streetSuffix(String value) {
             this.streetSuffix = value;
             this.equalToMap.put(TemplateField.STREET_SUFFIX, value);
+            return this;
+        }
+
+        public Builder address2(String value) {
+            this.address2 = value;
+            this.equalToMap.put(TemplateField.ADDRESS2, value);
             return this;
         }
 
@@ -583,6 +610,9 @@ public record SelectionFilter(
                     Optional.ofNullable(postalAddress),
                     Optional.ofNullable(streetName),
                     Optional.ofNullable(streetSuffix),
+
+                    Optional.ofNullable(address2),
+
                     Optional.ofNullable(city),
 
                     // TODO: State take precedence over states
@@ -649,6 +679,12 @@ public record SelectionFilter(
         //if(!postalAddress.isEmpty()) {
         //    sb.append("postalAddress=" + postalAddress.toString()) + FIELD_DELIM);
         //}
+        if(!streetName.isEmpty()) sb.append("streetName=" + this.streetName.get()+ FIELD_DELIM);
+        if(!streetSuffix.isEmpty()) sb.append("streetSuffix=" + this.streetSuffix.get()+ FIELD_DELIM);
+        if(!address2.isEmpty()) sb.append("address2=" + this.address2.get()+ FIELD_DELIM);
+
+        if(!city.isEmpty()) sb.append("city=" + this.city.get()+ FIELD_DELIM);
+
         if(!state.isEmpty()) {
             sb.append("state=" + state.get().name() + FIELD_DELIM);
         }
@@ -660,6 +696,12 @@ public record SelectionFilter(
         }
         if(!birthday.isEmpty()) sb.append("birthday=" + this.birthday.get().toString() + FIELD_DELIM);
         if(!ethnicity.isEmpty()) sb.append("ethnicity=" + this.ethnicity.get().toString() + FIELD_DELIM);
+
+        if(!areaCode.isEmpty()) sb.append("areaCode=" + this.areaCode.get()+ FIELD_DELIM);
+
+        if(!usernameType.isEmpty()) sb.append("usernameType=" + this.usernameType.get().toString() + FIELD_DELIM);
+        if(!username.isEmpty()) sb.append("username=" + this.username.get()+ FIELD_DELIM);
+
         if(!domainType.isEmpty()) sb.append("domainType=" + this.domainType.get().toString() + FIELD_DELIM);
         if(!domain.isEmpty()) sb.append("domain=" + this.domain.get().toString() + FIELD_DELIM);
         return sb.toString();

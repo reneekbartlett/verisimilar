@@ -63,7 +63,7 @@ public final class UniformSelectorImpl<T> implements RandomSelector<T> {
         if(filter !=null && !filter.isEmpty()) {
             List<String> stringList = items.stream().map(String::valueOf).toList();
             List<String> filteredList = EntryFilter.apply(stringList, filter, field);
-            LOGGER.debug("select (filtered) - original.size():{}, filteredList.size():{}", stringList.size(), filteredList.size());
+            LOGGER.trace("select (filtered) - original.size():{}, filteredList.size():{}", stringList.size(), filteredList.size());
             if (!filteredList.isEmpty()) {
                 int index = ThreadLocalRandom.current().nextInt(filteredList.size());
                 return (T) filteredList.stream().skip(index).findFirst().orElseThrow();

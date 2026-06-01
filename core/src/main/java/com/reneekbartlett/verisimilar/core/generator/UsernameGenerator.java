@@ -2,7 +2,6 @@ package com.reneekbartlett.verisimilar.core.generator;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.UsernameDatasetKey;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
-
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.selector.engine.UsernameSelectionEngine;
 
@@ -32,6 +31,7 @@ public class UsernameGenerator extends AbstractStringGenerator {
         return usernameSelector.select(usernameDatasetKey, filter);
     }
 
+    // TODO: Implement.
     public static final String RFC_HANDLE_REGEX = "^[a-zA-Z0-9]([a-zA-Z0-9._-]{1,18}[a-zA-Z0-9])$";
 
     // GMAIL.COM

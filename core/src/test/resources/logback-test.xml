@@ -1,8 +1,9 @@
 <configuration scan="true" scanPeriod="20 seconds">
+    <property name="LOG_DIR" value="/opt/reneekbartlett/logs" />
     <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/src/repos/reneekbartlett/portfolio/parent/logs/verisimilar-core-test.log</file>
+        <file>${LOG_DIR}/verisimilar-core-test.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>/src/repos/reneekbartlett/portfolio/parent/logs/verisimilar-core-test.%i.log.gz</fileNamePattern>
+            <fileNamePattern>${LOG_DIR}/verisimilar-core-test.%i.log.gz</fileNamePattern>
             <minIndex>1</minIndex>
             <maxIndex>5</maxIndex>
         </rollingPolicy>
@@ -13,17 +14,6 @@
             <pattern>%X{file_id} %d [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
-    <springProfile name="dev">
-        <include resource="org/springframework/boot/logging/logback/base.xml" />
-    </springProfile>
-    <springProfile name="default">
-        <appender name="jsonConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
-        </appender>
-        <root level="DEBUG">
-            <appender-ref ref="jsonConsoleAppender" />
-        </root>
-    </springProfile>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d [%thread] %-5level %logger{36} - %msg%n</pattern>
@@ -34,13 +24,10 @@
             <pattern>%msg%n</pattern>
         </encoder>
     </appender>
-    <logger name="com.reneekbartlett.verisimilar.core.util.PersonGeneratorTests" level="DEBUG" additivity="false">
+    <logger name="com.reneekbartlett.verisimilar.core.generator" level="DEBUG" additivity="true">
         <appender-ref ref="STDOUT_DATA" />
     </logger>
-    <logger name="com.reneekbartlett.verisimilar.core.util.PostalAddressGeneratorTests" level="DEBUG" additivity="false">
-        <appender-ref ref="STDOUT_DATA" />
-    </logger>
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="STDOUT_DATA" />
         <appender-ref ref="ROLLING_FILE" />
     </root>

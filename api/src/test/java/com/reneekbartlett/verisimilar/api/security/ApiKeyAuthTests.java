@@ -1,4 +1,4 @@
-package com.reneekbartlett.verisimilar.api;
+package com.reneekbartlett.verisimilar.api.security;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
