@@ -12,8 +12,6 @@ import com.reneekbartlett.verisimilar.core.selector.engine.UsernameSelectionEngi
 
 public class UsernameGenerator extends AbstractStringGenerator {
 
-    //private static final String DEFAULT_USERNAME = "USER";
-
     private final UsernameSelectionEngine usernameSelector;
 
     public UsernameGenerator(UsernameSelectionEngine usernameSelector) {
@@ -23,12 +21,21 @@ public class UsernameGenerator extends AbstractStringGenerator {
     @Override
     protected String generateString(DatasetResolutionContext ctx, SelectionFilter filter) {
         UsernameDatasetKey key = UsernameDatasetKey.fromContext(ctx);
-        String username = filter.username().orElseGet(() -> generateUsername(key, filter));
-        return username.toUpperCase();
+        return filter.username().orElseGet(() -> generateUsername(key, filter)).toUpperCase();
     }
 
     private String generateUsername(UsernameDatasetKey usernameDatasetKey, SelectionFilter filter) {
+
+        if(filter.domain().isPresent()) {
+            
+        }
+
         return usernameSelector.select(usernameDatasetKey, filter);
+    }
+
+    @Override
+    protected String postProcess(String value) {
+        return value.trim().replaceAll("\\s+", " ");
     }
 
     // TODO: Implement.

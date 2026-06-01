@@ -26,6 +26,7 @@ public class AsyncPersonGeneratorTests {
         AsyncPersonGenerator generator = new AsyncPersonGenerator(TestUtils.getDatasetSelectionEngineRegistry());
         PersonRecord person = generator.generate();
         LOGGER.debug("Generated person: {}", person);
+        Assertions.assertNotNull(person);
     }
 
     @Test
@@ -70,8 +71,7 @@ public class AsyncPersonGeneratorTests {
 
         Assertions.assertTrue(person.firstName().equalsIgnoreCase(firstName));
         Assertions.assertTrue(person.lastName().toUpperCase().startsWith(lastNameChars));
-        
+
         Assertions.assertTrue(person.emailAddress().domain().equalsIgnoreCase(domain));
-        
     }
 }

@@ -1,4 +1,4 @@
-package com.reneekbartlett.verisimilar.core.model;
+package com.reneekbartlett.verisimilar.api.reporting;
 
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.node.JsonNodeFactory;

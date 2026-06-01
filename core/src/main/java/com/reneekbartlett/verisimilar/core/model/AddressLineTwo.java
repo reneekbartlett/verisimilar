@@ -1,6 +1,10 @@
 package com.reneekbartlett.verisimilar.core.model;
 
 public record AddressLineTwo (String unitNumber, String unitXtra, AddressCategory addressCategory, UnitType unitType){
+    public AddressLineTwo(String unitNumber, UnitType unitType) {
+        this(unitNumber, null, null, unitType);
+    }
+
     @Override
     public String toString() {
         final String VALUE_DELIM = " ";

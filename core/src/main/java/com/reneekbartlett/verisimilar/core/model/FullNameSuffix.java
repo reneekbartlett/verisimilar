@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// TODO
 public enum FullNameSuffix {
     JR("Jr.", Category.GENERATIONAL, "Jr", "Junior"),
     SR("Sr.", Category.GENERATIONAL, "Sr", "Senior"),

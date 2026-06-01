@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.reneekbartlett.verisimilar.core.model.AddressLineTwo;
 import com.reneekbartlett.verisimilar.core.model.DomainType;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
 import com.reneekbartlett.verisimilar.core.model.FullName;
@@ -40,7 +41,7 @@ public record SelectionFilter(
         Optional<Integer> minYear,
         Optional<Integer> maxYear,
 
-        Optional<PostalAddress> postalAddress,
+        //Optional<PostalAddress> postalAddress,
 
         Optional<String> streetName,
         Optional<String> streetSuffix,
@@ -98,7 +99,7 @@ public record SelectionFilter(
         minYear = (minYear == null) ? Optional.empty() : minYear;
         maxYear = (maxYear == null) ? Optional.empty() : maxYear;
 
-        postalAddress = postalAddress == null ? Optional.empty() : postalAddress;
+        //postalAddress = postalAddress == null ? Optional.empty() : postalAddress;
 
         streetName = streetName == null ? Optional.empty() : streetName;
         streetSuffix = streetSuffix == null ? Optional.empty() : streetSuffix;
@@ -177,6 +178,8 @@ public record SelectionFilter(
                 && zipCodes.isEmpty()
                 && region.isEmpty()
                 && ethnicity.isEmpty()
+                && usernameType.isEmpty()
+                && username.isEmpty()
                 && domainType.isEmpty()
                 && domain.isEmpty()
                 && startsWithMap.isEmpty()
@@ -201,7 +204,7 @@ public record SelectionFilter(
                 Optional.empty(), // Birthday
                 Optional.empty(), Optional.empty(), // MinYear, MaxYear
 
-                Optional.empty(), // PostalAddress
+                //Optional.empty(), // PostalAddress
                 Optional.empty(), // streetName
                 Optional.empty(), // streetSuffix
 
@@ -259,7 +262,7 @@ public record SelectionFilter(
         private Integer maxYear;
 
         //TODO:  ADDRESS_CATEGORY, UNIT_TYPE
-        private PostalAddress postalAddress;
+        //private PostalAddress postalAddress;
         private String streetName;
         private String streetSuffix;
         private String address2;
@@ -317,11 +320,14 @@ public record SelectionFilter(
             this.nickName = filter.nickName.orElse(null);
             this.birthday = filter.birthday.orElse(null);
 
-            // todo: postalAddress?
+            // AddressLineOne
             this.streetName = filter.streetName.orElse(null);
             this.streetSuffix = filter.streetSuffix.orElse(null);
 
+            // AddressLineTwo
             this.address2 = filter.address2.orElse(null);
+            //filter.unitType
+            //filter.addressCategory
 
             this.city = filter.city.orElse(null);
 
@@ -333,6 +339,12 @@ public record SelectionFilter(
             this.region = filter.region.orElse(null);
 
             this.areaCode = filter.areaCode.orElse(null);
+
+            this.username = filter.username.orElse(null);
+            this.usernameType = filter.usernameType.orElse(null);
+
+            this.domain = filter.domain.orElse(null);
+            this.domainType = filter.domainType.orElse(null);
 
             this.startsWithMap = filter.startsWithMap();
             this.endsWithMap = filter.endsWithMap();
@@ -398,7 +410,7 @@ public record SelectionFilter(
         }
 
         public Builder postalAddress(PostalAddress value) {
-            this.postalAddress = value;
+            //this.postalAddress = value;
 
             this.state = USState.fromAbbreviation(value.state());
             this.equalToMap.put(TemplateField.STATE, value.state());
@@ -421,9 +433,9 @@ public record SelectionFilter(
             return this;
         }
 
-        public Builder address2(String value) {
-            this.address2 = value;
-            this.equalToMap.put(TemplateField.ADDRESS2, value);
+        public Builder address2(AddressLineTwo value) {
+            this.address2 = value.toString();
+            this.equalToMap.put(TemplateField.ADDRESS2, value.toString());
             return this;
         }
 
@@ -607,7 +619,7 @@ public record SelectionFilter(
                     Optional.ofNullable(minYear),
                     Optional.ofNullable(maxYear),
 
-                    Optional.ofNullable(postalAddress),
+                    //Optional.ofNullable(postalAddress),
                     Optional.ofNullable(streetName),
                     Optional.ofNullable(streetSuffix),
 

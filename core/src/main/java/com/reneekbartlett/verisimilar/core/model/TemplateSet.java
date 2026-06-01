@@ -5,19 +5,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/***
+ * "${KEYWORD}.${NUM10}"
+ */
 public record TemplateSet(Set<String> templates) {
     public static TemplateSet of(String... values) {
         return new TemplateSet(Set.of(values));
     }
-
-//    public static TemplateSet defaults() {
-//        return TemplateSet.of(
-//                "${KEYWORD}.${NUM10}",
-//                "${KEYWORD}${NUM10}",
-//                "${KEYWORD}${NUM10}0",
-//                "${KEYWORD}${NUM10}00"
-//        );
-//    }
 
     public List<String> toList(){
         return new ArrayList<String>(templates);

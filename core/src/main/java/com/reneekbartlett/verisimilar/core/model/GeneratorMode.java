@@ -1,7 +1,7 @@
-package com.reneekbartlett.verisimilar.core.model;
-
-public enum GeneratorMode {
-    VERISIMILAR,
-    SPAMMY,
-    DEFAULT
-}
+//package com.reneekbartlett.verisimilar.core.model;
+//
+//public enum GeneratorMode {
+//    VERISIMILAR,
+//    SPAMMY,
+//    DEFAULT
+//}

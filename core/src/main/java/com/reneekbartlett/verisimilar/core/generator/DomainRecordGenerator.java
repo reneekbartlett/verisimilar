@@ -39,7 +39,7 @@ public class DomainRecordGenerator extends AbstractValueGenerator<DomainRecord> 
             return new DomainRecord(valueFilter, domainType);
         }
         String domain = domainSelector.select(key, filter);
-        return new DomainRecord(domain, null);
+        return new DomainRecord(domain, domainType);
     }
 
     private DomainType generateDomainType(SelectionFilter filter) {

@@ -16,7 +16,7 @@ import com.reneekbartlett.verisimilar.core.model.USState;
 import com.reneekbartlett.verisimilar.core.model.UsernameType;
 
 /***
- * DatasetResolutionContext is for dataset resolution.  
+ * DatasetResolutionContext is for dataset resolution.
  * Purpose: Choose the dataset before filtering.
  * This class carries global, structural, upstream parameters that determine which dataset should be loaded or selected.
  */

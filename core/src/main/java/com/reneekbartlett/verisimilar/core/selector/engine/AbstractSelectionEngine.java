@@ -35,6 +35,7 @@ public abstract class AbstractSelectionEngine<K,R> {
     public String select(K key, SelectionFilter filter) {
         if(filter != null && filter.equalToMap().containsKey(field())) {
             String filterValue = filter.equalToMap().get(field());
+            LOGGER.debug("select {}, {}, {}", key, filter, field());
             return filterValue;
         }
 
@@ -59,11 +60,11 @@ public abstract class AbstractSelectionEngine<K,R> {
 
     protected abstract void setup();
 
-    public abstract K defaultKey();
+    protected abstract K defaultKey();
 
-    public abstract Class<K> keyType();
+    protected abstract Class<K> keyType();
 
-    public abstract Class<R> resultType();
+    protected abstract Class<R> resultType();
 
     protected abstract TemplateField field();
 

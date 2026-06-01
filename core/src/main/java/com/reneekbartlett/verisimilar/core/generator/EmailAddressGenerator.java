@@ -8,6 +8,9 @@ import com.reneekbartlett.verisimilar.core.selector.engine.KeywordSelectionEngin
 import com.reneekbartlett.verisimilar.core.selector.engine.UsernameSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelectionEngineRegistry;
 
+/***
+ * Composite generator, using UsernameGenerator + DomainGenerator
+ */
 public class EmailAddressGenerator extends AbstractValueGenerator<EmailAddressRecord> {
 
     private final UsernameGenerator usernameGenerator;

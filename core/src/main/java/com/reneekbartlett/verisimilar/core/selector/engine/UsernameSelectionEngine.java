@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+//import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,8 @@ import com.reneekbartlett.verisimilar.core.templates.resolver.UsernameTemplatesR
 public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDatasetKey, UsernameDatasetResult> {
     private static final SelectorStrategy<String> DEFAULT_SELECTOR_STRATEGY = new UniformSelectorStrategy<>();
 
-    protected Map<NameKey, RandomSelector<String>> selectorsByNameKey;
+    protected HashMap<NameKey, RandomSelector<String>> selectorsByNameKey;
+    //protected ConcurrentHashMap<NameKey, RandomSelector<String>> selectorsByNameKeyV2;
 
     public record NameKey(UsernameType usernameType) {
         public NameKey() {
@@ -74,6 +76,13 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
             RandomSelector<String> selector = strategy.buildSelector(map, field());
             selectorsByNameKey.put(nameKey, selector);
         });
+        /*this.selectorsByNameKey = result.datasets().entrySet().stream().collect(
+                Collectors.toMap(
+                    Map.Entry::getKey,
+                    entry -> strategy.buildSelector(entry.getValue(), field()),
+                    (existing, replacement) -> existing, // Merge function (if needed)
+                    () -> HashMap.newHashMap(result.datasets().size()) // Preserves pre-sizing
+        ));*/
     }
 
     @Override
@@ -83,8 +92,7 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
         NameKey nameKey = new NameKey();
         RandomSelector<String> selector = selectorsByNameKey.get(nameKey);
         if (selector == null) {
-            //throw new IllegalStateException("No selector registered for " + nameKey);
-            return "";
+            throw new IllegalStateException("No selector registered for " + nameKey);
         }
 
         if(!filter.isEmpty()) {
@@ -101,18 +109,9 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
         //
         // Templates
         UsernameTemplatesResolver templatesResolver = new UsernameTemplatesResolver(new TemplateRegistryLoader());
-
         TemplateParameters parameters = getTemplateParameters(filter, usernameKeyword1, usernameKeyword2);
-
-        Map<String, Object> personTemplateParams = parameters.resolved();
-
-        Map<String, Object> allTemplateParams = new HashMap<>(personTemplateParams);
-
-        // TODO: Add
-        EnumSet<TemplateField> populatedFields = parameters.populatedFields();
-
-        UsernameTemplatesResult templatesResult = templatesResolver.loadForFields(populatedFields);
-        LOGGER.debug("templatesResult:{}", templatesResult.toString());
+        Map<String, Object> allTemplateParams = new HashMap<>(parameters.resolved());
+        UsernameTemplatesResult templatesResult = templatesResolver.loadForFields(parameters.populatedFields());
 
         TemplateSet templateSet = templatesResult.getTemplates();
         if(templateSet.templates().size() == 0) {
@@ -123,9 +122,9 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
         // TODO:  Backup?  "${KEYWORD}${NUM1000}"
         UniformSelectorImpl<String> templateSelector = new UniformSelectorImpl<>(templateSet.toList(), null);
         String randomTemplate = templateSelector.select();
-
         String usernameFromTemplate = applyTemplate(randomTemplate, usernameKeyword1, allTemplateParams);
         LOGGER.debug("randomTemplate:{}; usernameFromTemplate:{}", randomTemplate, usernameFromTemplate);
+        LOGGER.trace("templatesResult:{}", templatesResult.toString());
 
         return usernameFromTemplate;
     }
@@ -146,8 +145,9 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
                 resolvedValueParams.put(templateParam.templateField.getPlaceholder(), templateParam.fieldValue());
             }
 
-            if(resolvedValueParams.containsKey("BIRTHDAY")) {
-                LocalDate birthday = LocalDate.parse((String)resolvedValueParams.get("BIRTHDAY"));
+            String birthdayPlaceholder = TemplateField.BIRTHDAY.getPlaceholder();
+            if(resolvedValueParams.containsKey(birthdayPlaceholder)) {
+                LocalDate birthday = LocalDate.parse((String)resolvedValueParams.get(birthdayPlaceholder));
                 AstrologySign sign = AstrologySign.fromLocalDate(birthday);
                 resolvedValueParams.put("BIRTHDAY_YEAR", String.valueOf(birthday.getYear()));
                 resolvedValueParams.put("BIRTHDAY_YEAR_SHORT", String.valueOf(birthday.getYear()).substring(2));
@@ -155,7 +155,7 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
                 resolvedValueParams.put("BIRTHDAY_SIGN", sign.name());
             }
 
-            if(resolvedValueParams.containsKey("FIRST")) {
+            if(resolvedValueParams.containsKey(TemplateField.FIRST_NAME.getPlaceholder())) {
                 String firstName = (String) resolvedValueParams.get("FIRST");
                 resolvedValueParams.put("FIRST_INITIAL", firstName.charAt(0));
             }

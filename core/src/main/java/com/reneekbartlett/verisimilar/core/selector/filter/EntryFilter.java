@@ -57,7 +57,7 @@ public final class EntryFilter {
             if(filter.startsWithMap().containsKey(field)) {
                 String searchStr = filter.startsWithMap().get(field).toUpperCase();
                 p = p.and(s -> s.toUpperCase().startsWith(searchStr));
-                //LOGGER.debug("field {} startsWith {}", field.getPlaceholder(), searchStr);
+                LOGGER.debug("field {} startsWith {}", field.getPlaceholder(), searchStr);
             }
     
             if(filter.endsWithMap().containsKey(field)) {

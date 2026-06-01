@@ -9,9 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.reneekbartlett.verisimilar.core.TestUtils;
+import com.reneekbartlett.verisimilar.core.model.AddressLineTwo;
 import com.reneekbartlett.verisimilar.core.model.PostalAddress;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.USState;
+import com.reneekbartlett.verisimilar.core.model.UnitType;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.selector.engine.registry.PostalAddressSelectionEngineRegistry;
 
@@ -164,13 +166,12 @@ public class PostalAddressGeneratorTests {
         PostalAddressRecordGenerator postalAddressGenerator = new PostalAddressRecordGenerator(registry);
 
         SelectionFilter.Builder filterBuilder = SelectionFilter.builder();
-        filterBuilder.address2("UNIT 27");
+        filterBuilder.address2(new AddressLineTwo("27", UnitType.UNIT));
 
         PostalAddress postalAddress = postalAddressGenerator.generate(filterBuilder.build());
 
         LOGGER.debug("postalAddress=" + postalAddress.toString());
         Assertions.assertNotNull(postalAddress);
         Assertions.assertTrue(postalAddress.address2().toUpperCase().contains("UNIT 27"));
-
     }
 }

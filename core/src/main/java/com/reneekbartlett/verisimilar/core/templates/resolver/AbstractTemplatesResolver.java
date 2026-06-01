@@ -14,8 +14,6 @@ public abstract class AbstractTemplatesResolver<K, R> implements TemplatesResolv
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractTemplatesResolver.class);
 
-    //private final DatasetCache<K, R> templateCache = new DatasetCache<>();
-
     protected final TemplateRegistryLoader loader;
     protected final String defaultTemplatesFile;
     protected TemplateRegistry templateRegistry;
@@ -29,8 +27,8 @@ public abstract class AbstractTemplatesResolver<K, R> implements TemplatesResolv
     @Override
     public Set<String> getTemplates(EnumSet<TemplateField> populatedFields) {
         Set<String> filteredTemplates;
+        // Use KEYWORD1 Templates if none are loaded.
         if(templateRegistry == null) {
-            // TODO: Check logic
             filteredTemplates = TemplateRegistry.defaults().getTemplatesFor(EnumSet.of(TemplateField.KEYWORD1));
         } else {
             filteredTemplates = templateRegistry.getTemplatesFor(populatedFields);

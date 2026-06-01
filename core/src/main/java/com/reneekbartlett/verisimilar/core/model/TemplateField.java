@@ -52,7 +52,7 @@ public enum TemplateField {
      * Placeholder used in the StringTemplate
      */
     private final String placeholder;
-    
+
     private final Class clazz;
 
     // TODO:  Add field for storing applicable Generator Classes?
