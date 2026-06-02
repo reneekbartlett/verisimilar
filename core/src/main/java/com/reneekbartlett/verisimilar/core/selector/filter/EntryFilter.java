@@ -48,13 +48,6 @@ public final class EntryFilter {
             TemplateField field
     ) {
         // Map T to String while preserving order
-        // Build string view once
-        //int size = values.size();
-        //List<String> stringList = new ArrayList<>(size);
-        //for (int i = 0; i < size; i++) {
-        //    stringList.add(String.valueOf(values.get(i)));
-        //}
- 
         Predicate<String> predicate = buildPredicate(filter, field);
         return values.stream()
                 .filter(e -> predicate.test((String) e))
