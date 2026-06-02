@@ -42,6 +42,25 @@ public final class EntryFilter {
                 .collect(Collectors.toList());
     }
 
+    public static <T> List<T> applyToList(
+            List<T> values,
+            SelectionFilter filter,
+            TemplateField field
+    ) {
+        // Map T to String while preserving order
+        // Build string view once
+        //int size = values.size();
+        //List<String> stringList = new ArrayList<>(size);
+        //for (int i = 0; i < size; i++) {
+        //    stringList.add(String.valueOf(values.get(i)));
+        //}
+ 
+        Predicate<String> predicate = buildPredicate(filter, field);
+        return values.stream()
+                .filter(e -> predicate.test((String) e))
+                .collect(Collectors.toList());
+    }
+
     private static Predicate<String> buildPredicate(SelectionFilter filter, TemplateField field) {
         Predicate<String> p = s -> true;
 
@@ -75,4 +94,5 @@ public final class EntryFilter {
 
         return p;
     }
+    
 }

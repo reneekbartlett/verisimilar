@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public enum DomainType {
+public enum DomainType implements WeightedEnumData {
 
     B2C("B2C", 0.5000),
     EDU("EDU", 0.0250),

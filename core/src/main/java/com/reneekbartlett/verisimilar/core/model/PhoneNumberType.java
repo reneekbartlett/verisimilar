@@ -4,7 +4,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum PhoneNumberType {
+public enum PhoneNumberType implements WeightedEnumData {
     MOBILE("mobile", 0.9000),
     HOME("home", 0.0100);
 
@@ -25,6 +25,10 @@ public enum PhoneNumberType {
 
     public String getLabel() {
         return this.label;
+    }
+
+    public double getWeight() {
+        return this.weight;
     }
 
     public static PhoneNumberType fromValue(String templateValue) {

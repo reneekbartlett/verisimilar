@@ -17,7 +17,7 @@ import java.util.Map;
 * Duplex/Triplex/Fourplex: Attached units sharing walls, often with separate ownership structures.
 * Garden/Mid-Rise/High-Rise: Defines the number of stories in an apartment/condo building.
 */
-public enum AddressCategory {
+public enum AddressCategory implements WeightedEnumData {
 
     SINGLE_FAMILY("Single Family Residential (SFR)", 0.0001),
     MULTI_FAMILY("Multi Family", 0.0001),

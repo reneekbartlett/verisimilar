@@ -1,10 +1,11 @@
 package com.reneekbartlett.verisimilar.core.selector;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.slf4j.Logger;
@@ -18,59 +19,58 @@ public final class UniformSelectorImpl<T> implements RandomSelector<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UniformSelectorImpl.class);
 
-    private final List<T> items;
+    private final List<T> dataset;
     private final TemplateField field;
     private final int valueCount;
 
-    private SelectionFilter filter;
+    private volatile SelectionFilter filter;
 
-    public UniformSelectorImpl(List<T> items, TemplateField field) {
-        Objects.requireNonNull(items, "items");
-        if (items.isEmpty()) {
-            LOGGER.error("Items cannot be empty");
-            throw new IllegalArgumentException("Items cannot be empty");
+    // memoization cache
+    private final ConcurrentMap<SelectionFilter, UniformSelectorImpl<T>> filteredCache = new ConcurrentHashMap<>();
+
+    public UniformSelectorImpl(List<T> dataset, TemplateField field) {
+        Objects.requireNonNull(dataset, "dataset");
+        if (dataset.isEmpty()) {
+            LOGGER.error("Dataset cannot be empty");
+            throw new IllegalArgumentException("Dataset cannot be empty");
         }
-        this.items = items;
         this.field = field;
-        this.valueCount = items.size();
+        this.dataset = dataset;
+        this.valueCount = this.dataset.size();
     }
 
-    public UniformSelectorImpl(Set<T> items, TemplateField field) {
-        Objects.requireNonNull(items, "items");
-        if (items.isEmpty()) {
-            LOGGER.error("Items cannot be empty");
-            throw new IllegalArgumentException("Items cannot be empty");
+    public UniformSelectorImpl(Set<T> dataset, TemplateField field) {
+        Objects.requireNonNull(dataset, "dataset");
+        if (dataset.isEmpty()) {
+            LOGGER.error("Dataset cannot be empty");
+            throw new IllegalArgumentException("Dataset cannot be empty");
         }
-        this.items = new ArrayList<>(items);
         this.field = field;
-        this.valueCount = items.size();
+        this.dataset = List.copyOf(dataset);
+        this.valueCount = this.dataset.size();
     }
 
-    public UniformSelectorImpl(Map<T, Double> weights, TemplateField field) {
-        Objects.requireNonNull(weights, "weights");
-        if (weights.isEmpty()) {
-            LOGGER.error("Weighted map cannot be empty");
-            throw new IllegalArgumentException("Weighted map cannot be empty");
+    public UniformSelectorImpl(Map<T, Double> dataset, TemplateField field) {
+        Objects.requireNonNull(dataset, "dataset");
+        if (dataset.isEmpty()) {
+            LOGGER.error("Weighted dataset map cannot be empty");
+            throw new IllegalArgumentException("Weighted dataset map cannot be empty");
         }
-        this.items = new ArrayList<>(weights.keySet());
         this.field = field;
-        this.valueCount = items.size();
+        this.dataset = List.copyOf(dataset.keySet());
+        this.valueCount = this.dataset.size();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public T select() {
-        if(filter !=null && !filter.isEmpty()) {
-            List<String> stringList = items.stream().map(String::valueOf).toList();
-            List<String> filteredList = EntryFilter.apply(stringList, filter, field);
-            LOGGER.trace("select (filtered) - original.size():{}, filteredList.size():{}", stringList.size(), filteredList.size());
-            if (!filteredList.isEmpty()) {
-                int index = ThreadLocalRandom.current().nextInt(filteredList.size());
-                return (T) filteredList.stream().skip(index).findFirst().orElseThrow();
-            }
+        SelectionFilter filter = this.filter;
+        if(filter != null && !filter.isEmpty()) {
+            UniformSelectorImpl<T> filtered = filteredCache.computeIfAbsent(filter, this::buildFilteredSelector);
+            return filtered.select();
         }
-        int index = ThreadLocalRandom.current().nextInt(items.size());
-        return items.stream().skip(index).findFirst().orElseThrow();
+        // select un-filtered
+        int idx = ThreadLocalRandom.current().nextInt(valueCount);
+        return dataset.get(idx);
     }
 
     @Override
@@ -78,19 +78,20 @@ public final class UniformSelectorImpl<T> implements RandomSelector<T> {
         return this.valueCount;
     }
 
+    private UniformSelectorImpl<T> buildFilteredSelector(SelectionFilter filter) {
+        // TODO:  Convert List<T> to List<String>?
+        List<T> filtered = EntryFilter.applyToList(dataset, filter, field);
+        if (filtered.isEmpty()) {
+            LOGGER.trace("Filtered dataset list empty for filter: {}", filter);
+            return new UniformSelectorImpl<T>(dataset, field); // fallback to original
+            //return this; // fallback to original
+        }
+        LOGGER.trace("Filtered selector: original={}, filtered={}, filter={}",
+                dataset.size(), filtered.size(), filter);
+        return new UniformSelectorImpl<T>(filtered, field);
+    }
+
     public void setFilter(SelectionFilter filter) {
         this.filter = filter;
     }
-
-//    //@Override
-//    private static <T> RandomSelector<T> buildRandomSelector(Map<T, Double> weights){
-//        return new UniformSelectorImpl<>(weights);
-//    }
-//
-//    //@Override
-//    private static <T> RandomSelector<T> buildRandomSelector(Set<T> values) {
-//        Map<T, Double> weights = HashMap.newHashMap(values.size());
-//        values.forEach(x -> weights.put(x, 0.0001));
-//        return new UniformSelectorImpl<>(weights);
-//    }
 }

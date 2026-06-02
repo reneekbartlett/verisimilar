@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public enum GenderIdentity {
+public enum GenderIdentity implements WeightedEnumData {
     MALE("MALE", 1, 0.4995, "male"),
     FEMALE("FEMALE", 2, 0.4995, "female"),
     NONBINARY("NON-BINARY", 3, 0.0010, "unisex"),

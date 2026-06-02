@@ -2,6 +2,8 @@ package com.reneekbartlett.verisimilar.core.selector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -13,25 +15,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
+import com.reneekbartlett.verisimilar.core.model.WeightedEnumData;
 import com.reneekbartlett.verisimilar.core.selector.filter.EntryFilter;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
-public final class WeightedSelectorImpl<T> implements RandomSelector<T> {
+public final class WeightedEnumSelectorImpl<E extends Enum<E> & WeightedEnumData> implements RandomSelector<E> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WeightedSelectorImpl.class);
 
-    private final Map<T, Double> dataset;
+    private final EnumSet<E> enumSet;
+    private final Map<E, Double> dataset;
     private final TemplateField field;
-    private final List<T> items;
+    private final List<E> items;
     private final double[] cumulative;
     private final int valueCount;
 
     private volatile SelectionFilter filter;
 
     // memoization cache
-    private final ConcurrentMap<SelectionFilter, WeightedSelectorImpl<T>> filteredCache = new ConcurrentHashMap<>();
+    private final ConcurrentMap<SelectionFilter, WeightedEnumSelectorImpl<E>> filteredCache = new ConcurrentHashMap<>();
 
-    private record Weights<T>(List<T> items, double[] cumulative) {
+    private record Weights<E>(List<E> items, double[] cumulative) {
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder(0);
@@ -41,27 +45,33 @@ public final class WeightedSelectorImpl<T> implements RandomSelector<T> {
         }
     }
 
-    public WeightedSelectorImpl(Map<T, Double> dataset, TemplateField field) {
-        Objects.requireNonNull(dataset, "dataset");
-        if (dataset.isEmpty()) {
-            LOGGER.error("Weighted dataset map cannot be empty");
-            throw new IllegalArgumentException("Weighted dataset map cannot be empty");
+    public WeightedEnumSelectorImpl(EnumSet<E> enumSet, TemplateField field) {
+        Objects.requireNonNull(enumSet, "enumSet");
+        if (enumSet.isEmpty()) {
+            LOGGER.error("Dataset cannot be empty");
+            throw new IllegalArgumentException("Dataset cannot be empty");
         }
         this.field = field;
+        this.enumSet = enumSet;
+
+        Map<E, Double> dataset = HashMap.newHashMap(enumSet.size());
+        for (E entry : enumSet) {
+            dataset.put(entry, entry.getWeight());
+        }
         this.dataset = Map.copyOf(dataset); // copy to ensure immutability
 
-        Weights<T> weights = calcWeights(dataset);
+        Weights<E> weights = calcWeights(enumSet);
         this.items = List.copyOf(weights.items());
         this.cumulative = weights.cumulative();
-        this.valueCount = items.size();
+        this.valueCount = this.items.size();
     }
 
     @Override
-    public T select() {
+    public E select() {
         double rand = ThreadLocalRandom.current().nextDouble();
         SelectionFilter filter = this.filter;
         if (filter != null && !filter.isEmpty()) {
-            WeightedSelectorImpl<T> filtered = filteredCache.computeIfAbsent(filter, this::buildFilteredSelector);
+            WeightedEnumSelectorImpl<E> filtered = filteredCache.computeIfAbsent(filter, this::buildFilteredSelector);
             return filtered.select();
         }
         return selectUnfiltered(rand);
@@ -72,40 +82,41 @@ public final class WeightedSelectorImpl<T> implements RandomSelector<T> {
         return this.valueCount;
     }
 
-    private T selectUnfiltered(double rand) {
+    private E selectUnfiltered(double rand) {
         int idx = Arrays.binarySearch(cumulative, rand);
         if (idx < 0) idx = -idx - 1;
         return items.get(idx);
     }
 
-    public WeightedSelectorImpl<T> withFilter(SelectionFilter filter) {
+    public WeightedEnumSelectorImpl<E> withFilter(SelectionFilter filter) {
         if (filter == null || filter.isEmpty()) {
             return this;
         }
         return filteredCache.computeIfAbsent(filter, this::buildFilteredSelector);
     }
 
-    private WeightedSelectorImpl<T> buildFilteredSelector(SelectionFilter filter) {
-        Map<T, Double> filtered = EntryFilter.apply(dataset, filter, field);
+    private WeightedEnumSelectorImpl<E> buildFilteredSelector(SelectionFilter filter) {
+        Map<E, Double> filtered = EntryFilter.apply(dataset, filter, field);
         if (filtered.isEmpty()) {
             LOGGER.trace("Filtered dataset map empty for filter {}", filter);
-            return new WeightedSelectorImpl<>(dataset, field); // fallback to original
+            return new WeightedEnumSelectorImpl<>(enumSet, field); // fallback to original
         }
         LOGGER.trace("Filtered selector: original={}, filtered={}, filter={}",
                 dataset.size(), filtered.size(), filter);
-        return new WeightedSelectorImpl<>(filtered, field);
+        EnumSet<E> filteredEnumSet = EnumSet.copyOf(filtered.keySet());
+        return new WeightedEnumSelectorImpl<>(filteredEnumSet, field);
     }
 
-    private Weights<T> calcWeights(Map<T, Double> weights) {
-        int size = weights.size();
-        List<T> vals = new ArrayList<>(size);
+    private Weights<E> calcWeights(EnumSet<E> enumSet) {
+        int size = enumSet.size();
+        List<E> vals = new ArrayList<>(size);
         double[] cumulative = new double[size];
         double running = 0.0;
         int i = 0;
-        for (var entry : weights.entrySet()) {
-            double w = entry.getValue();
+        for (E entry : enumSet) {
+            double w = entry.getWeight();
             if (w <= 0.0) w = 0.0001;
-            vals.add(entry.getKey());
+            vals.add(entry);
             running += w;
             cumulative[i++] = running;
         }

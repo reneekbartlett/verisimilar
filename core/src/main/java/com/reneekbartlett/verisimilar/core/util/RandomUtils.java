@@ -1,5 +1,6 @@
 package com.reneekbartlett.verisimilar.core.util;
 
+import java.util.EnumSet;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -15,6 +16,36 @@ public class RandomUtils {
 
     public static String getRandomAreaCode() {
         return RandomUtils.getRandomDigitString(3, 200, 999);
+    }
+
+    public static <T extends Enum<T>> T getRandomFromSet(EnumSet<T> set, java.util.function.ToDoubleFunction<T> weightExtractor) {
+        if (set == null || set.isEmpty()) {
+            throw new IllegalArgumentException("EnumSet cannot be null or empty.");
+        }
+
+        // 1. Calculate total weight of the elements currently in the EnumSet
+        double totalWeight = 0.0;
+        for (T item : set) {
+            totalWeight += weightExtractor.applyAsDouble(item);
+        }
+
+        if (totalWeight <= 0.0) {
+            throw new IllegalArgumentException("Total weight of the elements must be greater than 0.");
+        }
+
+        // 2. Generate a random target between 0.0 (inclusive) and totalWeight (exclusive)
+        double target = ThreadLocalRandom.current().nextDouble() * totalWeight;
+
+        // 3. Linearly scan the subset and subtract weights to find the matching bucket
+        for (T item : set) {
+            target -= weightExtractor.applyAsDouble(item);
+            if (target <= 0.0) {
+                return item;
+            }
+        }
+
+        // Fallback edge case for rounding errors
+        return set.iterator().next();
     }
 
     /***

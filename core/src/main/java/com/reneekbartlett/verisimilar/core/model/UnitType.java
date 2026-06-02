@@ -12,16 +12,16 @@ import java.util.Set;
  * BSMT
  * https://public-dhhs.ne.gov/nfocus/HowDoI/howdoi/usps_address_unit_types.htm
  */
-public enum UnitType {
-    APARTMENT("Apt", 0.0001, "APT"),
-    UNIT("Unit", 0.0001, "U"),
+public enum UnitType implements WeightedEnumData {
+    APARTMENT("APT", 0.1000, "APT"),
+    UNIT("UNIT", 0.0001, "U"),
     ROOM("RM", 0.0001, "ROOM"),
     SUITE("STE", 0.0001),
     FLOOR("FL", 0.0001, "FLR"),
     BASEMENT("Bsmt", 0.0001),
     BUILDING("Bldg", 0.0001),
 
-    PENTHOUSE("Penthouse", 0.0001, "PH"),
+    PENTHOUSE("PENTHOUSE", 0.0001, "PH"),
     TOWNHOUSE("TH", 0.0001),
     STUDIO("Studio", 0.0001),
     LOFT("Loft", 0.0001),
@@ -83,5 +83,9 @@ public enum UnitType {
             }
         }
         return unitTypeEnumSet;
+    }
+
+    public static EnumSet<UnitType> getWeightedEnumDataSet() {
+        return defaultDatasets();
     }
 }

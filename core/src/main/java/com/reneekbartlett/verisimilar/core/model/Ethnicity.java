@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public enum Ethnicity {
+public enum Ethnicity implements WeightedEnumData {
 
     HISPANIC_OR_LATINO("Hispanic or Latino", 0.0000, ""),
     NOT_HISPANIC_OR_LATINO("Not Hispanic or Latino", 0.0000, ""),

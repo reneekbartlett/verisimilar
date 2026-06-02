@@ -4,7 +4,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 // TODO: Implement
-public enum USRegion {
+public enum USRegion implements WeightedEnumData {
     // US Census
     NORTHEAST("Northeast", 4, 0.120000, "CT", "ME", "MA", "NH", "RI", "VT", "NJ", "NY", "PA"),
     MIDWEST("Midwest", 3, 0.160000, "IL", "IN", "MI", "OH", "WI", "IA", "KS", "MN", "MO", "NE", "ND", "SD"),
@@ -37,6 +37,10 @@ public enum USRegion {
 
     public int getRank() {
         return rank;
+    }
+
+    public String getLabel() {
+        return regionName;
     }
 
     public double getWeight() {

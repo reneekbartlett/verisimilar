@@ -4,7 +4,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum Decade {
+public enum Decade implements WeightedEnumData {
 
     FOURTIES(1940, 1949, 0.0000, "1940"),
     FIFTIES(1950, 1959, 0.0000, "1950"),
@@ -34,6 +34,10 @@ public enum Decade {
 
     public Integer getEndYear() {
         return endYear;
+    }
+
+    public String getLabel() {
+        return placeholder;
     }
 
     public double getWeight() {

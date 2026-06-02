@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public enum KeywordType {
+public enum KeywordType implements WeightedEnumData {
 
     KEYWORD1("KEYWORD1", 0.5000, "ALL"),
     KEYWORD2("KEYWORD2", 0.0250, "XTRA");

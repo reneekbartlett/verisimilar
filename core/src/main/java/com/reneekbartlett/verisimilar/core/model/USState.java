@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public enum USState {
+public enum USState implements WeightedEnumData {
     AL("Alabama",24,0.003262),
     AK("Alaska",52,0.001399), // TODO:  Fix weight
     AR("Arkansas",33,0.002372),
@@ -76,6 +76,10 @@ public enum USState {
 
     public int getRank() {
         return rank;
+    }
+
+    public String getLabel() {
+        return this.name();
     }
 
     public double getWeight() {
