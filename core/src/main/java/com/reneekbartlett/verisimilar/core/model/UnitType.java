@@ -10,26 +10,46 @@ import java.util.Set;
  * PH (Penthouse) — Top-floor luxury units, often associated with high-rises or luxury co-ops/condos.
  * TH (Townhouse) — Individual multi-level units usually within larger developments.
  * BSMT
+ * 
+ * https://pe.usps.com/text/pub28/28apc_003.htm
  * https://public-dhhs.ne.gov/nfocus/HowDoI/howdoi/usps_address_unit_types.htm
  */
 public enum UnitType implements WeightedEnumData {
-    APARTMENT("APT", 0.1000, "APT"),
-    UNIT("UNIT", 0.0001, "U"),
-    ROOM("RM", 0.0001, "ROOM"),
-    SUITE("STE", 0.0001),
-    FLOOR("FL", 0.0001, "FLR"),
-    BASEMENT("Bsmt", 0.0001),
-    BUILDING("Bldg", 0.0001),
+    APARTMENT("APT", 0.1000, "APT", "APARTMENT"),
+    UNIT("UNIT", 0.0001, "UNIT", "U", "UNT"),
+    ROOM("RM", 0.0001, "ROOM", "RM"),
+    SUITE("STE", 0.0001, "SUITE", "STE"),
+    FLOOR("FL", 0.0001, "FLR", "FL", "FLOOR"),
+    BASEMENT("BSMT", 0.0001, "BASEMENT", "BSMT", "BASEMNT"),
+    BUILDING("BLDG", 0.0001, "BUILDING", "BLDG"),
 
-    PENTHOUSE("PENTHOUSE", 0.0001, "PH"),
+    PENTHOUSE("PH", 0.0001, "PH", "PENTHOUSE"),
     TOWNHOUSE("TH", 0.0001),
     STUDIO("Studio", 0.0001),
     LOFT("Loft", 0.0001),
     REAR("REAR", 0.0001),
     FRONT("FRONT", 0.0001),
     UPPER("UPPER", 0.0001),
-    // REAR, FRONT, TOWNHOUSE/TH
-    UNNOWN("", 0.0000);
+
+    DEPARTMENT("DEPT", 0.0000, "DEPARTMENT","DEPT"),
+
+    HANGER("HNGR", 0.0000, "HANGER","HNGR"),
+    KEY("KEY", 0.0000, "KEY","KY"),
+    LOBBY("LBBY", 0.0000, "LOBBY","LBBY"),
+    LOT("LOT", 0.0000, "LOT","LT"),
+    LOWER("LOWR", 0.0000, "LOWER","LOWR", "LWR"),
+    OFFICE("OFC", 0.0000, "OFFICE","OFC", "OFFC"),
+
+    PIER("PIER", 0.0000, "PIER","PR"),
+
+    SIDE("SIDE", 0.0000, "SIDE","SD"),
+    SLIP("SLIP", 0.0000, "SLIP","SLP"),
+    SPACE("SPC", 0.0000, "SPACE","SPC"),
+    STOP("STOP", 0.0000, "STOP","STP"),
+
+    TRAILER("TRLR", 0.0000, "TRAILER","TRLR"),
+
+    NONE("", 0.0000, "", " ", "NONE", "N/A", "BLANK");
 
     private final String label;
     private final double weight;

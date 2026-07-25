@@ -3,6 +3,7 @@ package com.reneekbartlett.verisimilar.core.datasets.result;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.reneekbartlett.verisimilar.core.model.Decade;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.selector.engine.FirstNameSelectionEngine.NameKey;
@@ -12,8 +13,8 @@ public record FirstNameDatasetResult(Map<NameKey, Map<String, Double>> datasets)
     public FirstNameDatasetResult(Map<String, Double> femaleNames, Map<String, Double> maleNames) {
         this(
                 Map.of(
-                        new NameKey(GenderIdentity.FEMALE, null), femaleNames, 
-                        new NameKey(GenderIdentity.MALE, null), maleNames
+                        new NameKey(GenderIdentity.FEMALE, null, Decade.ALL), femaleNames, 
+                        new NameKey(GenderIdentity.MALE, null, Decade.ALL), maleNames
                 )
         );
     }
@@ -23,11 +24,11 @@ public record FirstNameDatasetResult(Map<NameKey, Map<String, Double>> datasets)
     }
 
     public Map<String, Double> get(GenderIdentity gender) {
-        return datasets.getOrDefault(new NameKey(gender, null), getDefault());
+        return datasets.getOrDefault(new NameKey(gender, null, Decade.ALL), getDefault());
     }
 
     public Map<String, Double> get(GenderIdentity gender, Ethnicity ethnicity) {
-        return datasets.getOrDefault(new NameKey(gender, ethnicity), get(gender));
+        return datasets.getOrDefault(new NameKey(gender, ethnicity, Decade.ALL), get(gender));
     }
 
     public Map<String, Double> get(NameKey nameKey) {

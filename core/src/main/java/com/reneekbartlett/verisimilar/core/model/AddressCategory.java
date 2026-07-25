@@ -21,7 +21,8 @@ public enum AddressCategory implements WeightedEnumData {
 
     SINGLE_FAMILY("Single Family Residential (SFR)", 0.0001),
     MULTI_FAMILY("Multi Family", 0.0001),
-    PO_BOX("", 0.0001);
+    PO_BOX("PO BOX", 0.0001),
+    EMPTY("", 0.0000);
 
     private final String label;
     private final double weight;

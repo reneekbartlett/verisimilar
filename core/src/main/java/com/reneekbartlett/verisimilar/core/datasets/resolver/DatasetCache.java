@@ -4,12 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-
 public class DatasetCache<K, R> {
-
-    //private static final Logger LOGGER = LoggerFactory.getLogger(DatasetCache.class);
 
     private final Map<K, R> cache = new ConcurrentHashMap<>();
 
@@ -20,8 +15,6 @@ public class DatasetCache<K, R> {
      * @return
      */
     public R getOrLoad(K key, Function<K, R> loader) {
-        //LOGGER.debug("getOrLoad - key: {}; cached.size():{}", key, cache.size());
-        //LOGGER.debug("containsKey:{}; key:{}", cache.containsKey(key), key);
         return cache.computeIfAbsent(key, loader);
     }
 

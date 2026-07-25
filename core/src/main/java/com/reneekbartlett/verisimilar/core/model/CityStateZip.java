@@ -6,6 +6,10 @@ import java.util.Set;
 
 public record CityStateZip(String city, String state, String zip){
 
+    public CityStateZip(String city, USState state, String zip, String id){
+        this(city, state.name(), zip);
+    }
+
     public static CityStateZip empty() {
         return new CityStateZip(null, null, null);
     }
@@ -17,26 +21,10 @@ public record CityStateZip(String city, String state, String zip){
     @Override
     public String toString() {
         final String VALUE_DELIM = " ";
-        return new StringBuilder()
-            .append(this.city).append(VALUE_DELIM)
-            .append(this.state).append(VALUE_DELIM)
-            .append(this.zip).append(VALUE_DELIM)
-            .toString().toUpperCase();
-    }
-
-    public static Map<String, Double> toWeightedMap(Set<String> cityStateZips) {
-        Map<String, Double> weightedMap = new HashMap<>();
-        for(String val : cityStateZips) {
-            weightedMap.put(val, 0.0001);
-        }
-        return weightedMap;
-    }
-
-    public static Map<String, Double> toWeightedMap(String[] cityStateZips) {
-        Map<String, Double> weightedMap = new HashMap<>();
-        for(String val : cityStateZips) {
-            weightedMap.put(val, 0.0001);
-        }
-        return weightedMap;
+        StringBuilder sb = new StringBuilder(0);
+        if(city != null) sb.append(this.city).append(VALUE_DELIM);
+        if(state != null) sb.append(this.state).append(VALUE_DELIM);
+        if(zip != null) sb.append(this.zip).append(VALUE_DELIM);
+        return sb.toString();
     }
 }

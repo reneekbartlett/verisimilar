@@ -78,7 +78,11 @@ Response:
 ```
 
 
-## Endpoints
+## API
+
+This package contains the REST API to generate data.  It uses the "Core" library for generation.
+
+### Endpoints
 
 Documentation for accepted parameters TBD.
 
@@ -90,3 +94,41 @@ Documentation for accepted parameters TBD.
 * /api/generate/postalAddress
 * /api/generate/email
 * /api/generate/phoneNumber
+
+## Core
+
+Datasets
+* 
+
+
+* SelectionEngine
+
+com.reneekbartlett.verisimilar.core.generator
+
+ValueGenerator<T>
+  AbstractValueGenerator<T>
+    AsyncPersonGenerator
+    FullNameGenerator
+    PostalAddressRecordGenerator
+    EmailAddressGenerator
+
+    AbstractStringGenerator
+      FirstNameGenerator firstNameGenerator
+      MiddleNameGenerator
+      DomainGenerator
+      UsernameGenerator
+    AbstractLocalDateGenerator
+      LocalDateValueGenerator interface
+
+
+AbstractSelectionEngine<K, R>
+  UsernameSelectionEngine
+    UsernameTemplatesResolver
+
+TemplateRegistryLoader
+
+AbstractTemplatesResolver<K, R>
+  TemplatesResolver<K, R>
+
+
+DatasetResolutionContext

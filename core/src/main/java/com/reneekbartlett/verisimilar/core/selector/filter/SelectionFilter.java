@@ -8,21 +8,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.reneekbartlett.verisimilar.core.model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.reneekbartlett.verisimilar.core.model.AddressLineTwo;
-import com.reneekbartlett.verisimilar.core.model.DomainType;
-import com.reneekbartlett.verisimilar.core.model.Ethnicity;
-import com.reneekbartlett.verisimilar.core.model.FullName;
-import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
-import com.reneekbartlett.verisimilar.core.model.PersonRecord;
-import com.reneekbartlett.verisimilar.core.model.PostalAddress;
-import com.reneekbartlett.verisimilar.core.model.TemplateField;
-import com.reneekbartlett.verisimilar.core.model.USRegion;
-import com.reneekbartlett.verisimilar.core.model.USState;
-import com.reneekbartlett.verisimilar.core.model.UsernameType;
 
 /***
  * 
@@ -40,8 +30,6 @@ public record SelectionFilter(
         Optional<LocalDate> birthday,
         Optional<Integer> minYear,
         Optional<Integer> maxYear,
-
-        //Optional<PostalAddress> postalAddress,
 
         Optional<String> streetName,
         Optional<String> streetSuffix,
@@ -98,8 +86,6 @@ public record SelectionFilter(
         birthday = (birthday == null) ? Optional.empty() : birthday;
         minYear = (minYear == null) ? Optional.empty() : minYear;
         maxYear = (maxYear == null) ? Optional.empty() : maxYear;
-
-        //postalAddress = postalAddress == null ? Optional.empty() : postalAddress;
 
         streetName = streetName == null ? Optional.empty() : streetName;
         streetSuffix = streetSuffix == null ? Optional.empty() : streetSuffix;
@@ -262,7 +248,9 @@ public record SelectionFilter(
         private Integer maxYear;
 
         //TODO:  ADDRESS_CATEGORY, UNIT_TYPE
-        //private PostalAddress postalAddress;
+        private AddressCategory addressCategory;
+        private UnitType unitType;
+
         private String streetName;
         private String streetSuffix;
         private String address2;
@@ -284,6 +272,7 @@ public record SelectionFilter(
         private String username;
 
         //TODO:  PHONE_NUMBER_TYPE
+        private PhoneNumberType phoneNumberType;
         private String areaCode;
 
         protected SelectionPredicate<String> customPredicate;
@@ -297,6 +286,8 @@ public record SelectionFilter(
         protected Map<TemplateField, String> equalToMap = HashMap.newHashMap(0);
         protected Map<TemplateField, Set<String>> inMap = HashMap.newHashMap(0);
         protected final Map<TemplateField, Set<?>> inEnumMap = new HashMap<>();
+
+        protected CityStateZip cityStateZip;
 
         public Builder() {
             //
@@ -410,7 +401,9 @@ public record SelectionFilter(
         }
 
         public Builder postalAddress(PostalAddress value) {
-            //this.postalAddress = value;
+
+            this.city = value.city();
+            this.equalToMap.put(TemplateField.CITY, this.city);
 
             this.state = USState.fromAbbreviation(value.state());
             this.equalToMap.put(TemplateField.STATE, value.state());
@@ -602,6 +595,11 @@ public record SelectionFilter(
 
         public Builder customPredicate(SelectionPredicate<String> predicate) {
             this.customPredicate = predicate;
+            return this;
+        }
+
+        protected Builder cityStateZip(CityStateZip value) {
+            this.city = value.city();
             return this;
         }
 

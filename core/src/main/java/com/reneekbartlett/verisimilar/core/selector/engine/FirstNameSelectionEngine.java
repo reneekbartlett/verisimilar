@@ -6,6 +6,7 @@ import com.reneekbartlett.verisimilar.core.datasets.key.FirstNameDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.FirstNameDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.datasets.result.FirstNameDatasetResult;
+import com.reneekbartlett.verisimilar.core.model.Decade;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
@@ -26,9 +27,9 @@ import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
  */
 public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameDatasetKey,FirstNameDatasetResult> {
 
-    public record NameKey(GenderIdentity gender, Ethnicity ethnicity) {
+    public record NameKey(GenderIdentity gender, Ethnicity ethnicity, Decade decade) {
         public NameKey(GenderIdentity gender) {
-            this(gender, Ethnicity.UNKNOWN);
+            this(gender, Ethnicity.UNKNOWN, Decade.ALL);
         }
         @Override
         public String toString() {
@@ -73,7 +74,7 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
         if(ethnicitiesMap.size() >= 1){
             for(Ethnicity ethnicity : ethnicitiesMap.keySet()){
                 genderIdentityMap.keySet().forEach(gender -> {
-                    NameKey nameKey = new NameKey(gender, ethnicity);
+                    NameKey nameKey = new NameKey(gender, ethnicity, Decade.ALL);
                     RandomSelector<String> selector = strategy.buildSelector(firstNameDatasetResult.get(nameKey), field());
                     selectorsByNameKey.put(nameKey, selector);
                 });
@@ -93,7 +94,7 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
             ethnicity = Ethnicity.UNKNOWN;
         }
  
-        NameKey nameKey = new NameKey(gender, ethnicity);
+        NameKey nameKey = new NameKey(gender, ethnicity, Decade.ALL);
         RandomSelector<String> selector = selectorsByNameKey.get(nameKey);
         if (selector == null) {
             throw new IllegalStateException("No selector registered for " + nameKey);

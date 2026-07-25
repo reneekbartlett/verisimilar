@@ -63,12 +63,12 @@ public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress
     private StreetAddress generateStreetAddress(DatasetResolutionContext ctx, SelectionFilter filter) {
         AddressCategory addressCategory = getAddressCategory(filter);
         if(addressCategory == AddressCategory.PO_BOX) {
-            return new StreetAddress(getPostOfficeBox(filter), null, addressCategory.getLabel());
+            return new StreetAddress(getPostOfficeBox(filter), null, addressCategory);
         }
 
         String address1 = getAddressLineOne(filter, addressCategory);
         String address2 = getAddressLineTwo(filter, addressCategory);
-        return new StreetAddress(address1, address2, addressCategory.getLabel());
+        return new StreetAddress(address1, address2, addressCategory);
     }
 
     private AddressCategory getAddressCategory(SelectionFilter filter) {

@@ -14,7 +14,8 @@ public enum Decade implements WeightedEnumData {
     NINETIES(1990, 1999, 0.0000, "1990"),
     TWO_THOUSANDS(2000, 2009, 0.0000, "2000"),
     TWO_THOUSAND_TENS(2010, 2019, 0.0000, "2010"),
-    UNKNOWN(1940, 2026, 0.0000, "ALL");
+
+    ALL(1940, 2026, 0.0000, "ALL");
 
     private final Integer startYear;
     private final Integer endYear;
@@ -49,7 +50,7 @@ public enum Decade implements WeightedEnumData {
     }
 
     public static EnumSet<Decade> defaultDatasets(){
-        return EnumSet.of(UNKNOWN);
+        return EnumSet.of(ALL);
     }
 
     public static Map<Decade, Double> defaultMap() {

@@ -1,7 +1,8 @@
 package com.reneekbartlett.verisimilar.core.selector.filter;
 
+import com.reneekbartlett.verisimilar.core.model.CityStateZip;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
-import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter.Builder;
+//import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter.Builder;
 
 public record InternalFilter(SelectionFilter filter) {
     
@@ -32,16 +33,18 @@ public record InternalFilter(SelectionFilter filter) {
 
         @Override
         public Builder startsWith(String value, TemplateField field) {
-            //super.startsWithMap.put(field, value);
-            //return this;
             return (Builder) super.startsWith(value, field);
         }
 
         @Override
         public Builder endsWith(String value, TemplateField field) {
             return (Builder) super.endsWith(value, field);
-            //return this;
         }
+
+        public Builder cityStateZip(CityStateZip value) {
+            return (Builder) super.cityStateZip(value);
+        }
+
     }
 
     //public static Builder builder() {

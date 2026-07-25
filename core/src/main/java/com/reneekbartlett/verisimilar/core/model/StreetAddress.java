@@ -1,13 +1,53 @@
 package com.reneekbartlett.verisimilar.core.model;
 
-public record StreetAddress(String address1, String address2, String type){
+/***
+ * Hyphenated Address Ranges
+ * 
+ * Grid Style Addresses: https://pe.usps.com/text/pub28/28apd_003.htm
+ * contain significant punctuation, such as periods (for example, 39.2 RD, 39.4 RD). 
+ * grid style addresses in Salt Lake City that include double directionals 
+ * (for example, in 842 E 1700 S: E is a predirectional, S is a postdirectional, and 1700 is located in the street name field).
+ * 
+ * Numeric street names, 
+ * For example, 7TH ST or SEVENTH ST, should be output on the mail piece exactly as they appear in the ZIP+4 file.
+ * Spell out numeric street names only when there are duplicate street names within a postal delivery area and the only distinguishing factor is 
+ * that the one you matched is spelled out.
+ * 
+ * Corner Addresses https://pe.usps.com/text/pub28/28c2_017.htm
+ * 514 HIGH ST
+ * 5TH AND HIGH
+ * 
+ * Military: CPR (Consolidated Postal Room), OPC (Official Postal Center), PSC (Postal Service Center), UPR (Unit Postal Room), and UNIT.
+ * 
+ * Department of State Addresses    https://pe.usps.com/text/pub28/28c2_020.htm
+ * Rural Route Addresses [Leading 0, hyphens, RFD/RD->RR]
+ * Highway Contract Route Addresses HC ## BOX ##
+ */
+public record StreetAddress(String address1, String address2, AddressCategory addressCategory){
+
+    public StreetAddress(AddressLineOne addressLineOne, AddressLineTwo addressLineTwo, AddressCategory addressCategory){
+        this(addressLineOne.toString(), addressLineTwo.toString(), addressCategory);
+
+    }
 
     public static StreetAddress empty() {
-        return new StreetAddress(null, null, null);
+        return new StreetAddress(AddressLineOne.empty(), AddressLineTwo.empty(), AddressCategory.EMPTY);
     }
 
     public static StreetAddress placeholder() {
-        return new StreetAddress("301 MASSACHUSETTS AVE", "UNIT 2", null);
+        AddressCategory addressCategory = AddressCategory.SINGLE_FAMILY;
+        UnitType unitType = UnitType.APARTMENT;
+        AddressLineOne addressLineOne = new AddressLineOne(
+                "STREET_ID",
+                "STREET_NAME",
+                "STREET_SUFFIX",
+                addressCategory);
+        AddressLineTwo addressLineTwo = new AddressLineTwo(
+                "UNIT_NUMBER",
+                "UNIT_XTRA",
+                unitType,
+                null);
+        return new StreetAddress("301 MASSACHUSETTS AVE", "UNIT 2", addressCategory);
     }
 
     @Override
