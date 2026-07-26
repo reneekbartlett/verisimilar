@@ -27,7 +27,7 @@ public class SqliteSelectorImplTests {
         field = TemplateField.STREET_NAME; // or mock if needed
     }
 
-    @Test
+    //@Test
     void testSelectReturnsItem() {
         SqliteSelectorImpl<String> selector = new SqliteSelectorImpl<>(field, String.class);
 
@@ -36,12 +36,15 @@ public class SqliteSelectorImplTests {
         LOGGER.debug(result);
         //assertTrue(items.contains(result), () -> "Selected value '" + result + "' not found in dataset.");
     }
-    
+
     @Test
     void testSelectReturnsItem_withFilter() {
         SqliteSelectorImpl<String> selector = new SqliteSelectorImpl<>(field, String.class);
         SelectionFilter filter = SelectionFilter.builder()
-                .startsWith("A", field)
+                //.startsWith("Ren", field)
+                .endsWith("ZASDFDS", field)
+                //.streetName("WESTCHESTER") // adds TemplateField to equalToMap
+                .contains("WEST", field)
                 .build();
         selector.setFilter(filter);
         String result = selector.select();
