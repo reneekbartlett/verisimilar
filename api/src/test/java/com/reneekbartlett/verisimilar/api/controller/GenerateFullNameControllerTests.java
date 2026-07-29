@@ -55,16 +55,14 @@ public class GenerateFullNameControllerTests {
         params.put("filter[FIRST_NAME][eq]", new String[]{"RENEE"});
         params.put("filter[LAST_NAME][eq]", new String[]{"BARTLETT"});
 
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addParameters(params);
+        //MockHttpServletRequest request = new MockHttpServletRequest();
+        //request.addParameters(params);
 
         //ResponseEntity<Object> r = controller.generate(null, null, null, null, null, null, request);
 
         assertThat(mvc.get().uri("/api/generate/fullname"))
             .hasStatusOk()
             .hasBodyTextEqualTo("RENEE K BARTLETT");
-            //.hasBodyTextEqualTo("{\"id\":101,\"name\":\"Spring Boot 4 Book\"}");
-            //.extractingPath("$.name").isEqualTo("Spring Boot 4 Book");
 
         LOGGER.debug("done");
 

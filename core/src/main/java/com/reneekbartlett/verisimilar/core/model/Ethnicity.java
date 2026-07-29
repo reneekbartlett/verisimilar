@@ -5,6 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+// TODO: Rename to US_CENSUS_?
+
+/***
+ * These are demographic classifications based on US Census criteria.
+ */
 public enum Ethnicity implements WeightedEnumData {
 
     HISPANIC_OR_LATINO("Hispanic or Latino", 0.0000, ""),
@@ -23,6 +28,7 @@ public enum Ethnicity implements WeightedEnumData {
     INDIAN("Indian", 0.0000, "india"),
     CHINESE("Chinese", 0.0000, "china"),
 
+    GENERIC("", 0.0000, "ALL"),
     UNKNOWN("", 0.0000, "ALL"),
     DECLINE_TO_ANSWER("Decline to Answer", 0.0000, "ALL");
 

@@ -1,0 +1,57 @@
+<configuration scan="true" scanPeriod="20 seconds">
+    <!--<property resource="variables.properties" /> -->
+    <property name="LOG_DIR" value="/opt/reneekbartlett/logs/api" />
+    <property name="APP_ID" value="api" />
+
+    <!-- Reference the other file here -->
+    <!--<include resource="includedConfig.xml"/>-->
+
+    <appender name="ROLLING_API_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/verisimilar-api.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/verisimilar-api.%i.log.gz</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>5</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>100MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>%d [%X{traceId:------}] [%X{clientIp:--------}] [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="ROLLING_REQ_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/verisimilar-api-requests.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/verisimilar-api-requests.%i.log.gz</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>5</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>100MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>%d [%X{traceId:------}] [%X{clientIp:--------}] [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="STDOUT_API" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d ${APP_ID} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="STDOUT_REQ_LOG" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d ${APP_ID} [%X{traceId:------}] [%X{clientIp:-NONE}] %msg%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="com.reneekbartlett.verisimilar.api.filter.RequestLoggingFilter" level="DEBUG" additivity="false">
+        <appender-ref ref="STDOUT_REQ_LOG" />
+        <appender-ref ref="ROLLING_REQ_FILE" />
+    </logger>
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT_API" />
+        <appender-ref ref="ROLLING_API_FILE" />
+    </root>
+    <logger name="com.zaxxer.hikari.pool.HikariPool" level="WARN" />
+    <logger name="org.springframework.web" level="DEBUG" />
+</configuration>

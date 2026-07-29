@@ -51,7 +51,7 @@ public class SecurityConfig {
             )
             //.addFilterAfter(new RateLimitingFilter(rateLimitService), ApiKeyAuthFilter.class);
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/public/**").permitAll() // status
+                .requestMatchers("/favicon.ico", "/css/**", "/js/**", "/api/public/**", "/error").permitAll() // Whitelist your favicon
                 .requestMatchers("/api/generate/**").authenticated()
                 .anyRequest().authenticated()
             );

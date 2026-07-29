@@ -21,8 +21,34 @@
         </dependency>
 
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.3.0-jre</version>
+        </dependency>
+
+        <!-- Rate limiting and traffic shaping library based on the Token Bucket algorithm -->
+        <dependency>
+            <groupId>com.bucket4j</groupId>
+            <artifactId>bucket4j-core</artifactId>
+            <version>8.10.1</version> 
+        </dependency>
+
+        <!-- Fault Tolerance and Recovery library (Spring Boot 4) -->
+        <!-- Spring Boot 4 has @Retryable and @ConcurrencyLimit built in, include for addl patterns -->
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-spring-boot4</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!-- Formerly -aop -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aspectj</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -142,6 +168,13 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock-standalone</artifactId>
+            <version>3.6.0</version>
+            <scope>test</scope>
+        </dependency>
+
         <!--<dependency>
             <groupId>tools.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
@@ -157,7 +190,6 @@
       <resource>
         <!-- External Location, Not Included in Git sub-module -->
         <directory>../../parent/config/verisimilar/api/</directory>
-        <!--<directory>${verisimilar.core.api.dir}</directory>-->
         <includes>
             <!--<include>*.properties</include>-->
             <include>api.yaml</include>

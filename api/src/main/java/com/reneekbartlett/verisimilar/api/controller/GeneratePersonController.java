@@ -2,6 +2,7 @@ package com.reneekbartlett.verisimilar.api.controller;
 
 import com.reneekbartlett.verisimilar.api.dto.PersonResponseDto;
 import com.reneekbartlett.verisimilar.api.service.GeneratePersonService;
+import com.reneekbartlett.verisimilar.api.shared.annotation.RateLimited;
 import com.reneekbartlett.verisimilar.api.util.JsonApiParser;
 import com.reneekbartlett.verisimilar.api.util.JsonApiParser.FilterConditions;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
@@ -41,6 +42,8 @@ public class GeneratePersonController {
         this.jsonRequestParser = new JsonApiParser(this.filterFields);
     }
 
+    // Limited to 5 requests per second (aka 300 requests per 60 seconds)
+    @RateLimited(capacity = 300, durationSeconds = 60)
     @GetMapping
     public ResponseEntity<PersonResponseDto> generate(
             @RequestParam(name="gender", required=false) String gender,

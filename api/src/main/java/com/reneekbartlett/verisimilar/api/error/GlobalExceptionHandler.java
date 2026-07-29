@@ -2,6 +2,7 @@ package com.reneekbartlett.verisimilar.api.error;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +14,11 @@ import org.springframework.web.context.request.WebRequest;
 
 import com.reneekbartlett.verisimilar.api.exception.BadRequestException;
 import com.reneekbartlett.verisimilar.api.exception.NotFoundException;
+import com.reneekbartlett.verisimilar.api.exception.RateLimitExceededException;
 import com.reneekbartlett.verisimilar.api.model.ErrorResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -46,6 +49,23 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGlobal(Exception ex, WebRequest request) {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred.", request);
+    }
+
+    // Handle Rate Limit Exceeded
+    @ExceptionHandler(RateLimitExceededException.class)
+    public ResponseEntity<Map<String, String>> handleRateLimit(RateLimitExceededException ex, HttpServletResponse response) {
+        // Populate standard headers directly into the response
+        response.addHeader("X-RateLimit-Limit", String.valueOf(ex.getCapacity()));
+        response.addHeader("X-RateLimit-Remaining", "0");
+        response.addHeader("X-RateLimit-Reset", String.valueOf(ex.getResetSeconds()));
+        response.addHeader("Retry-After", String.valueOf(ex.getRetryAfterSeconds()));
+
+        Map<String, String> errorBody = Map.of(
+                "error", "Too Many Requests",
+                "message", "You have exceeded your request limit. Please try again in " + ex.getRetryAfterSeconds() + " seconds."
+        );
+
+        return new ResponseEntity<>(errorBody, HttpStatus.TOO_MANY_REQUESTS);
     }
 
     private ResponseEntity<ApiError> buildResponse(HttpStatus status, String message, WebRequest request) {

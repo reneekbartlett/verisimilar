@@ -3,6 +3,7 @@ package com.reneekbartlett.verisimilar.core.selector;
 //import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -81,10 +82,10 @@ public class SelectionQuery {
         // Execute the chain in order of priority
         // First check exact match map, then partial match map (fixed to pull value from containsMap)
         // Add startsWith ands endsWith if set
-        boolean processedPt1 = checkAndAppend.test(new MapCheckContext(filter.equalToMap(), " = ?", v -> v)) || 
-            checkAndAppend.test(new MapCheckContext(filter.containsMap(), " LIKE ?", v -> "%" + v + "%", false)) ||
-            checkAndAppend.test(new MapCheckContext(filter.startsWithMap(), " LIKE ?", v -> "" + v + "%", false)) || 
-            checkAndAppend.test(new MapCheckContext(filter.endsWithMap(), " LIKE ?", v -> "%" + v + "", false));
+        boolean processedPt1 = checkAndAppend.test(new MapCheckContext(filter.equalToMap(), " = ?", value -> value)) || 
+            checkAndAppend.test(new MapCheckContext(filter.containsMap(), " LIKE ?", value -> "%" + value + "%", false)) ||
+            checkAndAppend.test(new MapCheckContext(filter.startsWithMap(), " LIKE ?", value -> "" + value + "%", false)) || 
+            checkAndAppend.test(new MapCheckContext(filter.endsWithMap(), " LIKE ?", value -> "%" + value + "", false));
         LOGGER.debug("processedPt1={}", processedPt1);
 
         SelectionQuery q = new SelectionQuery();
@@ -100,7 +101,35 @@ public class SelectionQuery {
     private static String getTableNameForField(TemplateField field) {
         return switch (field.name()) {
             case "STREET_NAME" -> "street_names_us";
+            case "STREET_SUFFIX" -> "address1_street_suffix";
+            case "FIRST_NAME" -> "cfg_fullname_first";
+            case "MIDDLE_NAME" -> "cfg_fullname_middle";
+            case "LAST_NAME" -> "cfg_fullname_last";
+            //case "KEYWORD1" -> "keywords";
             default -> ""; // TODO: put generic word table here.
+        };
+    }
+
+    private static String getColumnNameForField(TemplateField field) {
+        return switch (field.name()) {
+            case "STREET_NAME" -> "street_name";
+            case "STREET_SUFFIX" -> "suffix_abbrv";
+            //case "KEYWORD1" -> "keywords";
+            default -> ""; // TODO: put generic word table here.
+        };
+    }
+
+    private static EnumSet<TemplateField> getFieldsForTableName(String tableName) {
+        return switch (tableName) {
+            // POSTAL ADDRESS
+            case "street_names_us" -> EnumSet.of(TemplateField.STREET_NAME, TemplateField.STATE);
+            case "suffix_abbrv" -> EnumSet.of(TemplateField.STREET_SUFFIX /*, TemplateField.STREET_SUFFIX_ABRV*/ );
+            //
+            case "first_names" -> EnumSet.of(TemplateField.FIRST_NAME, TemplateField.GENDER_IDENTITY, TemplateField.STATE, TemplateField.GENERATION);
+            case "middle_names" -> EnumSet.of(TemplateField.MIDDLE_NAME, TemplateField.GENDER_IDENTITY, TemplateField.STATE, TemplateField.GENERATION);
+            case "last_names" -> EnumSet.of(TemplateField.LAST_NAME, TemplateField.GENDER_IDENTITY, TemplateField.STATE, TemplateField.GENERATION);
+            
+            default -> null; // TODO: put empty enumset?
         };
     }
 }

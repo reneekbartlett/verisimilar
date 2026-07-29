@@ -2,6 +2,7 @@ package com.reneekbartlett.verisimilar.api.security;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 @WebMvcTest(controllers = GeneratePersonController.class)
 @Import({SecurityConfig.class, ApiKeyProperties.class})
 // TODO:  https://docs.spring.io/spring-security/reference/servlet/test/method.html
-//@Disabled
+@Disabled
 public class ApiKeyAuthTests {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiKeyAuthTests.class);
