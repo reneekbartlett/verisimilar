@@ -6,6 +6,8 @@ import com.reneekbartlett.verisimilar.api.util.JsonApiParser.FilterConditions;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Tag(name = "Generate Username", description = "Generate Username API")
 @RequestMapping("/api/generate/username")
 public class GenerateUsernameController {
 
@@ -30,12 +33,13 @@ public class GenerateUsernameController {
         this.jsonRequestParser = new JsonApiParser(this.filterFields);
     }
 
+    @Operation(summary = "Generate Username", description = "Retrieves 1 generated username.")
     @GetMapping
     public ResponseEntity<Object> generate(
             HttpServletRequest request,
-            @RequestParam String first,
-            @RequestParam String last,
-            @RequestParam(defaultValue = "us") String region
+            @RequestParam(name="first", required=false) String first,
+            @RequestParam(name="last", required=false) String last,
+            @RequestParam(name="region", defaultValue = "us") String region
     ) {
         SelectionFilter.Builder filterBuilder;
         FilterConditions filters = jsonRequestParser.parse(request.getParameterMap());
@@ -45,8 +49,6 @@ public class GenerateUsernameController {
             filterBuilder = SelectionFilter.builder();
         }
 
-        // TODO: include filter
-        //String username = generateService.generateUsername(first, last, region);
         String username = generateService.generate(filterBuilder.build());
 
         return ResponseEntity.ok().body(username);

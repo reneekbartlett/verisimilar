@@ -1,9 +1,5 @@
 package com.reneekbartlett.verisimilar.core.model;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 public record CityStateZip(String city, String state, String zip){
 
     public CityStateZip(String city, USState state, String zip, String id){

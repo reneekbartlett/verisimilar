@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Verisimilar API</title>
+        <!-- Use @{...} syntax to reference a static asset relative to the root server path -->
+        <link rel="stylesheet" th:href="@{/css/styles.css}">
+    </head>
+    <body>
+        <header>
+            <h1>Verisimilar API</h1>
+        </header>
+        <main>
+            <!-- The text replaces 'Placeholder' dynamically at runtime using SpEL -->
+            <p th:text="${greeting}">Text</p>
+        </main>
+    </body>
+</html>

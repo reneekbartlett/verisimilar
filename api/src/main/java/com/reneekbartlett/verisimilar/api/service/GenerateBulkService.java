@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.reneekbartlett.verisimilar.api.shared.annotation.Audit;
 import com.reneekbartlett.verisimilar.api.util.FileUtils;
 import com.reneekbartlett.verisimilar.core.generator.AsyncPersonGenerator;
 import com.reneekbartlett.verisimilar.core.io.AsyncFileWriter;
@@ -46,6 +47,7 @@ public class GenerateBulkService {
         return generateBulk(DEFAULT_LINE_COUNT);
     }
 
+    @Audit(action = "GENERATE_BULK")
     public String[] generateBulk(long count) throws Exception {
         if(count > maxLines) {
             count = maxLines;

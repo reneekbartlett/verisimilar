@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.reneekbartlett.verisimilar.api.service.ApiStatusService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
+@Tag(name = "API Status", description = "Check API Status")
 @RequestMapping("/api/public/status")
 public class ApiStatusController {
 

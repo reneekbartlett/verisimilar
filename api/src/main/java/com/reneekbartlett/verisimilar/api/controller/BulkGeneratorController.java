@@ -13,11 +13,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.reneekbartlett.verisimilar.api.service.GenerateBulkService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.reneekbartlett.verisimilar.api.service.FileOutputService;
 import com.reneekbartlett.verisimilar.api.service.FileOutputService.ExportData;
 
 @RestController
 @RequestMapping("/api/generateBulk")
+@Tag(name = "Bulk Generator", description = "Bulk Generator API")
 public class BulkGeneratorController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BulkGeneratorController.class);
@@ -31,8 +36,10 @@ public class BulkGeneratorController {
             FileOutputService fileService) {
         this.bulkService = bulkService;
         this.fileService = fileService;
+        // todo:  add defaultLineCount @Value
     }
 
+    @Operation(summary = "Generate multiple people.", description = "Retrieves multiple lines of generated data.")
     @GetMapping
     public ResponseEntity<String[]> generate(
             @RequestParam(name = "lineCount", required = false) Long lineCount

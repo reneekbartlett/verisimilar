@@ -49,6 +49,7 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
         // If no key provided → skip authentication
         if (apiKey == null || apiKey.isBlank()) {
             chain.doFilter(request, response);
+            //writeJsonError(request, response, 400, "Unauthorized");
             return;
         }
 
@@ -64,8 +65,10 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
             LOGGER.debug("invalid API Key");
 
             // 6. Authentication failed → return JSON 400
-            writeJsonError(request, response, 400, "Invalid API Key");
+            writeJsonError(request, response, 401, "Invalid API Key");
             return;
+        } finally {
+            //
         }
 
         // 7. Continue filter chain
@@ -81,6 +84,7 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
         ErrorResponse error = new ErrorResponse(status, HttpStatus.valueOf(status).getReasonPhrase(), message, request.getRequestURI());
         response.setStatus(status);
         response.setContentType("application/json");
-        response.getWriter().write(new ObjectMapper().writeValueAsString(error));
+        //response.getWriter().write(new ObjectMapper().writeValueAsString(error));
+        response.getWriter().write("Invalid or missing X-API-Key header.");
     }
 }

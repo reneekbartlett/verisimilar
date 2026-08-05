@@ -1,17 +1,20 @@
 package com.reneekbartlett.verisimilar.api.security.config;
 
 import com.reneekbartlett.verisimilar.api.filter.ApiKeyAuthFilter;
-import com.reneekbartlett.verisimilar.api.filter.RequestLoggingFilter;
+//import com.reneekbartlett.verisimilar.api.filter.RequestLoggingFilter;
 import com.reneekbartlett.verisimilar.api.security.api.ApiKeyAuthProvider;
 import com.reneekbartlett.verisimilar.api.security.api.ApiKeyProperties;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 //import org.springframework.security.web.authentication.logout.LogoutFilter;
 
@@ -27,10 +30,10 @@ public class SecurityConfig {
         this.properties = properties;
     }
 
-    @Bean
-    public RequestLoggingFilter loggingFilter() {
-        return new RequestLoggingFilter();
-    }
+    //@Bean
+    //public RequestLoggingFilter loggingFilter() {
+    //    return new RequestLoggingFilter();
+    //}
 
     @Bean
     public ApiKeyAuthFilter authFilter() {
@@ -38,23 +41,30 @@ public class SecurityConfig {
         return new ApiKeyAuthFilter(authenticationManager, properties);
     }
 
-    // TODO:  Add RateLimitService/RateLimitingFilter
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-            // 1. Place LoggingFilter at the very beginning
-            //.addFilterBefore(loggingFilter(), LogoutFilter.class)
-            // 2. Place ApiKeyAuthFilter before general authentication
-            .addFilterBefore(
-                    authFilter(),
-                    UsernamePasswordAuthenticationFilter.class
-            )
-            //.addFilterAfter(new RateLimitingFilter(rateLimitService), ApiKeyAuthFilter.class);
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/favicon.ico", "/css/**", "/js/**", "/api/public/**", "/error").permitAll() // Whitelist your favicon
-                .requestMatchers("/api/generate/**").authenticated()
-                .anyRequest().authenticated()
-            );
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // 1. Place LoggingFilter at the very beginning
+                // .addFilterBefore(loggingFilter(), LogoutFilter.class)
+                // 2. Place ApiKeyAuthFilter before general authentication
+                .addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class)
+                // .addFilterAfter(new RateLimitingFilter(rateLimitService), ApiKeyAuthFilter.class);
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/error").permitAll()
+                        .requestMatchers("/favicon.ico", "/css/**", "/images/**", "/js/**").permitAll()
+                        .requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers("/api/generate/**").authenticated()
+                        .anyRequest().authenticated()
+                )
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpStatus.FORBIDDEN.value());
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"error\": \"Forbidden\", \"message\": \"Access Denied\"}");
+                        })
+                );
 
         return http.build();
     }

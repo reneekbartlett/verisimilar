@@ -1,6 +1,7 @@
 package com.reneekbartlett.verisimilar.api.controller;
 
 import com.reneekbartlett.verisimilar.api.service.GenerateEmailAddressService;
+import com.reneekbartlett.verisimilar.api.shared.annotation.RateLimited;
 import com.reneekbartlett.verisimilar.api.util.JsonApiParser;
 import com.reneekbartlett.verisimilar.api.util.JsonApiParser.FilterConditions;
 import com.reneekbartlett.verisimilar.core.model.DomainType;
@@ -9,6 +10,8 @@ import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.UsernameType;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
@@ -20,7 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/generate/email")
+@Tag(name = "Generate Email Address")
+@RequestMapping("/api/generate")
 public class GenerateEmailAddressController {
 
     private final GenerateEmailAddressService generateService;
@@ -36,7 +40,9 @@ public class GenerateEmailAddressController {
         this.jsonRequestParser = new JsonApiParser(this.filterFields);
     }
 
-    @GetMapping
+    @RateLimited(capacity = 300, durationSeconds = 60)
+    @Operation(summary = "Generate email address", description = "Retrieves 1 generated email address.")
+    @GetMapping("email")
     public ResponseEntity<Object> generate(
             @RequestParam(name="gender", required=false) String gender,
             @RequestParam(name="fname", required=false) String fname,

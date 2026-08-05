@@ -9,6 +9,12 @@ import java.util.Set;
 
 /***
  * These are demographic classifications based on US Census criteria.
+ * https://www.census.gov/newsroom/press-releases/2026/2020-census-names-data.html
+ * https://www2.census.gov/library/publications/decennial/2020/c2020br-13.pdf
+ * https://www.census.gov/library/stories/2026/07/foreign-born-population-250-year-history.html
+ * https://www.census.gov/library/stories/2026/04/2020-census-names-data.html
+ * 
+ * The SSA counts the names of the babies born in 2020, while the Census Bureau counts the names of all respondents.
  */
 public enum Ethnicity implements WeightedEnumData {
 

@@ -10,6 +10,8 @@ import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.USState;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.EnumSet;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/generate/person")
+@Tag(name = "Generate Person", description = "Generate Person API")
 public class GeneratePersonController {
 
     private final GeneratePersonService generateService;
@@ -44,6 +47,7 @@ public class GeneratePersonController {
 
     // Limited to 5 requests per second (aka 300 requests per 60 seconds)
     @RateLimited(capacity = 300, durationSeconds = 60)
+    @Operation(summary = "Generate person", description = "Retrieves 1 generated person.")
     @GetMapping
     public ResponseEntity<PersonResponseDto> generate(
             @RequestParam(name="gender", required=false) String gender,
