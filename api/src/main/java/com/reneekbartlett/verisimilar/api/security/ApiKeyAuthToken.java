@@ -1,4 +1,4 @@
-package com.reneekbartlett.verisimilar.api.security.api;
+package com.reneekbartlett.verisimilar.api.security;
 
 import java.util.Collection;
 
@@ -6,19 +6,13 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 
-/***
- * Loaded in SecurityConfig
- */
-public class ApiKeyAuthenticationToken extends AbstractAuthenticationToken {
+public class ApiKeyAuthToken extends AbstractAuthenticationToken {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 8469795932450057480L;
     private final String apiKey;
     private final String principal;
 
-    public ApiKeyAuthenticationToken(String apiKey) {
+    public ApiKeyAuthToken(String apiKey) {
         super(AuthorityUtils.NO_AUTHORITIES); // non-null
         this.apiKey = apiKey;
         this.principal = null;
@@ -26,7 +20,7 @@ public class ApiKeyAuthenticationToken extends AbstractAuthenticationToken {
     }
 
     // Authenticated constructor (after provider validates key)
-    public ApiKeyAuthenticationToken(
+    public ApiKeyAuthToken(
             String apiKey,
             String principal,
             Collection<? extends GrantedAuthority> authorities,

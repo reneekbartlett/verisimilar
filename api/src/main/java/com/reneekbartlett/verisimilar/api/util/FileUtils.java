@@ -9,6 +9,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 public class FileUtils {
+
+    private FileUtils() {}
+
     public static void rotateFile(Path filePath) throws IOException {
         String fileName = filePath.getFileName().toString();
         String ext = getFileExtensionFromName(fileName).orElse("");

@@ -106,8 +106,11 @@ public class PersonResponseDto {
         return uuid;
     }
 
+    // TODO:  Add setters
     public void setUuid(String uuid) { this.uuid = uuid; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
+    public void setMiddleName(String middleName) { this.middleName = middleName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
 
     @Override
     public String toString() {

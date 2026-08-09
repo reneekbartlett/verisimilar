@@ -103,25 +103,25 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
         return request.getRemoteAddr();
     }
 
-    private void logCustom(ContentCachingRequestWrapper request, ContentCachingResponseWrapper response, long duration) {
-        // 1. Process Request Body (Now filled after Jackson read it)
-        byte[] requestBytes = request.getContentAsByteArray();
-        String requestBody = new String(requestBytes, StandardCharsets.UTF_8);
-        // TODO: String maskedRequestBody = LogMasker.maskJson(requestBody);
-        String maskedRequestBody = requestBody;
-
-        // 2. Process Response Body
-        byte[] responseBytes = response.getContentAsByteArray();
-        String responseBody = new String(responseBytes, StandardCharsets.UTF_8);
-        // TODO: String maskedResponseBody = LogMasker.maskJson(responseBody);
-        String maskedResponseBody = responseBody;
-
-        // Truncate strings if necessary to prevent log flooding
-        if (maskedResponseBody.length() > 1000) {
-            maskedResponseBody = maskedResponseBody.substring(0, 1000) + "... [Truncated]";
-        }
-
-        LOGGER.info("--> Request Body: {}", maskedRequestBody.isEmpty() ? "[EMPTY]" : maskedRequestBody);
-        LOGGER.info("<-- Outgoing Response - Status: {}, Duration: {}ms, Body: {}", response.getStatus(), duration, maskedResponseBody);
-    }
+//    private void logCustom(ContentCachingRequestWrapper request, ContentCachingResponseWrapper response, long duration) {
+//        // 1. Process Request Body (Now filled after Jackson read it)
+//        byte[] requestBytes = request.getContentAsByteArray();
+//        String requestBody = new String(requestBytes, StandardCharsets.UTF_8);
+//        // TODO: String maskedRequestBody = LogMasker.maskJson(requestBody);
+//        String maskedRequestBody = requestBody;
+//
+//        // 2. Process Response Body
+//        byte[] responseBytes = response.getContentAsByteArray();
+//        String responseBody = new String(responseBytes, StandardCharsets.UTF_8);
+//        // TODO: String maskedResponseBody = LogMasker.maskJson(responseBody);
+//        String maskedResponseBody = responseBody;
+//
+//        // Truncate strings if necessary to prevent log flooding
+//        if (maskedResponseBody.length() > 1000) {
+//            maskedResponseBody = maskedResponseBody.substring(0, 1000) + "... [Truncated]";
+//        }
+//
+//        LOGGER.info("--> Request Body: {}", maskedRequestBody.isEmpty() ? "[EMPTY]" : maskedRequestBody);
+//        LOGGER.info("<-- Outgoing Response - Status: {}, Duration: {}ms, Body: {}", response.getStatus(), duration, maskedResponseBody);
+//    }
 }

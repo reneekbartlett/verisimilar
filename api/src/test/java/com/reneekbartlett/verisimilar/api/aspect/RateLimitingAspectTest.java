@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.github.bucket4j.TimeMeter;
 
-import com.reneekbartlett.verisimilar.api.error.GlobalExceptionHandler;
+import com.reneekbartlett.verisimilar.api.exception.GlobalExceptionHandler;
 import com.reneekbartlett.verisimilar.api.shared.annotation.RateLimited;
 
 @SpringBootTest(classes = {

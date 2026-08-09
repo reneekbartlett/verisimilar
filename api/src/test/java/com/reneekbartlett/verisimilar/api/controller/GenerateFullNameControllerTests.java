@@ -13,7 +13,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
-import com.reneekbartlett.verisimilar.api.security.api.ApiKeyProperties;
+import com.reneekbartlett.verisimilar.api.security.ApiKeyProperties;
 import com.reneekbartlett.verisimilar.api.security.config.SecurityConfig;
 import com.reneekbartlett.verisimilar.api.service.GenerateFullNameService;
 import com.reneekbartlett.verisimilar.core.model.FullName;

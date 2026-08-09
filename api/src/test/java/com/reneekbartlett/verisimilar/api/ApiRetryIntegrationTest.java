@@ -77,8 +77,8 @@ public class ApiRetryIntegrationTest {
         verify(3, getRequestedFor(urlEqualTo("/api/generate/person")));
     }
 
-    //@Test
-    void testRetryExhaustionWhenApiStaysRateLimitedIndefinitely(WireMockRuntimeInfo wmRuntimeInfo) {
+    @Test
+    public void testRetryExhaustionWhenApiStaysRateLimitedIndefinitely(WireMockRuntimeInfo wmRuntimeInfo) {
 
         // Diagnostic check: This should NOT print "com.example.api.client.ExternalApiClient"
         System.out.println("CLIENT CLASS TYPE: " + apiClient.getClass().getName());
