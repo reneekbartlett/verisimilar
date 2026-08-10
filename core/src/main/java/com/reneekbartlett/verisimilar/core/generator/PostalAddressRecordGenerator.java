@@ -7,15 +7,20 @@ import com.reneekbartlett.verisimilar.core.selector.engine.CityStateZipSelection
 import com.reneekbartlett.verisimilar.core.selector.engine.StreetNameSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.StreetSuffixSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelectionEngineRegistry;
+
+import java.util.List;
+
 import com.reneekbartlett.verisimilar.core.model.CityStateZip;
 import com.reneekbartlett.verisimilar.core.model.PostalAddress;
 import com.reneekbartlett.verisimilar.core.model.StreetAddress;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.USState;
 
 public class PostalAddressRecordGenerator extends AbstractValueGenerator<PostalAddress>{
 
     private final StreetAddressGenerator streetAddressGenerator;
     private final CityStateZipGenerator cityStateZipGenerator;
+    private final List<TemplateField> filterFields;
 
     public PostalAddressRecordGenerator(
             StreetNameSelectionEngine streetNameSelector,
@@ -24,11 +29,15 @@ public class PostalAddressRecordGenerator extends AbstractValueGenerator<PostalA
             CityStateZipSelectionEngine cityStateZipSelector) {
         this.cityStateZipGenerator = new CityStateZipGenerator(cityStateZipSelector);
         this.streetAddressGenerator = new StreetAddressGenerator(streetNameSelector, streetSuffixSelector, addressTwoSelector);
+        this.filterFields = List.of(TemplateField.CITY, TemplateField.STATE, TemplateField.ZIP_CODE,
+                TemplateField.STREET_ID, TemplateField.STREET_NAME, TemplateField.STREET_SUFFIX,
+                TemplateField.ADDRESS_CATEGORY, 
+                TemplateField.UNIT_TYPE, TemplateField.UNIT_NUMBER, TemplateField.UNIT_XTRA
+        );
     }
 
     public PostalAddressRecordGenerator(DatasetSelectionEngineRegistry selectors) {
-        this.cityStateZipGenerator = new CityStateZipGenerator(selectors.cityStateZip());
-        this.streetAddressGenerator = new StreetAddressGenerator(selectors.streetName(), selectors.streetSuffix(), selectors.addressTwo());
+        this(selectors.streetName(), selectors.streetSuffix(), selectors.addressTwo(), selectors.cityStateZip());
     }
 
     @Override
@@ -61,5 +70,10 @@ public class PostalAddressRecordGenerator extends AbstractValueGenerator<PostalA
     @Override
     protected Class<PostalAddress> valueType() {
         return PostalAddress.class;
+    }
+
+    @Override
+    public List<TemplateField> filterFields(){
+        return this.filterFields;
     }
 }

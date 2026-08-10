@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +14,7 @@ import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
  * 
  */
 // TODO:  Add tests for invalid values
+@DisabledIf(value = "com.reneekbartlett.verisimilar.core.TestUtils#isCoreTestingDisabled")
 public class BirthdayGeneratorTests {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BirthdayGeneratorTests.class);

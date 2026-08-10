@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,7 @@ import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.selector.engine.CityStateZipSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.registry.PostalAddressSelectionEngineRegistry;
 
+@DisabledIf(value = "com.reneekbartlett.verisimilar.core.TestUtils#isCoreTestingDisabled")
 public class CityStateZipGeneratorTests {
     private static final Logger LOGGER = LoggerFactory.getLogger(CityStateZipGeneratorTests.class);
 
@@ -26,7 +28,7 @@ public class CityStateZipGeneratorTests {
         CityStateZipGenerator cityStateZipGenerator = new CityStateZipGenerator(registry.cityStateZip());
 
         CityStateZip cityStateZip = cityStateZipGenerator.generate();
-        LOGGER.debug(cityStateZip.toString());
+        LOGGER.debug("cityStateZip={}", cityStateZip.toString());
 
         Assertions.assertNotNull(cityStateZip);
     }
@@ -43,7 +45,7 @@ public class CityStateZipGeneratorTests {
                 .states(states).build();
 
         CityStateZip cityStateZip = cityStateZipGenerator.generate(ctx, filter);
-        LOGGER.debug(cityStateZip.toString());
+        LOGGER.debug("cityStateZip={}", cityStateZip.toString());
 
         Assertions.assertNotNull(cityStateZip);
         Assertions.assertTrue(states.contains(USState.valueOf(cityStateZip.state())));
@@ -58,18 +60,18 @@ public class CityStateZipGeneratorTests {
 
         EnumSet<USState> states = EnumSet.of(USState.MA);
         Set<String> zipCodes = Set.of("01545");
-        DatasetResolutionContext ctx = DatasetResolutionContext.builder()
-                //.states(states)
-                //.zipCodes(Set.of("01545"))
-                .build();
+        //DatasetResolutionContext ctx = DatasetResolutionContext.builder()
+        //        //.states(states)
+        //        //.zipCodes(Set.of("01545"))
+        //        .build();
         SelectionFilter filter = SelectionFilter.builder()
                 .states(states)
                 .zipCodes(Set.of("01545"))
                 .build();
 
-        CityStateZip cityStateZip = cityStateZipGenerator.generate(ctx, filter);
+        CityStateZip cityStateZip = cityStateZipGenerator.generate(filter);
 
-        LOGGER.debug(cityStateZip.toString());
+        LOGGER.debug("cityStateZip={}", cityStateZip.toString());
 
         Assertions.assertNotNull(cityStateZip);
         Assertions.assertTrue(cityStateZip.state().equalsIgnoreCase("MA"));

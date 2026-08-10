@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.CityStateZipDatasetKey;
 import com.reneekbartlett.verisimilar.core.model.CityStateZip;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.Zip4Range;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
@@ -21,9 +22,11 @@ public class CityStateZipGenerator extends AbstractValueGenerator<CityStateZip>{
     private static final Logger LOGGER = LoggerFactory.getLogger(CityStateZipGenerator.class);
 
     private final CityStateZipSelectionEngine selector;
+    private final List<TemplateField> filterFields;
 
     public CityStateZipGenerator(CityStateZipSelectionEngine selector) {
         this.selector = selector;
+        this.filterFields = List.of(TemplateField.CITY, TemplateField.STATE, TemplateField.ZIP_CODE);
     }
 
     public CityStateZipGenerator(DatasetSelectionEngineRegistry selectors) {
@@ -136,4 +139,8 @@ public class CityStateZipGenerator extends AbstractValueGenerator<CityStateZip>{
         return generatePoBoxZip4Ranges(zip5, totalBoxes, 100);
     }
 
+    @Override
+    public List<TemplateField> filterFields(){
+        return this.filterFields;
+    }
 }
