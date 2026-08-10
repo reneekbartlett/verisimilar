@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +14,8 @@ import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.selector.engine.UsernameSelectionEngine;
 
+//@org.junit.jupiter.api.Disabled
+@DisabledIf(value = "com.reneekbartlett.verisimilar.core.TestUtils#isCoreTestingDisabled")
 public class UsernameGeneratorTests {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UsernameGeneratorTests.class);
@@ -27,8 +30,7 @@ public class UsernameGeneratorTests {
         Assertions.assertFalse(username1.contains("{"));
     }
 
-    //@Test
-    //@Disabled
+    @Test
     public void GenerateUsername_WithCriteria_FirstName() {
         DatasetResolverRegistry resolvers = TestUtils.getEmailAddressDatasetResolverRegistry();
         UsernameSelectionEngine usernameSelector = new UsernameSelectionEngine(resolvers);
