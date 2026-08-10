@@ -53,6 +53,10 @@ public class TestUtils {
     public static final SelectorStrategy<String> WEIGHTED_RANDOM = new WeightedSelectorStrategy<>();
     public static final SelectorStrategy<String> UNIFORM_RANDOM = new UniformSelectorStrategy<>();
 
+    public static boolean isCoreTestingDisabled() {
+        return false;
+    }
+
     public static ResourceLoaderUtil getResourceLoader() {
         return new ResourceLoaderUtil();
     }
