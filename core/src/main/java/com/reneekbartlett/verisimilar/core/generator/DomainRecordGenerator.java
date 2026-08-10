@@ -1,5 +1,7 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
+import java.util.List;
+
 import com.reneekbartlett.verisimilar.core.datasets.key.DomainDatasetKey;
 import com.reneekbartlett.verisimilar.core.model.DomainRecord;
 import com.reneekbartlett.verisimilar.core.model.DomainType;
@@ -16,9 +18,12 @@ import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelec
  */
 public class DomainRecordGenerator extends AbstractValueGenerator<DomainRecord> {
     private final DomainSelectionEngine domainSelector;
+    private final List<TemplateField> filterFields;
 
     public DomainRecordGenerator(DomainSelectionEngine domainSelector) {
         this.domainSelector = domainSelector;
+        this.filterFields = List.of(TemplateField.DOMAIN, TemplateField.DOMAIN_TYPE);
+        // todo: domainTypeSelector?
     }
 
     public DomainRecordGenerator(DatasetSelectionEngineRegistry selectors) {

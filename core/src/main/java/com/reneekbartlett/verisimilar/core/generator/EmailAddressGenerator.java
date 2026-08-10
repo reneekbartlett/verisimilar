@@ -1,8 +1,13 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
+import com.reneekbartlett.verisimilar.core.model.DomainRecord;
+import com.reneekbartlett.verisimilar.core.model.DomainType;
 import com.reneekbartlett.verisimilar.core.model.EmailAddressRecord;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
+import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
+import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorImpl;
 import com.reneekbartlett.verisimilar.core.selector.engine.DomainSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.KeywordSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.UsernameSelectionEngine;
@@ -14,7 +19,7 @@ import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelec
 public class EmailAddressGenerator extends AbstractValueGenerator<EmailAddressRecord> {
 
     private final UsernameGenerator usernameGenerator;
-    private final DomainGenerator domainGenerator;
+    private final DomainRecordGenerator domainRecordGenerator;
 
     public EmailAddressGenerator(
             UsernameSelectionEngine usernameSelector, 
@@ -22,7 +27,8 @@ public class EmailAddressGenerator extends AbstractValueGenerator<EmailAddressRe
             KeywordSelectionEngine keywordSelector
     ) {
         this.usernameGenerator = new UsernameGenerator(usernameSelector);
-        this.domainGenerator = new DomainGenerator(domainSelector);
+        this.domainRecordGenerator = new DomainRecordGenerator(domainSelector);
+        // TODO:  Use KeywordSelectionEngine?
     }
 
     public EmailAddressGenerator(DatasetSelectionEngineRegistry selectors) {
@@ -35,21 +41,51 @@ public class EmailAddressGenerator extends AbstractValueGenerator<EmailAddressRe
     }
 
     private EmailAddressRecord generateEmailAddress(DatasetResolutionContext ctx, SelectionFilter filter) {
-        // First get Domain
-        String domain = filter.domain().orElseGet(() -> generateDomain(ctx, filter));
+        // First get DomainRecord if specified
+        DomainRecord domainRecord = filter.domainRecord().orElseGet(() -> generateDomainRecord(ctx, filter));
 
-        // Then get Username, with domain passed in filter
-        SelectionFilter usernameFilter = filter.toBuilder().domain(domain).build();
+        if(domainRecord.domainType() == null) {
+            DomainType domainType = generateDomainType(filter);
+            domainRecord = new DomainRecord(domainRecord.domain(), domainType);
+        }
+
+        // Then get Username, with domain and domainType passed in filter
+        SelectionFilter usernameFilter = filter.toBuilder()
+                .domain(domainRecord.domain())
+                .domainType(domainRecord.domainType())
+                .build();
         String username = filter.username().orElseGet(() -> generateUsername(ctx, usernameFilter));
 
         // TODO:  Post process.  Check handle/domain syntax.
-        return new EmailAddressRecord(username.toUpperCase(), domain);
+        return new EmailAddressRecord(username.toUpperCase(), domainRecord);
     }
 
-    private String generateDomain(DatasetResolutionContext ctx, SelectionFilter filter) {
-        return domainGenerator.generate(ctx, filter);
+    /***
+     * Use DomainGenerator to generate new domain, using filters passed to EmailAddressGenerator
+     * > DomainType
+     * @param ctx
+     * @param filter
+     * @return
+     */
+    private DomainRecord generateDomainRecord(DatasetResolutionContext ctx, SelectionFilter filter) {
+        return domainRecordGenerator.generate(ctx, filter);
     }
 
+    private DomainType generateDomainType(SelectionFilter filter) {
+        String valueFilter = filter.equalToMap().get(TemplateField.DOMAIN_TYPE);
+        if (valueFilter != null) {
+            return DomainType.fromText(valueFilter);
+        }
+        RandomSelector<DomainType> domainTypeSelector = new WeightedSelectorImpl<>(DomainType.defaultMap(), TemplateField.DOMAIN_TYPE);
+        return domainTypeSelector.select();
+    }
+
+    /***
+     * Use UsenameGenerator to generate new username, 
+     * using filters passed to EmailAddressGenerator and result from DomainGenerator 
+     * since Domain/DomainType will impact username requirements/spec.
+     * 
+     */
     private String generateUsername(DatasetResolutionContext ctx, SelectionFilter filter) {
         return usernameGenerator.generate(filter);
     }

@@ -1,6 +1,12 @@
 package com.reneekbartlett.verisimilar.core.model;
 
-public record DomainRecord (String domain, DomainType domainType){
+public record DomainRecord (String domain, DomainType domainType) implements ResultRecord {
+
+    @Override
+    public String toValueString() {
+        return this.toString();
+    }
+
     @Override
     public String toString() {
         final String VALUE_DELIM = " ";

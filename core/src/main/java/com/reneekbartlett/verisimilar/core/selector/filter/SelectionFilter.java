@@ -70,6 +70,45 @@ public record SelectionFilter(
         return HashSet.newHashSet(0);
     }
 
+    public Optional<DomainRecord> domainRecord(){
+        if(domain.isPresent() && domainType.isPresent()) {
+            return Optional.of(new DomainRecord(domain.get(), domainType.get()));
+        }
+        return Optional.empty();
+    }
+
+    public Optional<AddressCategory> addressCategory(){
+        String addressCategoryFilter = this.equalToMap().get(TemplateField.ADDRESS_CATEGORY);
+        if(addressCategoryFilter != null) {
+            return Optional.of(AddressCategory.fromLabel(addressCategoryFilter));
+        }
+        return Optional.empty();
+    }
+
+    public Optional<String> streetId(){
+        String streetIdFilter = this.equalToMap().get(TemplateField.STREET_ID);
+        if(streetIdFilter != null) {
+            return Optional.of(streetIdFilter);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<UnitType> unitType(){
+        String unitTypeFilter = this.equalToMap().get(TemplateField.UNIT_TYPE);
+        if(unitTypeFilter != null) {
+            return Optional.of(UnitType.fromLabel(unitTypeFilter));
+        }
+        return Optional.empty();
+    }
+
+    public Optional<String> unitNumber(){
+        String unitTypeFilter = this.equalToMap().get(TemplateField.UNIT_NUMBER);
+        if(unitTypeFilter != null) {
+            return Optional.of(unitTypeFilter);
+        }
+        return Optional.empty();
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SelectionFilter.class);
 
     public SelectionFilter {
@@ -429,6 +468,8 @@ public record SelectionFilter(
         public Builder address2(AddressLineTwo value) {
             this.address2 = value.toString();
             this.equalToMap.put(TemplateField.ADDRESS2, value.toString());
+            this.equalToMap.put(TemplateField.UNIT_NUMBER, value.unitNumber());
+            this.equalToMap.put(TemplateField.UNIT_TYPE, value.unitType().getLabel());
             return this;
         }
 

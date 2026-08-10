@@ -5,7 +5,12 @@ import ch.qos.logback.core.util.StringUtil;
 public record EmailAddressRecord(String username, String domain, DomainType type){
 
     public EmailAddressRecord(String username, String domain) {
+        // TODO:  Use default DomainType? Or set to Unknown?
         this(username, domain, null);
+    }
+
+    public EmailAddressRecord(String username, DomainRecord domainRecord) {
+        this(username, domainRecord.domain(), domainRecord.domainType());
     }
 
     @Override

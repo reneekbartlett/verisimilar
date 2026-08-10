@@ -1,8 +1,11 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
@@ -36,6 +39,11 @@ public abstract class AbstractValueGenerator<T> implements ValueGenerator<T> {
     @Override
     public T generate(SelectionFilter filter) {
         return generate(null, filter);
+    }
+
+    @Override
+    public List<TemplateField> filterFields() {
+        return List.of();
     }
 
     /**

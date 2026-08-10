@@ -1,9 +1,12 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.apache.commons.lang3.math.NumberUtils;
+//import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.StringSubstitutor;
 
 import com.reneekbartlett.verisimilar.core.model.AddressCategory;
@@ -21,11 +24,13 @@ import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelec
 
 public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress>{
 
+    // TODO:  Make enum?
     private static final String[] ADDRESS2_UNIT_XTRA = { "A", "B", "C", "D", "E", "F", "N", "S", "E", "W" };
 
-    // TODO
+    private static final String ADDRESS2_TEMPLATE_DEFAULT = "${UNIT_TYPE} ${UNIT}"; // APARTMENT 1
+
     private static final String[] ADDRESS2_TEMPLATES = {
-            "${UNIT_TYPE} ${UNIT}", // APARTMENT 1
+            ADDRESS2_TEMPLATE_DEFAULT, // APARTMENT 1
             "${UNIT_TYPE} ${UNIT}${UNIT_XTRA}", // APARTMENT 1B
             "${UNIT_TYPE} ${UNIT_XTRA}", // APARTMENT S
             "${UNIT_TYPE} ${UNIT_XTRA}${UNIT}" // B1
@@ -34,6 +39,7 @@ public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress
     private final StreetNameSelectionEngine streetNameSelector;
     private final StreetSuffixSelectionEngine streetSuffixSelector;
     private final AddressTwoSelectionEngine addressTwoSelector;
+    private final List<TemplateField> filterFields;
 
     public StreetAddressGenerator(
             StreetNameSelectionEngine streetNameSelector, 
@@ -43,6 +49,11 @@ public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress
         this.streetNameSelector = streetNameSelector;
         this.streetSuffixSelector = streetSuffixSelector;
         this.addressTwoSelector = addressTwoSelector;
+        this.filterFields = List.of(
+                TemplateField.STREET_ID, TemplateField.STREET_NAME, TemplateField.STREET_SUFFIX,
+                TemplateField.ADDRESS_CATEGORY, 
+                TemplateField.UNIT_TYPE, TemplateField.UNIT_NUMBER, TemplateField.UNIT_XTRA
+        );
     }
 
     public StreetAddressGenerator(DatasetSelectionEngineRegistry selectors) {
@@ -60,8 +71,15 @@ public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress
         return StreetAddress.class;
     }
 
+    @Override
+    public List<TemplateField> filterFields() {
+        return this.filterFields;
+    }
+
     private StreetAddress generateStreetAddress(DatasetResolutionContext ctx, SelectionFilter filter) {
-        AddressCategory addressCategory = getAddressCategory(filter);
+
+        AddressCategory addressCategory = filter.addressCategory().orElseGet(() -> generateAddressCategory(filter));
+
         if(addressCategory == AddressCategory.PO_BOX) {
             return new StreetAddress(getPostOfficeBox(filter), null, addressCategory);
         }
@@ -71,11 +89,7 @@ public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress
         return new StreetAddress(address1, address2, addressCategory);
     }
 
-    private AddressCategory getAddressCategory(SelectionFilter filter) {
-        String addressCategoryFilter = filter.equalToMap().get(TemplateField.ADDRESS_CATEGORY);
-        if (addressCategoryFilter != null) {
-            return AddressCategory.fromLabel(addressCategoryFilter);
-        }
+    private AddressCategory generateAddressCategory(SelectionFilter filter) {
         return new WeightedSelectorImpl<>(AddressCategory.defaultMap(), TemplateField.ADDRESS_CATEGORY).select();
     }
 
@@ -86,9 +100,9 @@ public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress
      * @return
      */
     private String getAddressLineOne(SelectionFilter filter, AddressCategory addressCategory) {
-        String streetId = getStreetId(filter, addressCategory);
-        String streetName = getStreetName(filter, addressCategory);
-        String streetSuffix = getStreetSuffix(filter, addressCategory);
+        String streetId = filter.streetId().orElseGet(() -> generateStreetId(filter, addressCategory));
+        String streetName = filter.streetName().orElseGet(() -> generateStreetName(filter, addressCategory));
+        String streetSuffix = filter.streetSuffix().orElseGet(() -> generateStreetSuffix(filter, addressCategory));
         return new StringBuilder(40)
                 .append(streetId).append(" ")
                 .append(streetName).append(" ")
@@ -96,24 +110,16 @@ public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress
     }
 
     // TODO: RANDOMIZE 10's, 100's, with weight towards lower number or AddressCategory
-    private String getStreetId(SelectionFilter filter, AddressCategory addressCategory) {
+    private String generateStreetId(SelectionFilter filter, AddressCategory addressCategory) {
         int randHouseNum = RandomUtils.getSkewedRandom(1, 10000, 2.0);
         return String.valueOf(randHouseNum);
     }
 
-    private String getStreetName(SelectionFilter filter, AddressCategory addressCategory) {
-        String streetNameFilter = filter.equalToMap().get(TemplateField.STREET_NAME);
-        if(streetNameFilter != null) {
-            return streetNameFilter;
-        }
+    private String generateStreetName(SelectionFilter filter, AddressCategory addressCategory) {
         return streetNameSelector.select(filter);
     }
 
-    private String getStreetSuffix(SelectionFilter filter, AddressCategory addressCategory) {
-        String streetSuffixFilter = filter.equalToMap().get(TemplateField.STREET_SUFFIX);
-        if(streetSuffixFilter != null) {
-            return streetSuffixFilter;
-        }
+    private String generateStreetSuffix(SelectionFilter filter, AddressCategory addressCategory) {
         return streetSuffixSelector.select(filter);
     }
 
@@ -124,46 +130,52 @@ public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress
      * @return
      */
     private String getAddressLineTwo(SelectionFilter filter, AddressCategory addressCategory) {
-        ThreadLocalRandom rand = ThreadLocalRandom.current();
 
-        String unitType = getUnitType(filter, addressCategory);
-        int unitNumber = getUnitNumber(filter, unitType);
-        String unitXtra = RandomUtils.getRandom(ADDRESS2_UNIT_XTRA, rand);
+        UnitType unitType = filter.unitType().orElseGet(() -> generateUnitType(filter));
 
-        Map<String, Object> params = Map.of(
-                "UNIT", unitNumber, 
-                "UNIT_TYPE", unitType, 
-                "UNIT_XTRA", unitXtra
-        );
+        // If both UnitType and UnitNumber are specified in the Filter, use the default template containing both fields
+        String template;
+        Optional<String> unitXtra = Optional.empty();
+        if(filter.unitType().isPresent() && filter.unitNumber().isPresent()) {
+            template = ADDRESS2_TEMPLATE_DEFAULT;
+        } else {
+            // Choose a random template, which may or may not include all param values.
+            template = RandomUtils.getRandom(ADDRESS2_TEMPLATES, ThreadLocalRandom.current());
+            unitXtra = Optional.of(generateUnitExtra(filter, unitType));
+        }
 
-        // Choose a random template, which may or may not include all param values.
-        String template = RandomUtils.getRandom(ADDRESS2_TEMPLATES, rand);
+        String unitNumberStr = filter.unitNumber().orElseGet(() -> String.valueOf(generateUnitNumber(filter, unitType)));
+        Map<String, Object> params = new HashMap<>();
+        params.put("UNIT", unitNumberStr);
+        params.put("UNIT_TYPE", unitType);
+        params.put("UNIT_XTRA", unitXtra.orElse(""));
 
         return StringSubstitutor.replace(template, params, "${", "}");
     }
 
-    //UnitType
-    private String getUnitType(SelectionFilter filter, AddressCategory addressCategory) {
-        String unitTypeFilter = filter.equalToMap().get(TemplateField.UNIT_TYPE);
-        if(unitTypeFilter != null) {
-            return unitTypeFilter;
-        }
-
-        // TODO:  Replace addressTwoSelector?
+    private UnitType generateUnitType(SelectionFilter filter) {
         Map<UnitType, Double> weightedMap = UnitType.defaultMap();
         UnitType randomUnitType = new WeightedSelectorImpl<>(weightedMap, TemplateField.UNIT_TYPE).select();
         LOGGER.debug("UnitType (enum)=", randomUnitType);
-
-        return addressTwoSelector.select(filter);
+        return randomUnitType;
     }
 
-    // TODO: Choose min/max based on UnitType
-    private int getUnitNumber(SelectionFilter filter, String unitType) {
-        String unitNumberFilter = filter.equalToMap().get(TemplateField.UNIT_NUMBER);
-        if(unitNumberFilter != null) {
-            return NumberUtils.toInt(unitNumberFilter, 100);
-        }
+//    private int getUnitNumber(SelectionFilter filter, UnitType unitType) {
+//        String unitNumberFilter = filter.equalToMap().get(TemplateField.UNIT_NUMBER);
+//        if(unitNumberFilter != null) {
+//            return NumberUtils.toInt(unitNumberFilter, 100);
+//        }
+//        return generateUnitNumber(filter, unitType);
+//    }
+
+    private int generateUnitNumber(SelectionFilter filter, UnitType unitType) {
+        // TODO:  Adjust min/max based on UnitType
         return RandomUtils.getSkewedRandom(1, 1000, 1.0);
+    }
+
+    private String generateUnitExtra(SelectionFilter filter, UnitType unitType) {
+        ThreadLocalRandom rand = ThreadLocalRandom.current();
+        return RandomUtils.getRandom(ADDRESS2_UNIT_XTRA, rand);
     }
 
     /***

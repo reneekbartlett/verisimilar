@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,7 @@ import com.reneekbartlett.verisimilar.core.model.UnitType;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.selector.engine.registry.PostalAddressSelectionEngineRegistry;
 
+@DisabledIf(value = "com.reneekbartlett.verisimilar.core.TestUtils#isCoreTestingDisabled")
 public class PostalAddressGeneratorTests {
     private static final Logger LOGGER = LoggerFactory.getLogger(PostalAddressGeneratorTests.class);
 
@@ -165,6 +167,7 @@ public class PostalAddressGeneratorTests {
         PostalAddressSelectionEngineRegistry registry = TestUtils.getPostalAddressSelectionEngineRegistry();
         PostalAddressRecordGenerator postalAddressGenerator = new PostalAddressRecordGenerator(registry);
 
+        // TODO:  Fix Filter
         SelectionFilter.Builder filterBuilder = SelectionFilter.builder();
         filterBuilder.address2(new AddressLineTwo("27", UnitType.UNIT));
 

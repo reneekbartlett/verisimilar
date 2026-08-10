@@ -2,6 +2,7 @@ package com.reneekbartlett.verisimilar.core.generator;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +15,7 @@ import com.reneekbartlett.verisimilar.core.selector.engine.KeywordSelectionEngin
 import com.reneekbartlett.verisimilar.core.selector.engine.UsernameSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
+@DisabledIf(value = "com.reneekbartlett.verisimilar.core.TestUtils#isCoreTestingDisabled")
 public class EmailAddressGeneratorTests {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailAddressGeneratorTests.class);
@@ -100,6 +102,9 @@ public class EmailAddressGeneratorTests {
         Assertions.assertTrue(emailAddress1.username().equalsIgnoreCase("CHIPPYCHIPPY123"));
     }
 
+    /***
+     * If this fails, check DomainRecordGenerator
+     */
     @Test
     public void GenerateEmailAddress_DomainType() {
         DatasetResolverRegistry resolvers = TestUtils.getEmailAddressDatasetResolverRegistry();

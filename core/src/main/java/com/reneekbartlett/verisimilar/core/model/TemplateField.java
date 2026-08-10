@@ -22,6 +22,7 @@ public enum TemplateField {
     KEYWORD3("KEYWORD3", String.class),
     KEYWORD_TYPE("KEYWORD_TYPE", Enum.class),
 
+    STREET_ID("STREET_ID", String.class),
     STREET_NAME("STREET_NAME", String.class),
     STREET_SUFFIX("STREET_SUFFIX", String.class),
     ADDRESS2("ADDRESS2", String.class),
