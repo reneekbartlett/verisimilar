@@ -1,6 +1,8 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -15,6 +17,7 @@ import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.model.PersonRecord;
 import com.reneekbartlett.verisimilar.core.model.PhoneNumber;
 import com.reneekbartlett.verisimilar.core.model.PostalAddress;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelectionEngineRegistry;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
@@ -169,5 +172,16 @@ public class AsyncPersonGenerator extends AbstractValueGenerator<PersonRecord>{
     @Override
     protected Class<PersonRecord> valueType() {
         return PersonRecord.class;
+    }
+
+    @Override
+    public List<TemplateField> filterFields(){
+        List<TemplateField> filterFields = new ArrayList<>();
+        filterFields.addAll(birthdayGenerator.filterFields());
+        filterFields.addAll(fullNameGenerator.filterFields());
+        filterFields.addAll(postalAddressGenerator.filterFields());
+        filterFields.addAll(phoneNumberGenerator.filterFields());
+        filterFields.addAll(emailAddressGenerator.filterFields());
+        return filterFields;
     }
 }

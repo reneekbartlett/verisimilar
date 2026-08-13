@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ import com.reneekbartlett.verisimilar.api.service.GeneratePersonService;
  * Services:    ApiKeyService
  */
 
+@DisabledIf(value = "com.reneekbartlett.verisimilar.api.TestUtils#isAuthTestingDisabled")
 @WebMvcTest(
     controllers = { GeneratePersonController.class }, 
     properties = { 

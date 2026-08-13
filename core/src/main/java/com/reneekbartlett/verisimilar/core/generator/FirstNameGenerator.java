@@ -17,10 +17,10 @@ public class FirstNameGenerator extends AbstractStringGenerator {
     public FirstNameGenerator(FirstNameSelectionEngine selector) {
         this.selector = selector;
         this.filterFields = List.of(
-                TemplateField.FIRST_NAME, TemplateField.LAST_NAME, 
+                TemplateField.FIRST_NAME, TemplateField.MIDDLE_NAME, TemplateField.LAST_NAME, 
                 TemplateField.BIRTHDAY, 
                 TemplateField.GENDER_IDENTITY,
-                TemplateField.REGION
+                TemplateField.REGION, TemplateField.ETHNICITY
         );
     }
 

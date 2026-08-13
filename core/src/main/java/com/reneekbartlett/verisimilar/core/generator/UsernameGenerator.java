@@ -1,6 +1,9 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
+import java.util.List;
+
 import com.reneekbartlett.verisimilar.core.datasets.key.UsernameDatasetKey;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.selector.engine.UsernameSelectionEngine;
@@ -13,9 +16,14 @@ import com.reneekbartlett.verisimilar.core.selector.engine.UsernameSelectionEngi
 public class UsernameGenerator extends AbstractStringGenerator {
 
     private final UsernameSelectionEngine usernameSelector;
+    private final List<TemplateField> filterFields;
 
     public UsernameGenerator(UsernameSelectionEngine usernameSelector) {
         this.usernameSelector = usernameSelector;
+        this.filterFields = List.of(
+                TemplateField.FIRST_NAME, TemplateField.MIDDLE_NAME, TemplateField.LAST_NAME,
+                TemplateField.BIRTHDAY, TemplateField.DOMAIN, TemplateField.DOMAIN_TYPE
+        );
     }
 
     @Override
@@ -36,6 +44,11 @@ public class UsernameGenerator extends AbstractStringGenerator {
     @Override
     protected String postProcess(String value) {
         return value.trim().replaceAll("\\s+", " ");
+    }
+
+    @Override
+    public List<TemplateField> filterFields(){
+        return this.filterFields;
     }
 
     // TODO: Implement.

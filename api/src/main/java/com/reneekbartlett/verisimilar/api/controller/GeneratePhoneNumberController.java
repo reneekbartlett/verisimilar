@@ -1,17 +1,12 @@
 package com.reneekbartlett.verisimilar.api.controller;
 
+import com.reneekbartlett.verisimilar.api.model.GeneratorFilter;
 import com.reneekbartlett.verisimilar.api.service.GeneratePhoneNumberService;
 import com.reneekbartlett.verisimilar.api.shared.annotation.RateLimited;
-import com.reneekbartlett.verisimilar.api.util.JsonApiParser;
-import com.reneekbartlett.verisimilar.api.util.JsonApiParser.FilterConditions;
-import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,26 +21,20 @@ public class GeneratePhoneNumberController {
 
     private final GeneratePhoneNumberService generateService;
 
-    private final List<TemplateField> filterFields;
-    private final JsonApiParser jsonRequestParser;
-
     public GeneratePhoneNumberController(GeneratePhoneNumberService generateService) {
         this.generateService = generateService;
-        this.filterFields = List.of(TemplateField.AREA_CODE);
-        this.jsonRequestParser = new JsonApiParser(this.filterFields);
     }
 
     @RateLimited(capacity = 300, durationSeconds = 60)
     @Operation(summary = "Generate Phone Number", description = "Retrieves 1 generated phone number.")
     @GetMapping
     public ResponseEntity<Object> generate(
-            HttpServletRequest request,
-            @RequestParam(name="areaCode", required=false) String areaCode
+            GeneratorFilter filters,
+            @RequestParam(name="AREA_CODE", required=false) String areaCode
     ) {
         SelectionFilter.Builder filterBuilder;
-        FilterConditions filters = jsonRequestParser.parse(request.getParameterMap());
-        if (filters.size() > 0) {
-            filterBuilder = filters.toSelectionFilterBuilder();
+        if (filters != null) {
+            filterBuilder = filters.getSelectionFilterBuilder();
         } else {
             filterBuilder = SelectionFilter.builder();
         }

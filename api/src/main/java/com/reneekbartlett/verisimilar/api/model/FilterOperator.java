@@ -3,19 +3,25 @@ package com.reneekbartlett.verisimilar.api.model;
 import java.util.EnumSet;
 
 public enum FilterOperator {
-    STARTS_WITH("startswith"),
-    ENDS_WITH("endswith"),
-    EQUAL_TO("eq"),
-    CONTAINS("contains"),
-    IN("in");
+    STARTS_WITH("startswith", true),
+    ENDS_WITH("endswith", true),
+    CONTAINS("contains", true),
+    EQUAL_TO("eq", true),
+    IN("in", false);
 
     private final String keyword;
-    private FilterOperator(String keyword) {
+    private final boolean isEnabled;
+    private FilterOperator(String keyword, boolean isEnabled) {
         this.keyword = keyword;
+        this.isEnabled = isEnabled;
     }
 
     public String keyword() {
         return this.keyword;
+    }
+
+    public boolean isEnabled() {
+        return this.isEnabled;
     }
 
     public static FilterOperator fromKeyword(String value) {

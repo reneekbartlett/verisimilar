@@ -1,5 +1,6 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.reneekbartlett.verisimilar.core.model.DomainRecord;
@@ -22,7 +23,6 @@ public class EmailAddressGenerator extends AbstractValueGenerator<EmailAddressRe
 
     private final UsernameGenerator usernameGenerator;
     private final DomainRecordGenerator domainRecordGenerator;
-    private final List<TemplateField> filterFields;
 
     public EmailAddressGenerator(
             UsernameSelectionEngine usernameSelector, 
@@ -31,11 +31,6 @@ public class EmailAddressGenerator extends AbstractValueGenerator<EmailAddressRe
     ) {
         this.usernameGenerator = new UsernameGenerator(usernameSelector);
         this.domainRecordGenerator = new DomainRecordGenerator(domainSelector);
-        this.filterFields = List.of(
-                // TODO: Complete list of fields
-                TemplateField.USERNAME, TemplateField.DOMAIN, TemplateField.DOMAIN_TYPE,
-                TemplateField.FIRST_NAME, TemplateField.LAST_NAME
-        );
         // TODO:  Use KeywordSelectionEngine?
     }
 
@@ -111,6 +106,9 @@ public class EmailAddressGenerator extends AbstractValueGenerator<EmailAddressRe
 
     @Override
     public List<TemplateField> filterFields(){
-        return this.filterFields;
+        List<TemplateField> filterFields = new ArrayList<>();
+        filterFields.addAll(usernameGenerator.filterFields());
+        filterFields.addAll(domainRecordGenerator.filterFields());
+        return filterFields;
     }
 }

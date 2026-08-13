@@ -1,5 +1,8 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.reneekbartlett.verisimilar.core.model.FullName;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
@@ -25,39 +28,42 @@ public class FullNameGenerator extends AbstractValueGenerator<FullName>{
     }
 
     public FullNameGenerator(DatasetSelectionEngineRegistry nameSelectors) {
-        this.firstNameGenerator = new FirstNameGenerator(nameSelectors.first());
-        this.middleNameGenerator = new MiddleNameGenerator(nameSelectors.middle());
-        this.lastNameGenerator = new LastNameGenerator(nameSelectors.last());
+        this(nameSelectors.first(), nameSelectors.middle(), nameSelectors.last());
     }
 
     @Override
     protected FullName generateValue(DatasetResolutionContext ctx, SelectionFilter filter) {
         //
         // Generate LastName first.
-        String lastName = generateLastName(ctx, filter);
+        String lastName = filter.lastName().orElseGet(() -> generateLastName(ctx, filter));
 
-        GenderIdentity genderIdentity;
-        if(!filter.equalToMap().containsKey(TemplateField.GENDER_IDENTITY)) {
-            genderIdentity = new GenderIdentityGenerator().generate();
-            filter = filter.toBuilder().gender(genderIdentity).build();
-            LOGGER.debug("FullNameGenerator.generateValue - Add GenderIdentity to filter: {}", genderIdentity.name());
-        } else {
-            genderIdentity = GenderIdentity.fromText(filter.equalToMap().get(TemplateField.GENDER_IDENTITY));
-        }
+        //  Get or Generate GenderIdentity.
+        GenderIdentity genderIdentity = filter.gender()
+                .orElseGet(() -> {
+                    return new GenderIdentityGenerator().generate(ctx, filter);
+                });
+        //LOGGER.debug("FullNameGenerator.generateValue - Add GenderIdentity to filter: {}", genderIdentity.name());
 
         //
-        //  Generate FirstName.  Include LastName in generator params.
-        SelectionFilter firstNameFilter = filter.toBuilder()
-                .lastName(lastName)
-                .build();
-        String firstName = generateFirstName(ctx, firstNameFilter);
+        //  Get or Generate FirstName.  Include LastName in generator params.
+        String firstName = filter.firstName()
+                .orElseGet(() -> {
+                    SelectionFilter firstNameFilter = filter.toBuilder()
+                            .lastName(lastName)
+                            .gender(genderIdentity)
+                            .build();
+                    return generateFirstName(ctx, firstNameFilter);
+                });
 
         //
-        //  Generate MiddleName.  Include FirstName+LastName in generator params.
-        SelectionFilter middleNameFilter = filter.toBuilder()
-                .firstName(firstName).lastName(lastName)
-                .build();
-        String middleName = generateMiddleName(ctx, middleNameFilter);
+        //  Generate MiddleName.  Include FirstName+LastName+GenderIdentity in generator params.
+        String middleName = filter.middleName()
+                .orElseGet(() -> {
+                    SelectionFilter middleNameFilter = filter.toBuilder()
+                            .firstName(firstName).lastName(lastName).gender(genderIdentity)
+                            .build();
+                    return generateMiddleName(ctx, middleNameFilter);
+                });
 
         return new FullName(firstName, middleName, lastName, genderIdentity);
     }
@@ -77,5 +83,14 @@ public class FullNameGenerator extends AbstractValueGenerator<FullName>{
     @Override
     protected Class<FullName> valueType() {
         return FullName.class;
+    }
+
+    @Override
+    public List<TemplateField> filterFields(){
+        List<TemplateField> filterFields = new ArrayList<>();
+        filterFields.addAll(firstNameGenerator.filterFields());
+        filterFields.addAll(middleNameGenerator.filterFields());
+        filterFields.addAll(lastNameGenerator.filterFields());
+        return filterFields;
     }
 }

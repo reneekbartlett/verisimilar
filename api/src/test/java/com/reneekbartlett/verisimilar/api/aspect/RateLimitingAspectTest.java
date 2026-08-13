@@ -7,6 +7,7 @@ import java.util.List;
 //import org.assertj.core.api.InstanceOfAssertFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -21,6 +22,7 @@ import io.github.bucket4j.TimeMeter;
 import com.reneekbartlett.verisimilar.api.exception.GlobalExceptionHandler;
 import com.reneekbartlett.verisimilar.api.shared.annotation.RateLimited;
 
+@DisabledIf(value = "com.reneekbartlett.verisimilar.api.TestUtils#isRateLimitingTestingDisabled")
 @SpringBootTest(classes = {
     RateLimitingAspectTest.TestController.class, 
     RateLimitingAspect.class

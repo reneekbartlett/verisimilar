@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 //import org.springframework.resilience.annotation.Retryable;
@@ -22,6 +23,7 @@ import com.github.tomakehurst.wiremock.stubbing.Scenario;
 import com.reneekbartlett.verisimilar.api.config.TestConfig;
 import com.reneekbartlett.verisimilar.api.service.ExternalApiClient;
 
+@DisabledIf(value = "com.reneekbartlett.verisimilar.api.TestUtils#isRateLimitingTestingDisabled")
 @SpringBootTest(
         classes = { TestConfig.class, ExternalApiClient.class},
         properties = { "api.external.base-url=http://localhost:8089", "spring.aop.proxy-target-class=true" }

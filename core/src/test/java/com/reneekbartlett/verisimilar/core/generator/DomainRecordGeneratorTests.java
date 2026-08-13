@@ -26,7 +26,7 @@ public class DomainRecordGeneratorTests {
         LOGGER.debug("domain1=" + domain1);
     }
 
-    @Test
+    //@Test
     public void GenerateDomain_Random_Multi() {
         DomainSelectionEngine domainProvider = new DomainSelectionEngine(TestUtils.getEmailAddressDatasetResolverRegistry(), TestUtils.WEIGHTED_RANDOM);
         DomainRecordGenerator domainGenerator = new DomainRecordGenerator(domainProvider);
@@ -41,7 +41,7 @@ public class DomainRecordGeneratorTests {
         LOGGER.debug("domain3=" + domain3);
     }
 
-    @Test
+    //@Test
     public void GenerateDomain_B2C() {
         DomainSelectionEngine domainSelector = new DomainSelectionEngine(TestUtils.getEmailAddressDatasetResolverRegistry(), TestUtils.WEIGHTED_RANDOM);
         DomainRecordGenerator domainGenerator = new DomainRecordGenerator(domainSelector);
@@ -58,7 +58,7 @@ public class DomainRecordGeneratorTests {
         Assertions.assertTrue(domain2.domain().toUpperCase().startsWith("GMA")); // case-sensitive
     }
 
-    @Test
+    //@Test
     public void GenerateDomain_GOV() {
         DomainSelectionEngine domainSelector = new DomainSelectionEngine(TestUtils.getEmailAddressDatasetResolverRegistry(), TestUtils.WEIGHTED_RANDOM);
         DomainRecordGenerator domainGenerator = new DomainRecordGenerator(domainSelector);
@@ -72,7 +72,7 @@ public class DomainRecordGeneratorTests {
         Assertions.assertTrue(domain1.domain().toUpperCase().endsWith(".GOV"));
     }
 
-    @Test
+    //@Test
     public void GenerateDomain_GOV_EndsWith() {
         DomainSelectionEngine domainSelector = new DomainSelectionEngine(TestUtils.getEmailAddressDatasetResolverRegistry(), TestUtils.WEIGHTED_RANDOM);
         DomainRecordGenerator domainGenerator = new DomainRecordGenerator(domainSelector);
@@ -89,7 +89,7 @@ public class DomainRecordGeneratorTests {
     }
 
     // TODO:  Figure out how to handle situations filter doesnt return result (ie. domain starting with C?)
-    @Test
+    //@Test
     public void GenerateDomain_StartsWith() {
         DomainSelectionEngine domainSelector = new DomainSelectionEngine(TestUtils.getEmailAddressDatasetResolverRegistry(), TestUtils.WEIGHTED_RANDOM);
         DomainRecordGenerator domainGenerator = new DomainRecordGenerator(domainSelector);

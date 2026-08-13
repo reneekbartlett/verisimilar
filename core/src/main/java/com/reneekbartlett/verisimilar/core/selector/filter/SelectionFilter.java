@@ -1,9 +1,14 @@
 package com.reneekbartlett.verisimilar.core.selector.filter;
 
+import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -11,6 +16,7 @@ import java.util.stream.Collectors;
 
 import com.reneekbartlett.verisimilar.core.model.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +34,8 @@ public record SelectionFilter(
         Optional<Set<GenderIdentity>> genders,
 
         Optional<LocalDate> birthday,
+        Optional<Generation> generation,
+        Optional<Set<Generation>> generations,
         Optional<Integer> minYear,
         Optional<Integer> maxYear,
 
@@ -41,6 +49,7 @@ public record SelectionFilter(
         Optional<USState> state,
         Optional<Set<USState>> states,
 
+        Optional<String> zipCode,
         Optional<Set<String>> zipCodes,
 
         Optional<USRegion> region,
@@ -65,6 +74,12 @@ public record SelectionFilter(
         Map<TemplateField, Set<String>> inMap,
         Map<TemplateField, Set<?>> inEnumMap
 ) {
+
+    private static final DateTimeFormatter DATE_FORMATTER = new DateTimeFormatterBuilder()
+            .appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            .appendOptional(DateTimeFormatter.ofPattern("MM/dd/yyyy"))
+            .appendOptional(DateTimeFormatter.ofPattern("dd-MMM-yyyy"))
+            .toFormatter();
 
     public Set<String> getDomains(){
         return HashSet.newHashSet(0);
@@ -123,6 +138,10 @@ public record SelectionFilter(
         genders = genders == null ? Optional.empty() : genders;
 
         birthday = (birthday == null) ? Optional.empty() : birthday;
+
+        generation = (generation == null) ? Optional.empty() : generation;
+        generations = (generations == null) ? Optional.empty() : generations;
+
         minYear = (minYear == null) ? Optional.empty() : minYear;
         maxYear = (maxYear == null) ? Optional.empty() : maxYear;
 
@@ -192,6 +211,7 @@ public record SelectionFilter(
                 && nickName.isEmpty()
                 && gender.isEmpty()
                 && birthday.isEmpty()
+                && generation.isEmpty()
                 && minYear.isEmpty()
                 && maxYear.isEmpty()
                 && streetName.isEmpty()
@@ -207,11 +227,11 @@ public record SelectionFilter(
                 && username.isEmpty()
                 && domainType.isEmpty()
                 && domain.isEmpty()
-                && startsWithMap.isEmpty()
-                && endsWithMap.isEmpty()
-                && equalToMap.isEmpty()
-                && containsMap.isEmpty()
-                && inMap.isEmpty();
+                && (startsWithMap != null && startsWithMap.isEmpty())
+                && (endsWithMap != null && endsWithMap.isEmpty())
+                && (equalToMap != null && equalToMap.isEmpty())
+                && (containsMap != null && containsMap.isEmpty())
+                && (inMap != null && inMap.isEmpty());
     }
 
     public static SelectionFilter empty() {
@@ -227,6 +247,8 @@ public record SelectionFilter(
                 Optional.empty(), // Genders
 
                 Optional.empty(), // Birthday
+                Optional.empty(), // Generation
+                Optional.empty(), // Generations
                 Optional.empty(), Optional.empty(), // MinYear, MaxYear
 
                 //Optional.empty(), // PostalAddress
@@ -240,6 +262,7 @@ public record SelectionFilter(
                 Optional.empty(), // state
                 Optional.empty(), // states
 
+                Optional.empty(), //zipCode
                 Optional.empty(), // zipCodes
                 Optional.empty(), // region
                 Optional.empty(), // ethnicity
@@ -283,6 +306,8 @@ public record SelectionFilter(
         private Set<GenderIdentity> genders;
 
         private LocalDate birthday;
+        private Generation generation;
+        private Set<Generation> generations;
         private Integer minYear;
         private Integer maxYear;
 
@@ -299,7 +324,8 @@ public record SelectionFilter(
         private USState state;
         private Set<USState> states;
 
-        private Set<String> zipCodes = HashSet.newHashSet(0);
+        private String zipCode;
+        private Set<String> zipCodes;
 
         private USRegion region;
         private Ethnicity ethnicity;
@@ -315,7 +341,7 @@ public record SelectionFilter(
         private String areaCode;
 
         protected SelectionPredicate<String> customPredicate;
-        protected Set<SelectionPredicate<String>> customPredicates = HashSet.newHashSet(0);
+        protected Set<SelectionPredicate<String>> customPredicates;
 
         protected Map<TemplateField, String> startsWithMap = HashMap.newHashMap(0);
         protected Map<TemplateField, String> endsWithMap = HashMap.newHashMap(0);
@@ -349,6 +375,8 @@ public record SelectionFilter(
             this.lastName = filter.lastName.orElse(null);
             this.nickName = filter.nickName.orElse(null);
             this.birthday = filter.birthday.orElse(null);
+            this.generation = filter.generation.orElse(null);
+            this.generations = filter.generations.orElse(null);
 
             // AddressLineOne
             this.streetName = filter.streetName.orElse(null);
@@ -364,6 +392,7 @@ public record SelectionFilter(
             this.state = filter.state.orElse(null);
             this.states = filter.states.orElse(null);
 
+            this.zipCode = filter.zipCode.orElse(null);
             this.zipCodes = filter.zipCodes.orElse(null);
 
             this.region = filter.region.orElse(null);
@@ -417,7 +446,7 @@ public record SelectionFilter(
             return this;
         }
 
-        public Builder genders(EnumSet<GenderIdentity> genders) {
+        public Builder genders(Set<GenderIdentity> genders) {
             this.genders = genders;
             //this.inMap.put(TemplateField.GENDER_IDENTITY, genders);
             this.inEnumMap.put(TemplateField.GENDER_IDENTITY, genders);
@@ -425,7 +454,34 @@ public record SelectionFilter(
         }
 
         public Builder birthday(LocalDate value) {
-            this.birthday = value;
+            if(value != null) {
+                this.birthday = value;
+            }
+            return this;
+        }
+
+        // TODO:  Move..
+        public Builder birthday(String value) {
+            if(value != null) {
+                try {
+                    LocalDate parsedDate = LocalDate.parse(value, DATE_FORMATTER);
+                    this.birthday = parsedDate;
+                } catch (Exception e) {
+                    //
+                }
+            }
+            return this;
+        }
+
+        public Builder generation(Generation value) {
+            if(value != null) {
+                this.generation = value;
+            }
+            return this;
+        }
+
+        public Builder generations(Set<Generation> values) {
+            this.generations = values;
             return this;
         }
 
@@ -440,16 +496,16 @@ public record SelectionFilter(
         }
 
         public Builder postalAddress(PostalAddress value) {
-
-            this.city = value.city();
-            this.equalToMap.put(TemplateField.CITY, this.city);
-
-            this.state = USState.fromAbbreviation(value.state());
-            this.equalToMap.put(TemplateField.STATE, value.state());
-
-            this.zipCode(value.zip());
-            this.equalToMap.put(TemplateField.ZIP_CODE, value.zip());
-
+            if(value != null) {
+                this.city = value.city();
+                this.equalToMap.put(TemplateField.CITY, this.city);
+    
+                this.state = USState.fromAbbreviation(value.state());
+                this.equalToMap.put(TemplateField.STATE, value.state());
+    
+                this.zipCode(value.zip());
+                this.equalToMap.put(TemplateField.ZIP_CODE, value.zip());
+            }
             return this;
         }
 
@@ -466,10 +522,12 @@ public record SelectionFilter(
         }
 
         public Builder address2(AddressLineTwo value) {
-            this.address2 = value.toString();
-            this.equalToMap.put(TemplateField.ADDRESS2, value.toString());
-            this.equalToMap.put(TemplateField.UNIT_NUMBER, value.unitNumber());
-            this.equalToMap.put(TemplateField.UNIT_TYPE, value.unitType().getLabel());
+            if(value != null) {
+                this.address2 = value.toString();
+                this.equalToMap.put(TemplateField.ADDRESS2, value.toString());
+                this.equalToMap.put(TemplateField.UNIT_NUMBER, value.unitNumber());
+                this.equalToMap.put(TemplateField.UNIT_TYPE, value.unitType().getLabel());
+            }
             return this;
         }
 
@@ -498,19 +556,20 @@ public record SelectionFilter(
                     stateNames.add("$"+state.name()+"$");
                 }
                 SelectionPredicate<String> p = (val) -> stateNames.stream().anyMatch(val::contains);
-                this.customPredicates.add(p);
+                return this.addCustomPredicate(p);
             }
             return this;
         }
 
         public Builder zipCode(String value) {
-            this.zipCodes = Set.of(value);
+            this.zipCode = value;
+            this.zipCodes = Set.of(value); // TODO:  Necessary?
             this.equalToMap.put(TemplateField.ZIP_CODE, value);
             return this;
         }
 
         public Builder zipCodes(Set<String> values) {
-            if(zipCodes.isEmpty()) {
+            if(zipCodes != null && zipCodes.isEmpty()) {
                 this.zipCodes = values;
                 // TODO:  Also filter by state?
                 Set<String> zipCodeValues = new HashSet<>();
@@ -548,12 +607,14 @@ public record SelectionFilter(
         }
 
         public Builder ethnicity(Ethnicity value) {
-            this.ethnicity = value;
-            this.equalToMap.put(TemplateField.ETHNICITY, value.getPlaceholder());
+            if(value != null) {
+                this.ethnicity = value;
+                this.equalToMap.put(TemplateField.ETHNICITY, value.getPlaceholder());
+            }
             return this;
         }
 
-        public Builder ethnicities(EnumSet<Ethnicity> values) {
+        public Builder ethnicities(Set<Ethnicity> values) {
             this.inEnumMap.put(TemplateField.ETHNICITY, values);
 
             Set<String> ethnicityNames = new HashSet<>();
@@ -567,8 +628,10 @@ public record SelectionFilter(
         }
 
         public Builder domainType(DomainType value) {
-            this.domainType = value;
-            this.equalToMap.put(TemplateField.DOMAIN_TYPE, value.getPlaceholder());
+            if(value != null) {
+                this.domainType = value;
+                this.equalToMap.put(TemplateField.DOMAIN_TYPE, value.getPlaceholder());
+            }
             return this;
         }
 
@@ -584,8 +647,10 @@ public record SelectionFilter(
         }
 
         public Builder usernameType(UsernameType value) {
-            this.usernameType = value;
-            this.equalToMap.put(TemplateField.USERNAME_TYPE, value.getPlaceholder());
+            if(value != null) {
+                this.usernameType = value;
+                this.equalToMap.put(TemplateField.USERNAME_TYPE, value.getPlaceholder());
+            }
             return this;
         }
 
@@ -634,8 +699,100 @@ public record SelectionFilter(
             return this;
         }
 
+        // TODO: FilterOperator
+        public Builder addFilter(String value, TemplateField field, String filterOperator) {
+            switch(filterOperator) {
+                case "startswith":
+                    //this.startsWithMap.put(field, value);
+                    //break;
+                    return this.startsWith(value, field);
+                case "endswith":
+                    //this.endsWithMap.put(field, value);
+                    //break;
+                    return this.endsWith(value, field);
+                case "contains":
+                    //this.containsMap.put(field, value);
+                    //break;
+                    return this.contains(value, field);
+                case "in":
+                    return this.in(Set.of(value), field);
+                case "eq":
+                    return this.equalTo(value, field);
+                default:
+                    // TODO:  Do nothing?
+                    break;
+            }
+            return this;
+        }
+
+        //public <T> Builder in(Set<T> values, TemplateField field)
+        public <T> Builder addFilter(Set<T> values, TemplateField field, String filterOperator) {
+            if (values == null || values.isEmpty()) {
+                //LOGGER.debug("Set is null or empty. Cannot accurately determine element types.");
+                return this;
+            }
+
+            // only add a set filter for fields with EnumSet
+            if(!filterOperator.equalsIgnoreCase("in") || !filterOperator.equalsIgnoreCase("eq")) {
+                return this;
+            }
+
+            Class<?> targetType = field.targetType();
+            boolean isEnumType = values instanceof EnumSet 
+                    && (EnumSet.class.equals(targetType) || Enum.class.isAssignableFrom(targetType));
+
+            // TODO:  Maybe..
+            //T firstElement = values.iterator().next();
+            //boolean isSetOfEnums = firstElement instanceof Enum;
+
+            if (isEnumType) {
+                // 
+                if (values.size() == 1) {
+                    // TODO:
+                    this.inEnumMap.put(field, values);
+                } else {
+                    //
+                    this.inEnumMap.put(field, values);
+                }
+                return this;
+            }
+
+            if(filterOperator.equalsIgnoreCase("eq") || values.size() == 1) {
+                T firstElement = values.iterator().next();
+                if (String.class.equals(targetType)) {
+                    this.equalToMap.put(field, (String)firstElement);
+                    // TODO:  use builder.<field>() instead
+                } else {
+                    LOGGER.debug("TODO {}", firstElement);
+                }
+                return this;
+            }
+
+            if(filterOperator.equalsIgnoreCase("in")) {
+                if (String.class.equals(targetType)) {
+                    this.inMap.put(field, (Set<String>) values);
+                } else {
+                    // TODO:  I don't think this should happen...
+                    Set<String> strSet = values.stream().map(v -> v == null ? null : v.toString())
+                            .collect(Collectors.toSet());
+                    this.inMap.put(field, strSet);
+                    LOGGER.debug("TODO {}", values);
+                }
+            }
+
+            return this;
+        }
+
         public Builder customPredicate(SelectionPredicate<String> predicate) {
             this.customPredicate = predicate;
+            return this.addCustomPredicate(predicate);
+        }
+
+        public Builder addCustomPredicate(SelectionPredicate<String> predicate) {
+            if(customPredicates == null) {
+                this.customPredicates = HashSet.newHashSet(0);
+            }
+            this.customPredicates.add(predicate);
             return this;
         }
 
@@ -655,6 +812,10 @@ public record SelectionFilter(
                     Optional.ofNullable(genders),
 
                     Optional.ofNullable(birthday),
+
+                    Optional.ofNullable(generation),
+                    Optional.ofNullable(generations),
+
                     Optional.ofNullable(minYear),
                     Optional.ofNullable(maxYear),
 
@@ -670,6 +831,7 @@ public record SelectionFilter(
                     Optional.ofNullable(state),
                     Optional.ofNullable(states),
 
+                    Optional.ofNullable(zipCode),
                     Optional.ofNullable(zipCodes),
                     Optional.ofNullable(region),
                     Optional.ofNullable(ethnicity),
@@ -691,6 +853,11 @@ public record SelectionFilter(
                     inEnumMap
             );
         };
+
+        @Override 
+        public String toString() {
+            return this.build().toString();
+        }
     }
 
     @Override
@@ -703,20 +870,23 @@ public record SelectionFilter(
         if(!customPredicates.isEmpty()) {
             sb.append("customPredicates=" + "TRUE" + FIELD_DELIM);
         }
-        if(!startsWithMap.isEmpty()) {
+        if(startsWithMap != null && !startsWithMap.isEmpty()) {
             sb.append("startsWithMap.size()=" + this.startsWithMap.size() + FIELD_DELIM);
         }
-        if(!endsWithMap.isEmpty()) {
+        if(endsWithMap != null && !endsWithMap.isEmpty()) {
             sb.append("endsWithMap.size()=" + this.endsWithMap.size() + FIELD_DELIM);
         }
-        if(!containsMap.isEmpty()) {
+        if(containsMap != null && !containsMap.isEmpty()) {
             sb.append("containsMap.size()=" + this.containsMap.size() + FIELD_DELIM);
         }
-        if(!equalToMap.isEmpty()) {
+        if(equalToMap != null && !equalToMap.isEmpty()) {
             sb.append("equalToMap.size()=" + this.equalToMap.size() + FIELD_DELIM);
         }
-        if(!inMap.isEmpty()) {
+        if(inMap != null && !inMap.isEmpty()) {
             sb.append("inMap.size()=" + this.inMap.size() + FIELD_DELIM);
+        }
+        if(inEnumMap != null && !inEnumMap.isEmpty()) {
+            sb.append("inEnumMap.size()=" + this.inEnumMap.size() + FIELD_DELIM);
         }
         if(!firstName.isEmpty()) sb.append("firstName=" + this.firstName.get()+ FIELD_DELIM);
         if(!middleName.isEmpty()) sb.append("middleName=" + this.middleName.get()+ FIELD_DELIM);
@@ -742,10 +912,19 @@ public record SelectionFilter(
         if(!states.isEmpty()) {
             sb.append("states=" + String.join("$", USState.names(states.get())) + FIELD_DELIM);
         }
+
+        if(!zipCode.isEmpty()) {
+            sb.append("zipCode=" + zipCode.get() + FIELD_DELIM);
+        }
         if(!zipCodes.isEmpty()) {
             sb.append("zipCodes=" + String.join("$", zipCodes.get()) + FIELD_DELIM);
         }
+
         if(!birthday.isEmpty()) sb.append("birthday=" + this.birthday.get().toString() + FIELD_DELIM);
+
+        if(!generation.isEmpty()) sb.append("generation=" + this.generation.get().toString() + FIELD_DELIM);
+        if(!generations.isEmpty()) sb.append("generations=" + this.generations.get().toString() + FIELD_DELIM);
+
         if(!ethnicity.isEmpty()) sb.append("ethnicity=" + this.ethnicity.get().toString() + FIELD_DELIM);
 
         if(!areaCode.isEmpty()) sb.append("areaCode=" + this.areaCode.get()+ FIELD_DELIM);
@@ -757,4 +936,5 @@ public record SelectionFilter(
         if(!domain.isEmpty()) sb.append("domain=" + this.domain.get().toString() + FIELD_DELIM);
         return sb.toString();
     }
+
 }

@@ -1,16 +1,12 @@
 package com.reneekbartlett.verisimilar.api.controller;
 
 import com.reneekbartlett.verisimilar.api.service.GenerateUsernameService;
-import com.reneekbartlett.verisimilar.api.util.JsonApiParser;
-import com.reneekbartlett.verisimilar.api.util.JsonApiParser.FilterConditions;
-import com.reneekbartlett.verisimilar.core.model.TemplateField;
+import com.reneekbartlett.verisimilar.api.model.GeneratorFilter;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,30 +20,37 @@ import org.springframework.web.bind.annotation.RestController;
 public class GenerateUsernameController {
 
     private final GenerateUsernameService generateService;
-    private final List<TemplateField> filterFields;
-    private final JsonApiParser jsonRequestParser;
 
     public GenerateUsernameController(GenerateUsernameService generateService) {
         this.generateService = generateService;
-        this.filterFields = List.of();
-        this.jsonRequestParser = new JsonApiParser(this.filterFields);
     }
 
     @Operation(summary = "Generate Username", description = "Retrieves 1 generated username.")
     @GetMapping
     public ResponseEntity<Object> generate(
+            GeneratorFilter filters,
             HttpServletRequest request,
-            @RequestParam(name="first", required=false) String first,
-            @RequestParam(name="last", required=false) String last,
-            @RequestParam(name="region", defaultValue = "us") String region
+            @RequestParam(name="FIRST_NAME", required=false) String firstName,
+            @RequestParam(name="MIDDLE_NAME", required=false) String middleName,
+            @RequestParam(name="LAST_NAME", required=false) String lastName,
+            @RequestParam(name="USERNAME_TYPE", required=false) String usernameType,
+            @RequestParam(name="DOMAIN_TYPE", required=false) String domainType,
+            @RequestParam(name="BIRTHDAY", required=false) String birthday
     ) {
         SelectionFilter.Builder filterBuilder;
-        FilterConditions filters = jsonRequestParser.parse(request.getParameterMap());
-        if (filters.size() > 0) {
-            filterBuilder = filters.toSelectionFilterBuilder();
+        if (filters != null) {
+            filterBuilder = filters.getSelectionFilterBuilder();
         } else {
             filterBuilder = SelectionFilter.builder();
         }
+
+        if(firstName != null) filterBuilder.firstName(firstName);
+        if(middleName != null) filterBuilder.middleName(middleName);
+        if(lastName != null) filterBuilder.lastName(lastName);
+
+        //if(usernameType != null) filterBuilder.usernameType(usernameType);
+        //if(domainType != null) filterBuilder.domainType(domainType);
+        //if(birthday != null) filterBuilder.birthday(birthday);
 
         String username = generateService.generate(filterBuilder.build());
 

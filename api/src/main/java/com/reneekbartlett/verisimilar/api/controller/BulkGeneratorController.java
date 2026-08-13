@@ -17,6 +17,7 @@ import com.reneekbartlett.verisimilar.api.service.GenerateBulkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import com.reneekbartlett.verisimilar.api.model.GeneratorFilter;
 import com.reneekbartlett.verisimilar.api.service.FileOutputService;
 import com.reneekbartlett.verisimilar.api.service.FileOutputService.ExportData;
 
@@ -33,7 +34,8 @@ public class BulkGeneratorController {
     @Autowired
     public BulkGeneratorController(
             GenerateBulkService bulkService, 
-            FileOutputService fileService) {
+            FileOutputService fileService
+    ) {
         this.bulkService = bulkService;
         this.fileService = fileService;
         // todo:  add defaultLineCount @Value
@@ -42,6 +44,7 @@ public class BulkGeneratorController {
     @Operation(summary = "Generate multiple people.", description = "Retrieves multiple lines of generated data.")
     @GetMapping
     public ResponseEntity<String[]> generate(
+            GeneratorFilter filters,
             @RequestParam(name = "lineCount", required = false) Long lineCount
     ) {
         try {

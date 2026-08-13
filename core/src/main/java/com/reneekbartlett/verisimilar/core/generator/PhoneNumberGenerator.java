@@ -1,9 +1,11 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.AreaCodeDatasetKey;
 import com.reneekbartlett.verisimilar.core.model.PhoneNumber;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.util.FieldValidationUtils;
@@ -22,9 +24,11 @@ public class PhoneNumberGenerator extends AbstractValueGenerator<PhoneNumber> {
     // TODO: AreaCodeGenerator?
 
     private final AreaCodeSelectionEngine areaCodeSelector;
+    private final List<TemplateField> filterFields;
 
     public PhoneNumberGenerator(AreaCodeSelectionEngine areaCodeSelector) {
         this.areaCodeSelector = areaCodeSelector;
+        this.filterFields = List.of(TemplateField.AREA_CODE, TemplateField.REGION, TemplateField.ZIP_CODE);
     }
 
     public PhoneNumberGenerator(DatasetSelectionEngineRegistry selectors) {
@@ -91,5 +95,10 @@ public class PhoneNumberGenerator extends AbstractValueGenerator<PhoneNumber> {
     @Override
     protected Class<PhoneNumber> valueType() {
         return PhoneNumber.class;
+    }
+
+    @Override
+    public List<TemplateField> filterFields(){
+        return this.filterFields;
     }
 }

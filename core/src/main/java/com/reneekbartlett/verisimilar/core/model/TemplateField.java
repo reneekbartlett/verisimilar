@@ -4,62 +4,68 @@ import java.util.Date;
 import java.util.EnumSet;
 
 public enum TemplateField {
-    FIRST_NAME("FIRST", String.class),
-    MIDDLE_NAME("MIDDLE", String.class),
-    LAST_NAME("LAST", String.class),
-    BIRTHDAY("BIRTHDAY", Date.class),
-    NICKNAME("NICKNAME", String.class),
+    FIRST_NAME("FIRST", String.class, null),
+    MIDDLE_NAME("MIDDLE", String.class, null),
+    LAST_NAME("LAST", String.class, null),
+    NICKNAME("NICKNAME", String.class, null),
+    
+    BIRTHDAY("BIRTHDAY", Date.class, null),
+    GENERATION("GENERATION", EnumSet.class, Generation.class),
 
-    GENDER_IDENTITY("GENDER_IDENTITY", Enum.class),
+    GENDER_IDENTITY("GENDER_IDENTITY", EnumSet.class, GenderIdentity.class),
 
-    ETHNICITY("ETHNICITY", Enum.class),
+    ETHNICITY("ETHNICITY", EnumSet.class, Ethnicity.class),
 
-    GENERATION("GENERATION", Enum.class),
+    //KEYWORD("KEYWORD", String.class, null),
+    KEYWORD1("KEYWORD1", String.class, null),
+    KEYWORD2("KEYWORD2", String.class, null),
+    KEYWORD3("KEYWORD3", String.class, null),
+    KEYWORD_TYPE("KEYWORD_TYPE", EnumSet.class, KeywordType.class),
 
-    //KEYWORD("KEYWORD", String.class),
-    KEYWORD1("KEYWORD1", String.class),
-    KEYWORD2("KEYWORD2", String.class),
-    KEYWORD3("KEYWORD3", String.class),
-    KEYWORD_TYPE("KEYWORD_TYPE", Enum.class),
+    STREET_ID("STREET_ID", String.class, null),
+    STREET_NAME("STREET_NAME", String.class, null),
+    STREET_SUFFIX("STREET_SUFFIX", EnumSet.class, StreetSuffix.class),
+    ADDRESS2("ADDRESS2", String.class, null),
+    CITY("CITY", String.class, null),
+    STATE("STATE", EnumSet.class, USState.class),
+    ZIP_CODE("ZIP_CODE", String.class, null),
+    REGION("REGION", EnumSet.class, USRegion.class),
 
-    STREET_ID("STREET_ID", String.class),
-    STREET_NAME("STREET_NAME", String.class),
-    STREET_SUFFIX("STREET_SUFFIX", String.class),
-    ADDRESS2("ADDRESS2", String.class),
-    CITY("CITY", String.class),
-    STATE("STATE", Enum.class),
-    ZIP_CODE("ZIP_CODE", String.class),
-    REGION("REGION", Enum.class),
+    AREA_CODE("AREA_CODE", String.class, null),
 
-    AREA_CODE("AREA_CODE", String.class),
-    USERNAME("USERNAME", String.class),
-    USERNAME_TYPE("USERNAME_TYPE", Enum.class),
+    EMAIL_ADDRESS("EMAIL_ADDRESS", String.class, null),
+    // TODO:  EMAIL_ADDRESS_TYPE?
 
-    DOMAIN("DOMAIN", String.class),
-    DOMAIN_TYPE("DOMAIN_TYPE", Enum.class),
+    USERNAME("USERNAME", String.class, null),
+    USERNAME_TYPE("USERNAME_TYPE", EnumSet.class, UsernameType.class),
 
-    ADDRESS_CATEGORY("ADDRESS_CATEGORY", Enum.class),
-    UNIT_TYPE("UNIT_TYPE", Enum.class),
-    UNIT_NUMBER("UNIT_NUMBER", Integer.class),
-    UNIT_XTRA("UNIT_XTRA", String.class),
+    DOMAIN("DOMAIN", String.class, null),
+    DOMAIN_TYPE("DOMAIN_TYPE", EnumSet.class, DomainType.class),
 
-    SEPARATOR("SEPARATOR", String.class),
+    ADDRESS_CATEGORY("ADDRESS_CATEGORY", EnumSet.class, AddressCategory.class),
+    UNIT_TYPE("UNIT_TYPE", EnumSet.class, UnitType.class),
+    UNIT_NUMBER("UNIT_NUMBER", Integer.class, null),
+    UNIT_XTRA("UNIT_XTRA", String.class, null),
 
-    NUM10("NUM10", Integer.class),
-    NUM100("NUM100", Integer.class),
-    NUM1000("NUM1000", Integer.class);
+    SEPARATOR("SEPARATOR", String.class, null),
+
+    NUM10("NUM10", Integer.class, null),
+    NUM100("NUM100", Integer.class, null),
+    NUM1000("NUM1000", Integer.class, null);
 
     /***
      * Placeholder used in the StringTemplate
      */
     private final String placeholder;
 
-    private final Class clazz;
+    private final Class<?> targetType;
+    private final Class<? extends Enum<?>> enumType;
 
     // TODO:  Add field for storing applicable Generator Classes?
-    private <T> TemplateField(String placeholder, Class<T> clazz) {
+    private <T> TemplateField(String placeholder, Class<?> targetType, Class<? extends Enum<?>> enumType) {
         this.placeholder = placeholder;
-        this.clazz = clazz;
+        this.targetType = targetType;
+        this.enumType = enumType;
     }
 
     public String getPlaceholder() {
@@ -70,8 +76,45 @@ public enum TemplateField {
         return placeholder;
     }
 
-    public <T> Class<T> getType() {
-        return clazz;
+    public Class<?> targetType() { return this.targetType; }
+    public Class<? extends Enum<?>> enumType() { return this.enumType; }
+
+    // Companion reflection method to tell the converter which elements belong in the Set
+    public Class<? extends Enum> getEnumElementClass() {
+        if (this == DOMAIN_TYPE)
+            return DomainType.class; // Link directly to your sub-enum class
+
+        if (this == USERNAME_TYPE) 
+            return UsernameType.class;
+
+        if (this == KEYWORD_TYPE)
+            return KeywordType.class;
+
+        if (this == UNIT_TYPE) 
+            return UnitType.class;
+
+        if (this == STATE)
+            return USState.class;
+
+        if (this == REGION)
+            return USRegion.class;
+
+        if (this == GENDER_IDENTITY)
+            return GenderIdentity.class;
+
+        if (this == GENERATION)
+            return Generation.class;
+
+        if (this == ETHNICITY)
+            return Ethnicity.class;
+
+        if (this == STREET_SUFFIX)
+            return StreetSuffix.class;
+
+        if (this == ETHNICITY)
+            return Ethnicity.class;
+
+        return null;
     }
 
     public static TemplateField fromValue(String value) {

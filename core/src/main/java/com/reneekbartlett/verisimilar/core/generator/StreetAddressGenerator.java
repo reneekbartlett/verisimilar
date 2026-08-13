@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
-//import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.StringSubstitutor;
 
 import com.reneekbartlett.verisimilar.core.model.AddressCategory;
@@ -159,14 +158,6 @@ public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress
         LOGGER.debug("UnitType (enum)=", randomUnitType);
         return randomUnitType;
     }
-
-//    private int getUnitNumber(SelectionFilter filter, UnitType unitType) {
-//        String unitNumberFilter = filter.equalToMap().get(TemplateField.UNIT_NUMBER);
-//        if(unitNumberFilter != null) {
-//            return NumberUtils.toInt(unitNumberFilter, 100);
-//        }
-//        return generateUnitNumber(filter, unitType);
-//    }
 
     private int generateUnitNumber(SelectionFilter filter, UnitType unitType) {
         // TODO:  Adjust min/max based on UnitType

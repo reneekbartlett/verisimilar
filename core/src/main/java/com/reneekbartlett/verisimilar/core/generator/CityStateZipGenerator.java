@@ -1,7 +1,9 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.reneekbartlett.verisimilar.core.datasets.key.CityStateZipDatasetKey;
 import com.reneekbartlett.verisimilar.core.model.CityStateZip;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
+import com.reneekbartlett.verisimilar.core.model.USState;
 import com.reneekbartlett.verisimilar.core.model.Zip4Range;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
@@ -26,7 +29,8 @@ public class CityStateZipGenerator extends AbstractValueGenerator<CityStateZip>{
 
     public CityStateZipGenerator(CityStateZipSelectionEngine selector) {
         this.selector = selector;
-        this.filterFields = List.of(TemplateField.CITY, TemplateField.STATE, TemplateField.ZIP_CODE);
+        this.filterFields = List.of(TemplateField.CITY, TemplateField.STATE, 
+                TemplateField.ZIP_CODE, TemplateField.REGION);
     }
 
     public CityStateZipGenerator(DatasetSelectionEngineRegistry selectors) {
@@ -44,8 +48,14 @@ public class CityStateZipGenerator extends AbstractValueGenerator<CityStateZip>{
     }
 
     private CityStateZip generateCityStateZip(DatasetResolutionContext ctx, SelectionFilter filter) {
-        // TODO: CityStateZipDatasetKey cityStateZipKey = new CityStateZipDatasetKey(ctx.states().orElse(CityStateZipDatasetKey.defaults().states()));
+        // TODO: CityStateZipDatasetKey cityStateZipKey = new CityStateZipDatasetKey(
+        //ctx.states().orElse(CityStateZipDatasetKey.defaults().states()));
         CityStateZipDatasetKey cityStateZipKey = CityStateZipDatasetKey.fromContext(ctx);
+
+        //Set<String> zipCodes = filter.zipCodes().orElse(HashSet.newHashSet(0));
+        //USState state = filter.state().orElse(null);
+        //String city = filter.city().orElseGet(() -> "");
+
         String[] data;
         try {
             data = selector.select(cityStateZipKey, filter).split("\\$");

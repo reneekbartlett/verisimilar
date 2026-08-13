@@ -1,5 +1,6 @@
 package com.reneekbartlett.verisimilar.api.config;
 
+import com.reneekbartlett.verisimilar.core.generator.BirthdayGenerator;
 import com.reneekbartlett.verisimilar.core.generator.EmailAddressGenerator;
 import com.reneekbartlett.verisimilar.core.generator.FullNameGenerator;
 import com.reneekbartlett.verisimilar.core.generator.PhoneNumberGenerator;
@@ -19,6 +20,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class GeneratorConfig {
+
+    @Bean
+    public BirthdayGenerator birthdayGenerator() {
+        return new BirthdayGenerator();
+    }
 
     @Bean
     public UsernameGenerator usernameGenerator(
