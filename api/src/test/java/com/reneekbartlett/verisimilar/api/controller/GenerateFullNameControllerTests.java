@@ -19,7 +19,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.reneekbartlett.verisimilar.api.service.GenerateFullNameService;
-import com.reneekbartlett.verisimilar.api.service.SelectionFilterConverter;
+import com.reneekbartlett.verisimilar.api.service.GeneratorFilterResolver;
 //import com.reneekbartlett.verisimilar.api.service.StringToFilterOperatorConverter;
 //import com.reneekbartlett.verisimilar.api.service.StringToTemplateFieldConverter;
 import com.reneekbartlett.verisimilar.core.model.FullName;
@@ -43,7 +43,7 @@ import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 @Import({
     //StringToTemplateFieldConverter.class, 
     //StringToFilterOperatorConverter.class,
-    SelectionFilterConverter.class
+    GeneratorFilterResolver.class
 })
 //@Import({
 //    SecurityConfig.class, ApiKeyProperties.class, ApiKeyAuthProvider.class, ApiKeyService.class

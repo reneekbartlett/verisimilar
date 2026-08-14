@@ -7,7 +7,7 @@ public enum FilterOperator {
     ENDS_WITH("endswith", true),
     CONTAINS("contains", true),
     EQUAL_TO("eq", true),
-    IN("in", false);
+    IN("in", true);
 
     private final String keyword;
     private final boolean isEnabled;

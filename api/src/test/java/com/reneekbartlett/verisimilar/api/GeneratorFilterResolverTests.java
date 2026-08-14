@@ -20,7 +20,6 @@ import com.reneekbartlett.verisimilar.api.model.FilterCondition;
 import com.reneekbartlett.verisimilar.api.model.FilterOperator;
 import com.reneekbartlett.verisimilar.api.model.GeneratorFilter;
 import com.reneekbartlett.verisimilar.api.service.GeneratorFilterResolver;
-import com.reneekbartlett.verisimilar.api.service.SelectionFilterConverter;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
@@ -184,7 +183,7 @@ public class GeneratorFilterResolverTests {
 
     //@Test
     void testConverterMultipleFilters() {
-        SelectionFilterConverter converter = new SelectionFilterConverter();
+        //SelectionFilterConverter converter = new SelectionFilterConverter();
 
         String query =
             "filter[FIRST_NAME][eq]=RENEE&" +
@@ -192,12 +191,12 @@ public class GeneratorFilterResolverTests {
             "filter[GENDER_IDENTITY][in]=FEMALE";
 
         // convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) -> Object
-        SelectionFilter filter = (SelectionFilter)converter.convert(query, null, null);
+        //SelectionFilter filter = (SelectionFilter)converter.convert(query, null, null);
 
-        assertEquals("RENEE", filter.equalToMap().get(TemplateField.FIRST_NAME));
-        assertEquals("B", filter.startsWithMap().get(TemplateField.LAST_NAME));
+        //assertEquals("RENEE", filter.equalToMap().get(TemplateField.FIRST_NAME));
+        //assertEquals("B", filter.startsWithMap().get(TemplateField.LAST_NAME));
 
-        Set<?> s = filter.inEnumMap().get(TemplateField.GENDER_IDENTITY);
+        //Set<?> s = filter.inEnumMap().get(TemplateField.GENDER_IDENTITY);
         
         //assertEquals(1, s.size());
     }
