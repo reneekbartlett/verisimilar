@@ -53,7 +53,7 @@ public class EmailAddressGenerator extends AbstractValueGenerator<EmailAddressRe
         }
 
         // Then get Username, with domain and domainType passed in filter
-        SelectionFilter usernameFilter = filter.toBuilder()
+        SelectionFilter usernameFilter = SelectionFilter.toBuilder(filter)
                 .domain(domainRecord.domain())
                 .domainType(domainRecord.domainType())
                 .build();

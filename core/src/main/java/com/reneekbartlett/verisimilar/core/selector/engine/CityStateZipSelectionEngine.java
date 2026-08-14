@@ -75,11 +75,6 @@ public class CityStateZipSelectionEngine extends AbstractSelectionEngine<CitySta
 
         if(filter != null && !filter.isEmpty()) {
             // If filter has a city
-            if(filter.equalToMap().containsKey(TemplateField.CITY)) {
-                // TODO: Add Filtering / custom predicate?
-                String city = filter.equalToMap().get(TemplateField.CITY);
-                filter = filter.toBuilder().startsWith(city,TemplateField.CITY).build();
-            }
             selector.setFilter(filter);
             LOGGER.debug("filter={}", filter.toString());
         }
@@ -104,6 +99,6 @@ public class CityStateZipSelectionEngine extends AbstractSelectionEngine<CitySta
 
     public TemplateField field() {
         // TODO Change to ZIP/STATE?  Concat?
-        return TemplateField.ZIP_CODE;
+        return TemplateField.CITY_STATE_ZIP;
     }
 }

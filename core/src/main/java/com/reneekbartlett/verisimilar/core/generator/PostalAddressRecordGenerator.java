@@ -50,12 +50,14 @@ public class PostalAddressRecordGenerator extends AbstractValueGenerator<PostalA
         CityStateZip cityStateZip = generateCityStateZip(ctx, filter);
 
         // Create a new filter
-        SelectionFilter streetAddressFilter = filter.toBuilder()
+        SelectionFilter streetAddressFilter = SelectionFilter.toBuilder(filter)
                 .state(USState.fromAbbreviation(cityStateZip.state()))
                 .city(cityStateZip.city())
                 .build();
         StreetAddress streetAddress = generateStreetAddress(ctx, streetAddressFilter);
 
+        LOGGER.debug("generatePostalAddress - cityStateZip={}", cityStateZip);
+        
         return new PostalAddress(streetAddress.address1(), streetAddress.address2(), cityStateZip);
     }
 

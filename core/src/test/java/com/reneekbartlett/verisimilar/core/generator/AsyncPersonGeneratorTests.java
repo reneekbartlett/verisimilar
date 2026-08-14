@@ -23,7 +23,7 @@ public class AsyncPersonGeneratorTests {
         //this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     }
 
-    //@Test
+    @Test
     public void GeneratePersonAsync_Test() {
         AsyncPersonGenerator generator = new AsyncPersonGenerator(TestUtils.getDatasetSelectionEngineRegistry());
         PersonRecord person = generator.generate();
@@ -32,7 +32,7 @@ public class AsyncPersonGeneratorTests {
     }
 
     // TODO:  Fix.
-    //@Test
+    @Test
     public void GeneratePersonAsync_Test_NameFilter() {
         AsyncPersonGenerator asyncGenerator = new AsyncPersonGenerator(TestUtils.getDatasetSelectionEngineRegistry());
 

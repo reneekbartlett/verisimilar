@@ -48,7 +48,7 @@ public class FullNameGenerator extends AbstractValueGenerator<FullName>{
         //  Get or Generate FirstName.  Include LastName in generator params.
         String firstName = filter.firstName()
                 .orElseGet(() -> {
-                    SelectionFilter firstNameFilter = filter.toBuilder()
+                    SelectionFilter firstNameFilter = SelectionFilter.toBuilder(filter)
                             .lastName(lastName)
                             .gender(genderIdentity)
                             .build();
@@ -59,7 +59,7 @@ public class FullNameGenerator extends AbstractValueGenerator<FullName>{
         //  Generate MiddleName.  Include FirstName+LastName+GenderIdentity in generator params.
         String middleName = filter.middleName()
                 .orElseGet(() -> {
-                    SelectionFilter middleNameFilter = filter.toBuilder()
+                    SelectionFilter middleNameFilter = SelectionFilter.toBuilder(filter)
                             .firstName(firstName).lastName(lastName).gender(genderIdentity)
                             .build();
                     return generateMiddleName(ctx, middleNameFilter);

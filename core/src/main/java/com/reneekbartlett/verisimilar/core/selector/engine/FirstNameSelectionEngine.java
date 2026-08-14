@@ -107,7 +107,7 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
             selector.setFilter(filter);
         }
 
-        LOGGER.debug("select firstName - nameKey={}; strategyType={}; filter=[{}]", nameKey, strategy.getType(), filter);
+        //LOGGER.debug("select firstName - nameKey={}; strategyType={}; filter=[{}]", nameKey, strategy.getType(), filter);
         return selector.select();
     }
 

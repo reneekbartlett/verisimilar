@@ -52,25 +52,32 @@ public class CityStateZipGenerator extends AbstractValueGenerator<CityStateZip>{
         //ctx.states().orElse(CityStateZipDatasetKey.defaults().states()));
         CityStateZipDatasetKey cityStateZipKey = CityStateZipDatasetKey.fromContext(ctx);
 
-        Set<String> zipCodes = filter.zipCodes().orElse(Set.of());
-        //USState state = filter.state().orElse(null);
-        //String city = filter.city().orElseGet(() -> "");
-
         String[] data;
+        String city;
+        String state;
+        String zipCode;
         try {
             data = selector.select(cityStateZipKey, filter).split("\\$");
             if(data.length != 3) {
                 LOGGER.warn("Check cityStateZip value: {}", String.join(" ", data));
             }
+
+            // Backup
+            city = filter.city().orElse(data[0]);
+            state = data[1]; // TODO: USState state = filter.state().orElse(null);
+            zipCode = filter.zipCode().orElse(data[2]);
         } catch(Exception e) {
             data = new String[] {"XXXXXXX", "XX", "XXXXX" };
+            city = "XXXXXXX";
+            state = "XX";
+            zipCode = "00000";
             LOGGER.error("ERROR: {}", e.getMessage());
         }
 
         // TODO:  Add Zip4 (more complicated than you'd think..)
         //testZip4(data[1]);
 
-        return new CityStateZip(data[0], data[1], data[2]);
+        return new CityStateZip(city, state, zipCode);
     }
 
     @SuppressWarnings("unused")

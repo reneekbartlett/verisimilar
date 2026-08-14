@@ -107,7 +107,7 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
             selector.setFilter(filter);
         }
 
-        LOGGER.debug("select middleName - nameKey={}; strategyType={};", nameKey, strategy.getType());
+        //LOGGER.debug("select middleName - nameKey={}; strategyType={};", nameKey, strategy.getType());
         return selector.select();
     }
 

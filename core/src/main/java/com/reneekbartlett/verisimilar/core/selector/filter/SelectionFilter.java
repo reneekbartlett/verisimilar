@@ -12,11 +12,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import com.reneekbartlett.verisimilar.core.model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.parquet.column.ValuesType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +40,9 @@ public record SelectionFilter(
         Optional<Set<Generation>> generations,
         Optional<Integer> minYear,
         Optional<Integer> maxYear,
+
+        Optional<AddressCategory> addressCategory,
+        Optional<UnitType> unitType,
 
         Optional<String> streetName,
         Optional<String> streetSuffix,
@@ -62,6 +67,7 @@ public record SelectionFilter(
         Optional<UsernameType> usernameType,
         Optional<String> username,
 
+        Optional<PhoneNumberType> phoneNumberType,
         Optional<String> areaCode,
 
         Optional<SelectionPredicate<String>> customPredicate,
@@ -145,6 +151,9 @@ public record SelectionFilter(
         minYear = (minYear == null) ? Optional.empty() : minYear;
         maxYear = (maxYear == null) ? Optional.empty() : maxYear;
 
+        addressCategory = addressCategory == null ? Optional.empty() : addressCategory;
+        unitType = unitType == null ? Optional.empty() : unitType;
+
         streetName = streetName == null ? Optional.empty() : streetName;
         streetSuffix = streetSuffix == null ? Optional.empty() : streetSuffix;
 
@@ -161,6 +170,7 @@ public record SelectionFilter(
         region = region == null ? Optional.empty() : region;
         ethnicity = ethnicity == null ? Optional.empty() : ethnicity;
 
+        phoneNumberType = phoneNumberType == null ? Optional.empty() : phoneNumberType;
         areaCode = areaCode == null ? Optional.empty() : areaCode;
 
         domainType = domainType == null ? Optional.empty() : domainType;
@@ -174,13 +184,16 @@ public record SelectionFilter(
     }
 
     public static Builder toBuilder(SelectionFilter filter) {
+        if(filter == null) {
+            return new Builder();
+        }
         return new Builder(filter);
     }
 
-    public Builder toBuilder() {
-        // todo: clone?
-        return new Builder(this);
-    }
+    //private Builder toBuilder() {
+    //    // todo: clone?
+    //    return new Builder(this);
+    //}
 
     public PersonRecord getPersonRecord() {
         FullName fullName = new FullName(firstName.orElse(""), middleName.orElse(""), lastName.orElse(""));
@@ -192,22 +205,23 @@ public record SelectionFilter(
         );
     }
 
-    public Map<TemplateField, Object> getResolvedValues() {
-        Map<TemplateField, Object> values = new HashMap<>();
-        if(!firstName.isEmpty()) values.put(TemplateField.FIRST_NAME, firstName.get());
-        if(!middleName.isEmpty()) values.put(TemplateField.MIDDLE_NAME, middleName.get());
-        if(!lastName.isEmpty()) values.put(TemplateField.LAST_NAME, lastName.get());
-        if(!birthday.isEmpty()) {
-            values.put(TemplateField.BIRTHDAY, birthday.get());
-        }
-
-        if(!domain.isEmpty()) values.put(TemplateField.DOMAIN, domain.get());
-        if(!gender.isEmpty()) values.put(TemplateField.GENDER_IDENTITY, gender.get());
-        return values;
-    }
+//    public Map<TemplateField, Object> getResolvedValues() {
+//        ConcurrentHashMap<TemplateField, Object> values = new ConcurrentHashMap<>();
+//        if(!firstName.isEmpty()) values.put(TemplateField.FIRST_NAME, firstName.get());
+//        if(!middleName.isEmpty()) values.put(TemplateField.MIDDLE_NAME, middleName.get());
+//        if(!lastName.isEmpty()) values.put(TemplateField.LAST_NAME, lastName.get());
+//        if(!birthday.isEmpty()) {
+//            values.put(TemplateField.BIRTHDAY, birthday.get());
+//        }
+//
+//        if(!domain.isEmpty()) values.put(TemplateField.DOMAIN, domain.get());
+//        if(!gender.isEmpty()) values.put(TemplateField.GENDER_IDENTITY, gender.get());
+//        return values;
+//    }
 
     public boolean isEmpty() {
-        return customPredicate.isEmpty() && customPredicates.isEmpty()
+        return customPredicate.isEmpty() 
+                && customPredicates.isEmpty()
                 && firstName.isEmpty() && middleName.isEmpty() && lastName.isEmpty()
                 && nickName.isEmpty()
                 && gender.isEmpty()
@@ -229,11 +243,14 @@ public record SelectionFilter(
                 && username.isEmpty()
                 && domainType.isEmpty()
                 && domain.isEmpty()
+                && phoneNumberType.isEmpty()
+                && areaCode.isEmpty()
                 && (startsWithMap != null && startsWithMap.isEmpty())
                 && (endsWithMap != null && endsWithMap.isEmpty())
                 && (equalToMap != null && equalToMap.isEmpty())
                 && (containsMap != null && containsMap.isEmpty())
-                && (inMap != null && inMap.isEmpty());
+                && (inMap != null && inMap.isEmpty())
+                && (inEnumMap != null && inEnumMap.isEmpty());
     }
 
     public static SelectionFilter empty() {
@@ -254,6 +271,10 @@ public record SelectionFilter(
                 Optional.empty(), Optional.empty(), // MinYear, MaxYear
 
                 //Optional.empty(), // PostalAddress
+
+                Optional.empty(), // AddressCategory
+                Optional.empty(), // UnitType
+                
                 Optional.empty(), // streetName
                 Optional.empty(), // streetSuffix
 
@@ -275,17 +296,18 @@ public record SelectionFilter(
                 Optional.empty(), // usernameType
                 Optional.empty(), // username
 
+                Optional.empty(), // phoneNumberType
                 Optional.empty(), // areaCode
 
                 Optional.empty(), // customPredicate
                 Optional.empty(), // customPredicates
 
-                HashMap.newHashMap(0),
-                HashMap.newHashMap(0),
-                HashMap.newHashMap(0),
-                HashMap.newHashMap(0),
-                HashMap.newHashMap(0),
-                HashMap.newHashMap(0) // inEnumMap
+                new ConcurrentHashMap<>(),
+                new ConcurrentHashMap<>(),
+                new ConcurrentHashMap<>(),
+                new ConcurrentHashMap<>(),
+                new ConcurrentHashMap<>(),
+                new ConcurrentHashMap<>() // inEnumMap
         );
     }
 
@@ -313,7 +335,6 @@ public record SelectionFilter(
         private Integer minYear;
         private Integer maxYear;
 
-        //TODO:  ADDRESS_CATEGORY, UNIT_TYPE
         private AddressCategory addressCategory;
         private UnitType unitType;
 
@@ -338,21 +359,20 @@ public record SelectionFilter(
         private UsernameType usernameType;
         private String username;
 
-        //TODO:  PHONE_NUMBER_TYPE
         private PhoneNumberType phoneNumberType;
         private String areaCode;
 
         protected SelectionPredicate<String> customPredicate;
-        protected Set<SelectionPredicate<String>> customPredicates;
+        protected final Set<SelectionPredicate<String>> customPredicates = ConcurrentHashMap.newKeySet();
 
-        protected Map<TemplateField, String> startsWithMap = HashMap.newHashMap(0);
-        protected Map<TemplateField, String> endsWithMap = HashMap.newHashMap(0);
+        protected final Map<TemplateField, String> startsWithMap = new ConcurrentHashMap<>();
+        protected final Map<TemplateField, String> endsWithMap = new ConcurrentHashMap<>();
 
-        protected Map<TemplateField, String> containsMap = HashMap.newHashMap(0);
+        protected final Map<TemplateField, String> containsMap = new ConcurrentHashMap<>();
 
-        protected Map<TemplateField, String> equalToMap = HashMap.newHashMap(0);
-        protected Map<TemplateField, Set<String>> inMap = HashMap.newHashMap(0);
-        protected final Map<TemplateField, Set<?>> inEnumMap = new HashMap<>();
+        protected final Map<TemplateField, String> equalToMap = new ConcurrentHashMap<>();
+        protected final Map<TemplateField, Set<String>> inMap = new ConcurrentHashMap<>();
+        protected final Map<TemplateField, Set<?>> inEnumMap = new ConcurrentHashMap<>();
 
         protected CityStateZip cityStateZip;
 
@@ -369,6 +389,10 @@ public record SelectionFilter(
          * Copy over some existing elements.
          */
         public Builder(SelectionFilter filter) {
+            if(filter == null) {
+                return;
+            }
+
             this.gender = filter.gender.orElse(null);
             this.ethnicity = filter.ethnicity.orElse(null);
 
@@ -382,13 +406,14 @@ public record SelectionFilter(
             this.generations = filter.generations.orElse(null);
 
             // AddressLineOne
+            this.addressCategory = filter.addressCategory.orElse(null);
+            this.unitType = filter.unitType.orElse(null);
+
             this.streetName = filter.streetName.orElse(null);
             this.streetSuffix = filter.streetSuffix.orElse(null);
 
             // AddressLineTwo
             this.address2 = filter.address2.orElse(null);
-            //filter.unitType
-            //filter.addressCategory
 
             this.city = filter.city.orElse(null);
 
@@ -400,6 +425,7 @@ public record SelectionFilter(
 
             this.region = filter.region.orElse(null);
 
+            this.phoneNumberType = filter.phoneNumberType.orElse(null);
             this.areaCode = filter.areaCode.orElse(null);
 
             this.username = filter.username.orElse(null);
@@ -408,53 +434,62 @@ public record SelectionFilter(
             this.domain = filter.domain.orElse(null);
             this.domainType = filter.domainType.orElse(null);
 
-            this.startsWithMap = filter.startsWithMap();
-            this.endsWithMap = filter.endsWithMap();
-            this.containsMap = filter.containsMap();
+            filter.startsWithMap().forEach((k,v) -> this.startsWithMap.putIfAbsent(k, v));
+            filter.endsWithMap().forEach((k,v) -> this.endsWithMap.putIfAbsent(k, v));
+            filter.containsMap().forEach((k,v) -> this.containsMap.putIfAbsent(k, v));
 
-            // TODO:  I don't think these need to get copied...
-            this.equalToMap = filter.equalToMap();
-            this.inMap = filter.inMap();
-
-            //this.inEnumMap = filter.inEnumMap();
+            filter.equalToMap().forEach((k,v) -> this.equalToMap.putIfAbsent(k, v));
+            filter.inMap().forEach((k,v) -> this.inMap.putIfAbsent(k, v));
+            filter.inEnumMap().forEach((k,v) -> this.inEnumMap.putIfAbsent(k, v));
 
             //LOGGER.debug(this.toString());
         }
 
         public Builder firstName(String value) {
-            this.firstName = value;
-            this.equalToMap.put(TemplateField.FIRST_NAME, value);
+            if(value != null) {
+                this.firstName = value;
+                this.equalToMap.putIfAbsent(TemplateField.FIRST_NAME, value);
+            }
             return this;
         }
 
         public Builder middleName(String value) {
-            this.middleName = value;
-            this.equalToMap.put(TemplateField.MIDDLE_NAME, value);
+            if(value != null) {
+                this.middleName = value;
+                this.equalToMap.putIfAbsent(TemplateField.MIDDLE_NAME, value);
+            }
             return this;
         }
 
         public Builder lastName(String value) {
-            this.lastName = value;
-            this.equalToMap.put(TemplateField.LAST_NAME, value);
+            if(value != null) {
+                this.lastName = value;
+                this.equalToMap.putIfAbsent(TemplateField.LAST_NAME, value);
+            }
             return this;
         }
 
         public Builder nickName(String value) {
-            this.nickName = value;
-            this.equalToMap.put(TemplateField.NICKNAME, value);
+            if(value != null) {
+                this.nickName = value;
+                this.equalToMap.putIfAbsent(TemplateField.NICKNAME, value);
+            }
             return this;
         }
 
         public Builder gender(GenderIdentity value) {
-            this.gender = value;
-            this.equalToMap.put(TemplateField.GENDER_IDENTITY, value.getLabel());
+            if(value != null) {
+                this.gender = value;
+                this.equalToMap.putIfAbsent(TemplateField.GENDER_IDENTITY, value.getLabel());
+            }
             return this;
         }
 
-        public Builder genders(Set<GenderIdentity> genders) {
-            this.genders = genders;
-            //this.inMap.put(TemplateField.GENDER_IDENTITY, genders);
-            this.inEnumMap.put(TemplateField.GENDER_IDENTITY, genders);
+        public Builder genders(Set<GenderIdentity> values) {
+            if (values == null || values.isEmpty()) return this;
+
+            this.genders = values;
+            this.inEnumMap.putIfAbsent(TemplateField.GENDER_IDENTITY, values);
             return this;
         }
 
@@ -486,22 +521,29 @@ public record SelectionFilter(
         }
 
         public Builder generations(Set<Generation> values) {
-            this.generations = values;
+            if(values != null) {
+                this.generations = values;
+            }
             return this;
         }
 
         public Builder minYear(Integer value) {
-            this.minYear = value;
+            if(value != null) {
+                this.minYear = value;
+            }
             return this;
         }
 
         public Builder maxYear(Integer value) {
-            this.maxYear = value;
+            if(value != null) {
+                this.maxYear = value;
+            }
             return this;
         }
 
         public Builder postalAddress(PostalAddress value) {
-            if(value != null && value.city() != null && value.state() != null) {
+            if(value != null 
+                    && value.city() != null && value.state() != null && value.zip() != null) {
                 return this.city(value.city())
                     .state(USState.fromAbbreviation(value.state()))
                     .zipCode(value.zip());
@@ -509,65 +551,85 @@ public record SelectionFilter(
             return this;
         }
 
+        public Builder addressCategory(AddressCategory value) {
+            if(value == null) return this;
+            this.addressCategory = value;
+            this.inEnumMap.putIfAbsent(TemplateField.ADDRESS_CATEGORY, EnumSet.of(value));
+            return this;
+        }
+
+        public Builder unitType(UnitType value) {
+            if(value == null) return this;
+            this.unitType = value;
+            this.inEnumMap.putIfAbsent(TemplateField.UNIT_TYPE, EnumSet.of(value));
+            return this;
+        }
+
         public Builder streetName(String value) {
+            if(value == null) return this;
             this.streetName = value;
-            this.equalToMap.put(TemplateField.STREET_NAME, value);
+            this.equalToMap.putIfAbsent(TemplateField.STREET_NAME, value);
             return this;
         }
 
         public Builder streetSuffix(String value) {
+            if(value == null) return this;
             this.streetSuffix = value;
-            this.equalToMap.put(TemplateField.STREET_SUFFIX, value);
+            this.equalToMap.putIfAbsent(TemplateField.STREET_SUFFIX, value);
             return this;
         }
 
         public Builder address2(AddressLineTwo value) {
             if(value != null) {
                 this.address2 = value.toString();
-                this.equalToMap.put(TemplateField.ADDRESS2, value.toString());
-                this.equalToMap.put(TemplateField.UNIT_NUMBER, value.unitNumber());
-                this.equalToMap.put(TemplateField.UNIT_TYPE, value.unitType().getLabel());
+                this.equalToMap.putIfAbsent(TemplateField.ADDRESS2, value.toString());
+                this.equalToMap.putIfAbsent(TemplateField.UNIT_NUMBER, value.unitNumber());
+                this.equalToMap.putIfAbsent(TemplateField.UNIT_TYPE, value.unitType().getLabel());
             }
             return this;
         }
 
         public Builder city(String value) {
-            this.city = value;
-            this.equalToMap.put(TemplateField.CITY, value);
-            Set<String> cityNames = Set.of(city+"$");
-            this.startsWithMap.put(TemplateField.CITY, value);
-            SelectionPredicate<String> p = (val) -> cityNames.stream().anyMatch(val::startsWith);
-            return this.addCustomPredicate(p);
+            if(value != null) {
+                this.city = value;
+                this.equalToMap.putIfAbsent(TemplateField.CITY, value);
+                LOGGER.debug(this.city);
+                Set<String> cityNames = Set.of(city+"$");
+                this.startsWithMap.putIfAbsent(TemplateField.CITY_STATE_ZIP, value);
+                SelectionPredicate<String> p = (val) -> cityNames.stream().anyMatch(val::startsWith);
+                return this.addCustomPredicate(p);
+            }
+            return this;
         }
 
         // TODO:  Check handling of abbreviations/full name.  Maybe switch to customPredicate.
         public Builder state(USState value) {
             if(value != null) {
                 this.state = value;
-                this.equalToMap.put(TemplateField.STATE, value.name());
+                //LOGGER.debug(this.state.getLabel());
+                this.equalToMap.putIfAbsent(TemplateField.STATE, value.name());
+                return this.states(EnumSet.of(value));
             }
             return this;
         }
 
-        // TODO:  check if already set?  fix the toBuilder() clone prob.
         public Builder states(Set<USState> values) {
-            if(values != null) {
-                this.states = values;
-                this.inEnumMap.put(TemplateField.STATE, values);
-                Set<String> stateNames = new HashSet<>();
-                for(USState state : values) {
-                    stateNames.add("$"+state.name()+"$");
-                }
-                SelectionPredicate<String> p = (val) -> stateNames.stream().anyMatch(val::contains);
-                return this.addCustomPredicate(p);
+            if (values == null || values.isEmpty()) return this;
+            this.states = values;
+            this.inEnumMap.putIfAbsent(TemplateField.STATE, values);
+            Set<String> stateNames = new HashSet<>();
+            for(USState state : values) {
+                stateNames.add("$"+state.name()+"$");
             }
-            return this;
+            SelectionPredicate<String> p = (val) -> stateNames.stream().anyMatch(val::contains);
+            return this.addCustomPredicate(p);
         }
 
         // TODO: Is also setting zipCodes necessary?
         public Builder zipCode(String value) {
+            if (value == null) return this;
             this.zipCode = value;
-            this.equalToMap.put(TemplateField.ZIP_CODE, value);
+            this.equalToMap.putIfAbsent(TemplateField.ZIP_CODE, value);
             return this.zipCodes(Set.of(value));
         }
 
@@ -577,90 +639,94 @@ public record SelectionFilter(
          * @return Builder
          */
         public Builder zipCodes(Set<String> values) {
-            if(values != null) {
-                this.zipCodes = values;
-                this.inMap.put(TemplateField.ZIP_CODE, values);
+            if (values == null || values.isEmpty()) return this;
 
-                // TODO:  Also filter by state?
-                Set<String> zipCodeValues = new HashSet<>();
-                for(String zipCode : values) {
-                    zipCodeValues.add("$"+zipCode);
-                }
-                SelectionPredicate<String> p = (val) -> zipCodeValues.stream().anyMatch(val::contains);
-                //this.customPredicates.add(p);
-                return this.addCustomPredicate(p);
+            this.zipCodes = values;
+            this.inMap.putIfAbsent(TemplateField.ZIP_CODE, values);
+
+            // TODO:  Also filter by state?
+            Set<String> zipCodeValues = new HashSet<>();
+            for(String zipCode : values) {
+                zipCodeValues.add("$"+zipCode);
             }
-            return this;
+            SelectionPredicate<String> p = (val) -> zipCodeValues.stream().anyMatch(val::contains);
+            return this.addCustomPredicate(p);
         }
 
         public Builder region(USRegion value) {
-            this.region = value;
-            this.equalToMap.put(TemplateField.REGION, value.getRegionName());
+            if(value != null) {
+                this.region = value;
+                this.equalToMap.putIfAbsent(TemplateField.REGION, value.getRegionName());
+            }
             return this;
         }
 
         // TODO:  Keep 2 regions options? inMap or predicate for enums?
-        public Builder regions(Set<String> values) {
-            this.inMap.put(TemplateField.REGION, values);
-            return this;
-        }
+        //public Builder regions(Set<String> values) {
+        //    if (values == null || values.isEmpty()) return this;
+        //    this.inMap.putIfAbsent(TemplateField.REGION, values);
+        //    return this;
+        //}
 
         public Builder regions(EnumSet<USRegion> values) {
-            this.inEnumMap.put(TemplateField.REGION, values);
+            if (values == null || values.isEmpty()) return this;
 
-            Set<String> regionNames = new HashSet<>();
-            for(USRegion region : values) {
-                regionNames.add(region.name());
-            }
-            SelectionPredicate<String> p = (val) -> regionNames.stream().anyMatch(val::equalsIgnoreCase);
-            this.customPredicates.add(p);
-            return this;
+            this.inEnumMap.putIfAbsent(TemplateField.REGION, values);
+            Set<String> regionNames = values.stream()
+                    .map(region -> region.name().toLowerCase())
+                    .collect(Collectors.toSet());
+            //SelectionPredicate<String> p = (val) -> regionNames.stream().anyMatch(val::equalsIgnoreCase);
+            SelectionPredicate<String> p = (val) -> val != null && regionNames.contains(val.toLowerCase());
+            return this.addCustomPredicate(p);
         }
 
         public Builder ethnicity(Ethnicity value) {
             if(value != null) {
                 this.ethnicity = value;
-                this.equalToMap.put(TemplateField.ETHNICITY, value.getPlaceholder());
+                this.equalToMap.putIfAbsent(TemplateField.ETHNICITY, value.getPlaceholder());
             }
             return this;
         }
 
         public Builder ethnicities(Set<Ethnicity> values) {
-            this.inEnumMap.put(TemplateField.ETHNICITY, values);
+            if (values == null || values.isEmpty()) return this;
 
-            Set<String> ethnicityNames = new HashSet<>();
-            for(Ethnicity ethnicity : values) {
-                ethnicityNames.add(ethnicity.name());
-            }
-            SelectionPredicate<String> p = (val) -> ethnicityNames.stream().anyMatch(val::equalsIgnoreCase);
-            this.customPredicates.add(p);
-            //this.inMap.put(TemplateField.Ethnicity, ethnicityNames);
-            return this;
+            this.inEnumMap.putIfAbsent(TemplateField.ETHNICITY, values);
+            Set<String> ethnicityNames = values.stream()
+                    .map(e -> e.name().toLowerCase())
+                    .collect(Collectors.toSet());
+            //SelectionPredicate<String> p = (val) -> ethnicityNames.stream().anyMatch(val::equalsIgnoreCase);
+            SelectionPredicate<String> p = (val) -> val != null && ethnicityNames.contains(val.toLowerCase());
+            return this.addCustomPredicate(p);
         }
 
         public Builder domainType(DomainType value) {
             if(value != null) {
                 this.domainType = value;
-                this.equalToMap.put(TemplateField.DOMAIN_TYPE, value.getPlaceholder());
+                this.equalToMap.putIfAbsent(TemplateField.DOMAIN_TYPE, value.getPlaceholder());
             }
             return this;
         }
 
         public Builder domain(String value) {
-            this.domain = StringUtils.deleteWhitespace(value);
-            this.equalToMap.put(TemplateField.DOMAIN, this.domain);
+            if(value != null) {
+                this.domain = StringUtils.deleteWhitespace(value);
+                this.equalToMap.putIfAbsent(TemplateField.DOMAIN, this.domain);
+            }
             return this;
         }
 
         public Builder domains(Set<String> values) {
-            this.inMap.put(TemplateField.DOMAIN, values);
+            if(values != null && !values.isEmpty()) {
+                this.inMap.putIfAbsent(TemplateField.DOMAIN, values);
+            }
             return this;
         }
 
         public Builder usernameType(UsernameType value) {
             if(value != null) {
                 this.usernameType = value;
-                this.equalToMap.put(TemplateField.USERNAME_TYPE, value.getPlaceholder());
+                this.equalToMap.putIfAbsent(TemplateField.USERNAME_TYPE, value.getPlaceholder());
             }
             return this;
         }
@@ -669,61 +735,75 @@ public record SelectionFilter(
             if(value != null && !value.isBlank()) {
                 // TODO:  Format/validate.  i.e. trim, remove spaces
                 this.username = StringUtils.deleteWhitespace(value);
-                this.equalToMap.put(TemplateField.USERNAME, this.username);
+                this.equalToMap.putIfAbsent(TemplateField.USERNAME, this.username);
             }
+            return this;
+        }
+
+        public Builder phoneNumberType(PhoneNumberType value) {
+            if(value == null) return this;
+            this.phoneNumberType = value;
+            this.inEnumMap.putIfAbsent(TemplateField.PHONE_NUMBER_TYPE, EnumSet.of(value));
             return this;
         }
 
         public Builder areaCode(String value) {
             if(value != null && !value.isBlank()) {
                 this.areaCode = StringUtils.deleteWhitespace(value);
-                this.equalToMap.put(TemplateField.AREA_CODE, this.areaCode);
+                this.equalToMap.putIfAbsent(TemplateField.AREA_CODE, this.areaCode);
             }
             return this;
         }
 
         public Builder startsWith(String value, TemplateField field) {
             if(value != null && !value.isBlank()) {
-                this.startsWithMap.put(field, value);
+                this.startsWithMap.putIfAbsent(field, value);
             }
             return this;
         }
 
         public Builder endsWith(String value, TemplateField field) {
-            this.endsWithMap.put(field, value);
+            if(value != null) {
+                this.endsWithMap.putIfAbsent(field, value);
+            }
             return this;
         }
 
         public Builder contains(String value, TemplateField field) {
-            this.containsMap.put(field, value);
+            if(value != null) {
+                this.containsMap.putIfAbsent(field, value);
+            }
             return this;
         }
 
         protected Builder equalTo(String value, TemplateField field) {
             // TODO:  Check
-            this.equalToMap.put(field, value);
+            if(value != null) {
+                this.equalToMap.putIfAbsent(field, value);
+            }
             return this;
         }
 
         public Builder in(Set<String> values, TemplateField field) {
-            this.inMap.put(field, values);
+            if(values != null) {
+                this.inMap.putIfAbsent(field, values);
+            }
             return this;
         }
 
         // TODO: FilterOperator
         public Builder addFilter(String value, TemplateField field, String filterOperator) {
+            // All params need to be present.
+            if(value == null) {
+                return this;
+            }
+
             switch(filterOperator) {
                 case "startswith":
-                    //this.startsWithMap.put(field, value);
-                    //break;
                     return this.startsWith(value, field);
                 case "endswith":
-                    //this.endsWithMap.put(field, value);
-                    //break;
                     return this.endsWith(value, field);
                 case "contains":
-                    //this.containsMap.put(field, value);
-                    //break;
                     return this.contains(value, field);
                 case "in":
                     return this.in(Set.of(value), field);
@@ -736,7 +816,6 @@ public record SelectionFilter(
             return this;
         }
 
-        //public <T> Builder in(Set<T> values, TemplateField field)
         public <T> Builder addFilter(Set<T> values, TemplateField field, String filterOperator) {
             if (values == null || values.isEmpty()) {
                 //LOGGER.debug("Set is null or empty. Cannot accurately determine element types.");
@@ -760,10 +839,10 @@ public record SelectionFilter(
                 // 
                 if (values.size() == 1) {
                     // TODO:
-                    this.inEnumMap.put(field, values);
+                    this.inEnumMap.putIfAbsent(field, values);
                 } else {
                     //
-                    this.inEnumMap.put(field, values);
+                    this.inEnumMap.putIfAbsent(field, values);
                 }
                 return this;
             }
@@ -771,7 +850,7 @@ public record SelectionFilter(
             if(filterOperator.equalsIgnoreCase("eq") || values.size() == 1) {
                 T firstElement = values.iterator().next();
                 if (String.class.equals(targetType)) {
-                    this.equalToMap.put(field, (String)firstElement);
+                    this.equalToMap.putIfAbsent(field, (String)firstElement);
                     // TODO:  use builder.<field>() instead
                 } else {
                     LOGGER.debug("TODO {}", firstElement);
@@ -781,12 +860,12 @@ public record SelectionFilter(
 
             if(filterOperator.equalsIgnoreCase("in")) {
                 if (String.class.equals(targetType)) {
-                    this.inMap.put(field, (Set<String>) values);
+                    this.inMap.putIfAbsent(field, (Set<String>) values);
                 } else {
                     // TODO:  I don't think this should happen...
                     Set<String> strSet = values.stream().map(v -> v == null ? null : v.toString())
                             .collect(Collectors.toSet());
-                    this.inMap.put(field, strSet);
+                    this.inMap.putIfAbsent(field, strSet);
                     LOGGER.debug("TODO {}", values);
                 }
             }
@@ -794,22 +873,24 @@ public record SelectionFilter(
             return this;
         }
 
-        public Builder customPredicate(SelectionPredicate<String> predicate) {
+        private Builder customPredicate(SelectionPredicate<String> predicate) {
+            if(predicate == null) return this;
+
             this.customPredicate = predicate;
             return this.addCustomPredicate(predicate);
         }
 
-        public Builder addCustomPredicate(SelectionPredicate<String> predicate) {
-            if(customPredicates == null) {
-                this.customPredicates = HashSet.newHashSet(0);
-            }
+        private Builder addCustomPredicate(SelectionPredicate<String> predicate) {
             this.customPredicates.add(predicate);
             return this;
         }
 
         protected Builder cityStateZip(CityStateZip value) {
-            this.city = value.city();
-            return this;
+            if(value == null) return this;
+
+            return this.city(value.city())
+                    .state(USState.fromText(value.state()))
+                    .zipCode(value.zip());
         }
 
         public SelectionFilter build() {
@@ -831,6 +912,8 @@ public record SelectionFilter(
                     Optional.ofNullable(maxYear),
 
                     //Optional.ofNullable(postalAddress),
+                    Optional.ofNullable(addressCategory),
+                    Optional.ofNullable(unitType),
                     Optional.ofNullable(streetName),
                     Optional.ofNullable(streetSuffix),
 
@@ -851,6 +934,7 @@ public record SelectionFilter(
                     Optional.ofNullable(usernameType),
                     Optional.ofNullable(username),
 
+                    Optional.ofNullable(phoneNumberType),
                     Optional.ofNullable(areaCode),
 
                     Optional.ofNullable(customPredicate),
@@ -865,7 +949,7 @@ public record SelectionFilter(
             );
         };
 
-        @Override 
+        @Override
         public String toString() {
             return this.build().toString();
         }

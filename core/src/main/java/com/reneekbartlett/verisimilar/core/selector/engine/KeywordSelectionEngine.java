@@ -44,7 +44,7 @@ public class KeywordSelectionEngine extends AbstractSelectionEngine<KeywordDatas
             RandomSelector<String> selector = strategy.buildSelector(map, field());
             this.selectorsByNameKey.put(nameKey, selector);
         });
-        LOGGER.debug("setup - KeywordDatasetResult:{}", keywordDatasetResult.toString());
+        //LOGGER.debug("setup - KeywordDatasetResult:{}", keywordDatasetResult.toString());
     }
 
     @Override

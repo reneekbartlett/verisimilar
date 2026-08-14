@@ -155,7 +155,7 @@ public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress
     private UnitType generateUnitType(SelectionFilter filter) {
         Map<UnitType, Double> weightedMap = UnitType.defaultMap();
         UnitType randomUnitType = new WeightedSelectorImpl<>(weightedMap, TemplateField.UNIT_TYPE).select();
-        LOGGER.debug("UnitType (enum)=", randomUnitType);
+        LOGGER.debug("UnitType (enum)={}", randomUnitType);
         return randomUnitType;
     }
 

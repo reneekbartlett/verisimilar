@@ -31,10 +31,14 @@ public enum TemplateField {
     ZIP_CODE("ZIP_CODE", String.class, null),
     REGION("REGION", EnumSet.class, USRegion.class),
 
+    CITY_STATE_ZIP("CITY_STATE_ZIP", String.class, null),
+
+    PHONE_NUMBER_TYPE("PHONE_NUMBER_TYPE", PhoneNumberType.class, null),
     AREA_CODE("AREA_CODE", String.class, null),
 
     EMAIL_ADDRESS("EMAIL_ADDRESS", String.class, null),
-    // TODO:  EMAIL_ADDRESS_TYPE?
+    // TODO:  EMAIL_ADDRESS_TYPE
+    EMAIL_ADDRESS_TYPE("EMAIL_ADDRESS_TYPE", String.class, null),
 
     USERNAME("USERNAME", String.class, null),
     USERNAME_TYPE("USERNAME_TYPE", EnumSet.class, UsernameType.class),

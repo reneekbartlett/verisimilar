@@ -123,8 +123,8 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
         UniformSelectorImpl<String> templateSelector = new UniformSelectorImpl<>(templateSet.toList(), null);
         String randomTemplate = templateSelector.select();
         String usernameFromTemplate = applyTemplate(randomTemplate, usernameKeyword1, allTemplateParams);
-        LOGGER.debug("randomTemplate:{}; usernameFromTemplate:{}", randomTemplate, usernameFromTemplate);
-        LOGGER.trace("templatesResult:{}", templatesResult.toString());
+        //LOGGER.debug("randomTemplate:{}; usernameFromTemplate:{}", randomTemplate, usernameFromTemplate);
+        //LOGGER.trace("templatesResult:{}", templatesResult.toString());
 
         return usernameFromTemplate;
     }
