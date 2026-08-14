@@ -47,7 +47,7 @@ public class GeneratorFilterResolver implements HandlerMethodArgumentResolver {
             ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest,
             WebDataBinderFactory binderFactory
-    ) throws Exception {
+    ) {
 
         // Unwrap native servlet request to access attributes, headers, or IPs
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
