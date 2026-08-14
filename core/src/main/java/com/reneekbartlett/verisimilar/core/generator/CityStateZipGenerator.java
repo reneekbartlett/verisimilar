@@ -33,9 +33,9 @@ public class CityStateZipGenerator extends AbstractValueGenerator<CityStateZip>{
                 TemplateField.ZIP_CODE, TemplateField.REGION);
     }
 
-    public CityStateZipGenerator(DatasetSelectionEngineRegistry selectors) {
-        this(selectors.cityStateZip());
-    }
+    //public CityStateZipGenerator(DatasetSelectionEngineRegistry selectors) {
+    //    this(selectors.cityStateZip());
+    //}
 
     @Override
     protected CityStateZip generateValue(DatasetResolutionContext ctx, SelectionFilter criteria) {
@@ -52,7 +52,7 @@ public class CityStateZipGenerator extends AbstractValueGenerator<CityStateZip>{
         //ctx.states().orElse(CityStateZipDatasetKey.defaults().states()));
         CityStateZipDatasetKey cityStateZipKey = CityStateZipDatasetKey.fromContext(ctx);
 
-        //Set<String> zipCodes = filter.zipCodes().orElse(HashSet.newHashSet(0));
+        Set<String> zipCodes = filter.zipCodes().orElse(Set.of());
         //USState state = filter.state().orElse(null);
         //String city = filter.city().orElseGet(() -> "");
 

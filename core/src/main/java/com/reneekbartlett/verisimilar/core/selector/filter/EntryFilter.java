@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 
+/***
+ * EntryFilter
+ */
 public final class EntryFilter {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(EntryFilter.class);
@@ -42,6 +45,14 @@ public final class EntryFilter {
                 .collect(Collectors.toList());
     }
 
+    /***
+     * 
+     * @param <T>
+     * @param values
+     * @param filter
+     * @param field
+     * @return
+     */
     public static <T> List<T> applyToList(
             List<T> values,
             SelectionFilter filter,
@@ -87,5 +98,5 @@ public final class EntryFilter {
 
         return p;
     }
-    
+
 }

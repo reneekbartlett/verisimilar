@@ -15,6 +15,10 @@ import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.filter.EntryFilter;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
+/***
+ * UniformSelectorImpl<T>
+ * @param <T>
+ */
 public final class UniformSelectorImpl<T> implements RandomSelector<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UniformSelectorImpl.class);
@@ -61,6 +65,9 @@ public final class UniformSelectorImpl<T> implements RandomSelector<T> {
         this.valueCount = this.dataset.size();
     }
 
+    /***
+     * TODO:  Document filter process
+     */
     @Override
     public T select() {
         SelectionFilter filter = this.filter;
@@ -78,6 +85,11 @@ public final class UniformSelectorImpl<T> implements RandomSelector<T> {
         return this.valueCount;
     }
 
+    /***
+     * 
+     * @param filter
+     * @return
+     */
     private UniformSelectorImpl<T> buildFilteredSelector(SelectionFilter filter) {
         // TODO:  Convert List<T> to List<String>?
         List<T> filtered = EntryFilter.applyToList(dataset, filter, field);

@@ -155,6 +155,7 @@ public record SelectionFilter(
         state = state == null ? Optional.empty() : state;
         states = states == null ? Optional.empty() : states;
 
+        zipCode = zipCode == null ? Optional.empty() : zipCode;
         zipCodes = zipCodes == null ? Optional.empty() : zipCodes;
 
         region = region == null ? Optional.empty() : region;
@@ -220,6 +221,7 @@ public record SelectionFilter(
                 && city.isEmpty()
                 && states.isEmpty()
                 && state.isEmpty()
+                && zipCode.isEmpty()
                 && zipCodes.isEmpty()
                 && region.isEmpty()
                 && ethnicity.isEmpty()
@@ -374,6 +376,7 @@ public record SelectionFilter(
             this.middleName = filter.middleName.orElse(null);
             this.lastName = filter.lastName.orElse(null);
             this.nickName = filter.nickName.orElse(null);
+
             this.birthday = filter.birthday.orElse(null);
             this.generation = filter.generation.orElse(null);
             this.generations = filter.generations.orElse(null);
@@ -412,6 +415,8 @@ public record SelectionFilter(
             // TODO:  I don't think these need to get copied...
             this.equalToMap = filter.equalToMap();
             this.inMap = filter.inMap();
+
+            //this.inEnumMap = filter.inEnumMap();
 
             //LOGGER.debug(this.toString());
         }
@@ -496,15 +501,10 @@ public record SelectionFilter(
         }
 
         public Builder postalAddress(PostalAddress value) {
-            if(value != null) {
-                this.city = value.city();
-                this.equalToMap.put(TemplateField.CITY, this.city);
-    
-                this.state = USState.fromAbbreviation(value.state());
-                this.equalToMap.put(TemplateField.STATE, value.state());
-    
-                this.zipCode(value.zip());
-                this.equalToMap.put(TemplateField.ZIP_CODE, value.zip());
+            if(value != null && value.city() != null && value.state() != null) {
+                return this.city(value.city())
+                    .state(USState.fromAbbreviation(value.state()))
+                    .zipCode(value.zip());
             }
             return this;
         }
@@ -534,7 +534,10 @@ public record SelectionFilter(
         public Builder city(String value) {
             this.city = value;
             this.equalToMap.put(TemplateField.CITY, value);
-            return this;
+            Set<String> cityNames = Set.of(city+"$");
+            this.startsWithMap.put(TemplateField.CITY, value);
+            SelectionPredicate<String> p = (val) -> cityNames.stream().anyMatch(val::startsWith);
+            return this.addCustomPredicate(p);
         }
 
         // TODO:  Check handling of abbreviations/full name.  Maybe switch to customPredicate.
@@ -548,7 +551,7 @@ public record SelectionFilter(
 
         // TODO:  check if already set?  fix the toBuilder() clone prob.
         public Builder states(Set<USState> values) {
-            if(states == null) {
+            if(values != null) {
                 this.states = values;
                 this.inEnumMap.put(TemplateField.STATE, values);
                 Set<String> stateNames = new HashSet<>();
@@ -561,23 +564,31 @@ public record SelectionFilter(
             return this;
         }
 
+        // TODO: Is also setting zipCodes necessary?
         public Builder zipCode(String value) {
             this.zipCode = value;
-            this.zipCodes = Set.of(value); // TODO:  Necessary?
             this.equalToMap.put(TemplateField.ZIP_CODE, value);
-            return this;
+            return this.zipCodes(Set.of(value));
         }
 
+        /***
+         * NOTE: Will overwrite existing zipCodes set. (Does not append)
+         * @param values
+         * @return Builder
+         */
         public Builder zipCodes(Set<String> values) {
-            if(zipCodes != null && zipCodes.isEmpty()) {
+            if(values != null) {
                 this.zipCodes = values;
+                this.inMap.put(TemplateField.ZIP_CODE, values);
+
                 // TODO:  Also filter by state?
                 Set<String> zipCodeValues = new HashSet<>();
                 for(String zipCode : values) {
                     zipCodeValues.add("$"+zipCode);
                 }
                 SelectionPredicate<String> p = (val) -> zipCodeValues.stream().anyMatch(val::contains);
-                this.customPredicates.add(p);
+                //this.customPredicates.add(p);
+                return this.addCustomPredicate(p);
             }
             return this;
         }

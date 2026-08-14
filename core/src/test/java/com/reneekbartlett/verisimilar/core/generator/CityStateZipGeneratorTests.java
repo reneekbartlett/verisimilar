@@ -1,5 +1,7 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -58,23 +60,55 @@ public class CityStateZipGeneratorTests {
         CityStateZipSelectionEngine cityStateZipSelector = new CityStateZipSelectionEngine(resolvers, TestUtils.UNIFORM_RANDOM);
         CityStateZipGenerator cityStateZipGenerator = new CityStateZipGenerator(cityStateZipSelector);
 
+        String state = "MA";
+        USState ma = USState.MA;
         EnumSet<USState> states = EnumSet.of(USState.MA);
         Set<String> zipCodes = Set.of("01545");
-        //DatasetResolutionContext ctx = DatasetResolutionContext.builder()
-        //        //.states(states)
-        //        //.zipCodes(Set.of("01545"))
-        //        .build();
+
+        //
+        // SelectionFilter
+        //
         SelectionFilter filter = SelectionFilter.builder()
                 .states(states)
-                .zipCodes(Set.of("01545"))
+                .zipCodes(zipCodes)
                 .build();
 
+        //
+        // CityStateZip
+        //
         CityStateZip cityStateZip = cityStateZipGenerator.generate(filter);
-
         LOGGER.debug("cityStateZip={}", cityStateZip.toString());
+        assertThat(cityStateZip).isNotNull();
+        assertThat(cityStateZip.state()).isIn(ma.getLabel());
+        assertThat(cityStateZip.zip()).isIn(zipCodes);
+    }
 
-        Assertions.assertNotNull(cityStateZip);
-        Assertions.assertTrue(cityStateZip.state().equalsIgnoreCase("MA"));
-        Assertions.assertTrue(zipCodes.contains(cityStateZip.zip()));
+    @Test
+    public void GenerateCityStateZip_StateZipsCriteria_ShrewsburyMA() {
+        //PostalAddressSelectionEngineRegistry registry = TestUtils.getPostalAddressSelectionEngineRegistry();
+        DatasetResolverRegistry resolvers = TestUtils.getDatasetResolverRegistry();
+        CityStateZipSelectionEngine cityStateZipSelector = new CityStateZipSelectionEngine(resolvers, TestUtils.UNIFORM_RANDOM);
+        CityStateZipGenerator cityStateZipGenerator = new CityStateZipGenerator(cityStateZipSelector);
+
+        USState ma = USState.MA;
+        EnumSet<USState> states = EnumSet.of(USState.MA);
+        Set<String> zipCodes = Set.of("01545", "01546");
+
+        //
+        // SelectionFilter
+        //
+        SelectionFilter filter = SelectionFilter.builder()
+                .states(states)
+                .zipCodes(zipCodes)
+                .build();
+
+        //
+        // CityStateZip
+        //
+        CityStateZip cityStateZip = cityStateZipGenerator.generate(filter);
+        LOGGER.debug("cityStateZip={}", cityStateZip.toString());
+        assertThat(cityStateZip).isNotNull();
+        assertThat(cityStateZip.state()).isIn(ma.getLabel());
+        assertThat(cityStateZip.zip()).isIn(zipCodes);
     }
 }
