@@ -65,6 +65,7 @@ public final class UniformEnumSelectorImpl<E extends Enum<E> & WeightedEnumData>
         return filteredCache.computeIfAbsent(filter, this::buildFilteredSelector);
     }
 
+    // TODO: Check EntryFilter.applyToList
     private UniformEnumSelectorImpl<E> buildFilteredSelector(SelectionFilter filter) {
         List<E> filtered = EntryFilter.applyToList(dataset, filter, field);
         if (filtered.isEmpty()) {

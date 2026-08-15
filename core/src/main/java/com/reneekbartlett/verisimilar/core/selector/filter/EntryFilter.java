@@ -3,7 +3,7 @@ package com.reneekbartlett.verisimilar.core.selector.filter;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
+//import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -25,7 +25,8 @@ public final class EntryFilter {
             SelectionFilter filter,
             TemplateField field
     ) {
-        Predicate<String> predicate = buildPredicate(filter, field);
+        SelectionPredicate<String> predicate = buildPredicate(filter, field);
+        LOGGER.debug("apply Map<T, Double> values -> predicate {}", predicate);
         return values.entrySet().stream()
                 .filter(e -> predicate.test((String) e.getKey()))
                 .collect(Collectors.toMap(
@@ -34,15 +35,19 @@ public final class EntryFilter {
                 ));
     }
 
-    public static List<String> apply(
-            List<String> values,
+    /***
+     * 
+     */
+    private static Set<String> apply(
+            Set<String> values,
             SelectionFilter filter,
             TemplateField field
     ) {
-        Predicate<String> predicate = buildPredicate(filter, field);
+        SelectionPredicate<String> predicate = buildPredicate(filter, field);
+        LOGGER.debug("apply Set<String> values -> predicate {}", predicate);
         return values.stream()
                 .filter(e -> predicate.test(e))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     /***
@@ -59,20 +64,27 @@ public final class EntryFilter {
             TemplateField field
     ) {
         // Map T to String while preserving order
-        Predicate<String> predicate = buildPredicate(filter, field);
+        SelectionPredicate<String> predicate = buildPredicate(filter, field);
+        LOGGER.debug("applyToList -> predicate {}", predicate);
         return values.stream()
                 .filter(e -> predicate.test((String) e))
                 .collect(Collectors.toList());
     }
 
-    private static Predicate<String> buildPredicate(SelectionFilter filter, TemplateField field) {
-        Predicate<String> p = s -> true;
+    /***
+     * 
+     * @param filter
+     * @param field
+     * @return
+     */
+    protected static SelectionPredicate<String> buildPredicate(SelectionFilter filter, TemplateField field) {
+        SelectionPredicate<String> p = s -> true;
 
+        // Set
         if (filter.customPredicates().isPresent()) {
-            Set<SelectionPredicate<String>> predicates = filter.customPredicates().get();
-            for(SelectionPredicate<String> selectionPredicate : predicates) {
+            for(SelectionPredicate<String> selectionPredicate : filter.customPredicates().get()) {
                 p = p.and(s-> selectionPredicate.test(s));
-                //LOGGER.debug("selectionPredicate {}", selectionPredicate);
+                LOGGER.debug("selectionPredicate AND {}", selectionPredicate.asString());
             }
         }
 

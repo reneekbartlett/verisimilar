@@ -90,6 +90,7 @@ public final class UniformSelectorImpl<T> implements RandomSelector<T> {
      * @param filter
      * @return
      */
+    // TODO: Check EntryFilter.applyToList
     private UniformSelectorImpl<T> buildFilteredSelector(SelectionFilter filter) {
         // TODO:  Convert List<T> to List<String>?
         List<T> filtered = EntryFilter.applyToList(dataset, filter, field);

@@ -481,6 +481,7 @@ public record SelectionFilter(
             if(value != null) {
                 this.gender = value;
                 this.equalToMap.putIfAbsent(TemplateField.GENDER_IDENTITY, value.getLabel());
+                this.genders(EnumSet.of(value));
             }
             return this;
         }
@@ -516,6 +517,7 @@ public record SelectionFilter(
         public Builder generation(Generation value) {
             if(value != null) {
                 this.generation = value;
+                this.generations(EnumSet.of(value));
             }
             return this;
         }
@@ -523,6 +525,7 @@ public record SelectionFilter(
         public Builder generations(Set<Generation> values) {
             if(values != null) {
                 this.generations = values;
+                this.inEnumMap.putIfAbsent(TemplateField.GENERATION, values);
             }
             return this;
         }
@@ -554,6 +557,7 @@ public record SelectionFilter(
         public Builder addressCategory(AddressCategory value) {
             if(value == null) return this;
             this.addressCategory = value;
+            // TODO: Add addressCategories?
             this.inEnumMap.putIfAbsent(TemplateField.ADDRESS_CATEGORY, EnumSet.of(value));
             return this;
         }
@@ -561,6 +565,7 @@ public record SelectionFilter(
         public Builder unitType(UnitType value) {
             if(value == null) return this;
             this.unitType = value;
+            // TODO: Add unitTypes?
             this.inEnumMap.putIfAbsent(TemplateField.UNIT_TYPE, EnumSet.of(value));
             return this;
         }
@@ -589,11 +594,17 @@ public record SelectionFilter(
             return this;
         }
 
+        /***
+         * Since the City value comes from CityStateZip Selection Engine, use custom predicates for matching
+         * @param value
+         * @return
+         */
         public Builder city(String value) {
             if(value != null) {
                 this.city = value;
                 this.equalToMap.putIfAbsent(TemplateField.CITY, value);
-                LOGGER.debug(this.city);
+
+                // Custom Predicate
                 Set<String> cityNames = Set.of(city+"$");
                 this.startsWithMap.putIfAbsent(TemplateField.CITY_STATE_ZIP, value);
                 SelectionPredicate<String> p = (val) -> cityNames.stream().anyMatch(val::startsWith);
@@ -606,22 +617,38 @@ public record SelectionFilter(
         public Builder state(USState value) {
             if(value != null) {
                 this.state = value;
-                //LOGGER.debug(this.state.getLabel());
                 this.equalToMap.putIfAbsent(TemplateField.STATE, value.name());
+                //LOGGER.debug(this.state.getLabel());
                 return this.states(EnumSet.of(value));
             }
             return this;
         }
 
+        /***
+         * Since the USState value comes from CityStateZip Selection Engine, use custom predicates for matching
+         * @param values
+         * @return
+         */
         public Builder states(Set<USState> values) {
             if (values == null || values.isEmpty()) return this;
             this.states = values;
             this.inEnumMap.putIfAbsent(TemplateField.STATE, values);
+
+            // Custom Predicate
+            // CityStateZip will have CITY$STATE$ZIP data, so use contains with surrounding $'s
             Set<String> stateNames = new HashSet<>();
             for(USState state : values) {
                 stateNames.add("$"+state.name()+"$");
             }
             SelectionPredicate<String> p = (val) -> stateNames.stream().anyMatch(val::contains);
+            LOGGER.debug("states predicate1:{}", p.asString());
+
+            Set<String> stateNamesV2 = values.stream()
+                    .map(state -> state.name().toLowerCase())
+                    .collect(Collectors.toSet());
+            SelectionPredicate<String> pV2 = (val) -> val != null && stateNamesV2.contains(val.toLowerCase());
+            LOGGER.debug("states predicate2:{}", p.asString());
+
             return this.addCustomPredicate(p);
         }
 
@@ -634,7 +661,7 @@ public record SelectionFilter(
         }
 
         /***
-         * NOTE: Will overwrite existing zipCodes set. (Does not append)
+         * Since the ZipCode value comes from CityStateZip Selection Engine, use custom predicates for matching
          * @param values
          * @return Builder
          */
@@ -645,11 +672,7 @@ public record SelectionFilter(
             this.inMap.putIfAbsent(TemplateField.ZIP_CODE, values);
 
             // TODO:  Also filter by state?
-            Set<String> zipCodeValues = new HashSet<>();
-            for(String zipCode : values) {
-                zipCodeValues.add("$"+zipCode);
-            }
-            SelectionPredicate<String> p = (val) -> zipCodeValues.stream().anyMatch(val::contains);
+            SelectionPredicate<String> p = (val) -> values.stream().anyMatch(val::endsWith);
             return this.addCustomPredicate(p);
         }
 
@@ -657,53 +680,38 @@ public record SelectionFilter(
             if(value != null) {
                 this.region = value;
                 this.equalToMap.putIfAbsent(TemplateField.REGION, value.getRegionName());
+                this.regions(EnumSet.of(value));
             }
             return this;
         }
 
-        // TODO:  Keep 2 regions options? inMap or predicate for enums?
-        //public Builder regions(Set<String> values) {
-        //    if (values == null || values.isEmpty()) return this;
-        //    this.inMap.putIfAbsent(TemplateField.REGION, values);
-        //    return this;
-        //}
-
         public Builder regions(EnumSet<USRegion> values) {
             if (values == null || values.isEmpty()) return this;
-
             this.inEnumMap.putIfAbsent(TemplateField.REGION, values);
-            Set<String> regionNames = values.stream()
-                    .map(region -> region.name().toLowerCase())
-                    .collect(Collectors.toSet());
-            //SelectionPredicate<String> p = (val) -> regionNames.stream().anyMatch(val::equalsIgnoreCase);
-            SelectionPredicate<String> p = (val) -> val != null && regionNames.contains(val.toLowerCase());
-            return this.addCustomPredicate(p);
+            return this;
         }
 
         public Builder ethnicity(Ethnicity value) {
             if(value != null) {
                 this.ethnicity = value;
                 this.equalToMap.putIfAbsent(TemplateField.ETHNICITY, value.getPlaceholder());
+                this.ethnicities(EnumSet.of(value));
             }
             return this;
         }
 
         public Builder ethnicities(Set<Ethnicity> values) {
             if (values == null || values.isEmpty()) return this;
-
             this.inEnumMap.putIfAbsent(TemplateField.ETHNICITY, values);
-            Set<String> ethnicityNames = values.stream()
-                    .map(e -> e.name().toLowerCase())
-                    .collect(Collectors.toSet());
-            //SelectionPredicate<String> p = (val) -> ethnicityNames.stream().anyMatch(val::equalsIgnoreCase);
-            SelectionPredicate<String> p = (val) -> val != null && ethnicityNames.contains(val.toLowerCase());
-            return this.addCustomPredicate(p);
+            return this;
         }
 
         public Builder domainType(DomainType value) {
             if(value != null) {
                 this.domainType = value;
                 this.equalToMap.putIfAbsent(TemplateField.DOMAIN_TYPE, value.getPlaceholder());
+                // TODO:  Add domainTypes?
+                this.inEnumMap.putIfAbsent(TemplateField.DOMAIN_TYPE, EnumSet.of(value));
             }
             return this;
         }
@@ -727,6 +735,8 @@ public record SelectionFilter(
             if(value != null) {
                 this.usernameType = value;
                 this.equalToMap.putIfAbsent(TemplateField.USERNAME_TYPE, value.getPlaceholder());
+                // TODO:  Add usernameTypes?
+                this.inEnumMap.putIfAbsent(TemplateField.USERNAME_TYPE, EnumSet.of(value));
             }
             return this;
         }
@@ -743,6 +753,7 @@ public record SelectionFilter(
         public Builder phoneNumberType(PhoneNumberType value) {
             if(value == null) return this;
             this.phoneNumberType = value;
+            // TODO:  Add phoneNumberTypes?
             this.inEnumMap.putIfAbsent(TemplateField.PHONE_NUMBER_TYPE, EnumSet.of(value));
             return this;
         }
@@ -873,12 +884,11 @@ public record SelectionFilter(
             return this;
         }
 
-        private Builder customPredicate(SelectionPredicate<String> predicate) {
-            if(predicate == null) return this;
-
-            this.customPredicate = predicate;
-            return this.addCustomPredicate(predicate);
-        }
+        //private Builder customPredicate(SelectionPredicate<String> predicate) {
+        //    if(predicate == null) return this;
+        //    this.customPredicate = predicate;
+        //    return this.addCustomPredicate(predicate);
+        //}
 
         private Builder addCustomPredicate(SelectionPredicate<String> predicate) {
             this.customPredicates.add(predicate);
@@ -886,8 +896,8 @@ public record SelectionFilter(
         }
 
         protected Builder cityStateZip(CityStateZip value) {
-            if(value == null) return this;
-
+            // TODO: Expand checks
+            if(value == null || value.city() == null) return this;
             return this.city(value.city())
                     .state(USState.fromText(value.state()))
                     .zipCode(value.zip());
