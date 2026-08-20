@@ -9,13 +9,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.resilience.annotation.EnableResilientMethods;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-@SpringBootApplication
+//import com.reneekbartlett.verisimilar.core.PropertyLoader;
+
+@SpringBootApplication(scanBasePackages = "com.reneekbartlett.verisimilar")
 @Configuration
 @EnableAutoConfiguration
 @EnableWebMvc
 @ComponentScan
 @EnableResilientMethods // Activates core AOP retry and concurrency processors
 public class VerisimilarServiceApplication extends SpringBootServletInitializer {
+
+    //private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(VerisimilarServiceApplication.class);
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(VerisimilarServiceApplication.class, args);

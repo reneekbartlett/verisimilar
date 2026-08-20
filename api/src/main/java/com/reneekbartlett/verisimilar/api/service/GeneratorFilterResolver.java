@@ -42,7 +42,7 @@ public class GeneratorFilterResolver implements HandlerMethodArgumentResolver {
     }
 
     @Override
-    public Object resolveArgument(
+    public GeneratorFilter resolveArgument(
             MethodParameter parameter,
             ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest,
@@ -92,9 +92,9 @@ public class GeneratorFilterResolver implements HandlerMethodArgumentResolver {
                 if(bracketCount == 4 && bracketMatcher.matches()) {
                     try {
                         // TODO:  Clean up
-                        var namedGroups = bracketMatcher.namedGroups();
+                        var namedGroupsKeys = bracketMatcher.namedGroups().keySet();
                         int groupCount = bracketMatcher.groupCount();
-                        LOGGER.debug("matches splitPattern - key={}; groupCount={}", key, groupCount);
+                        LOGGER.debug("matches splitPattern - key={}; groupCount={}; groups={}", key, groupCount, namedGroupsKeys);
 
                         String fieldName = bracketMatcher.group("field"); // e.g., "FIRST_NAME"
                         String operator = bracketMatcher.group("operator"); // e.g., "eq"
@@ -103,13 +103,19 @@ public class GeneratorFilterResolver implements HandlerMethodArgumentResolver {
                         FilterOperator filterOperator = FilterOperator.fromKeyword(operator);
 
                         if(templateField == null) {
-                            LOGGER.warn("invalid/disabled filter field");
+                            LOGGER.warn("invalid template field: {}", fieldName);
                             continue;
                         }
 
                         if(filterOperator == null || !filterOperator.isEnabled()) {
-                            // TODO: throw error
-                            LOGGER.warn("invalid/disabled filter operator");
+                            // TODO: throw error?
+                            LOGGER.warn("invalid/disabled filter operator for {}: {}", fieldName, operator);
+                            continue;
+                        }
+
+                        // TODO: Validate (syntax, characters, etc.)
+                        if(filterValue == null) {
+                            LOGGER.warn("invalid filter value for [{}][{}]: {}", fieldName, operator, filterValue);
                             continue;
                         }
 

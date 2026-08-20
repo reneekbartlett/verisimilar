@@ -26,6 +26,10 @@ public record GeneratorFilter(
         return getSelectionFilterBuilder().build();
     }
 
+    /**
+     * 
+     * @return
+     */
     public SelectionFilter.Builder getSelectionFilterBuilder() {
         // TODO:  Include List<TemplateField> filterFields?
         SelectionFilter.Builder builder = SelectionFilter.builder();
@@ -103,6 +107,7 @@ public record GeneratorFilter(
             return;
         }
 
+        //throw new UnsupportedOperationException("Operator not supported: " + operator);
         throw new IllegalArgumentException("Unsupported EQ target type: " + targetType);
     }
 

@@ -14,8 +14,10 @@ import com.reneekbartlett.verisimilar.core.datasets.resolver.StreetSuffixDataset
 import com.reneekbartlett.verisimilar.core.datasets.resolver.UsernameDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.NameDatasetResolverRegistry;
+import com.reneekbartlett.verisimilar.core.ConfigKeys;
 import com.reneekbartlett.verisimilar.core.datasets.loader.ResourceLoaderUtil;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -35,7 +37,9 @@ public class DatasetResolverConfig {
     }
 
     @Bean(name="datasetResolverRegistry")
-    public DatasetResolverRegistry datasetResolverRegistry() {
+    public DatasetResolverRegistry datasetResolverRegistry(
+            //@Value("${" + ConfigKeys.Datasets.StreetName.DEFAULT_FILE + "}") String streetNameFile
+    ) {
         ResourceLoaderUtil loader = new ResourceLoaderUtil();
 
         FirstNameDatasetResolver firstNameResolver = new FirstNameDatasetResolver(loader);
@@ -43,6 +47,7 @@ public class DatasetResolverConfig {
         LastNameDatasetResolver lastNameResolver = new LastNameDatasetResolver(loader);
         NicknameDatasetResolver nicknameResolver = new NicknameDatasetResolver(loader);
 
+        //StreetNameDatasetResolver streetNameResolver = new StreetNameDatasetResolver(loader, streetNameFile);
         StreetNameDatasetResolver streetNameResolver = new StreetNameDatasetResolver(loader);
         StreetSuffixDatasetResolver streetSuffixResolver = new StreetSuffixDatasetResolver(loader);
         AddressTwoDatasetResolver addressTwoResolver = new AddressTwoDatasetResolver(loader);

@@ -1,9 +1,11 @@
 package com.reneekbartlett.verisimilar.api.config;
 
 import com.reneekbartlett.verisimilar.api.service.GeneratorFilterResolver;
+import com.reneekbartlett.verisimilar.api.service.StringToEnumConverterFactory;
 import com.reneekbartlett.verisimilar.api.service.StringToEthnicityConverter;
 import com.reneekbartlett.verisimilar.api.service.StringToGenderIdentityConverter;
 import com.reneekbartlett.verisimilar.api.service.StringToGenerationConverter;
+import com.reneekbartlett.verisimilar.api.service.StringToUSRegionConverter;
 
 import java.util.List;
 
@@ -18,18 +20,30 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+    // ConverterFactory Component
+    private final StringToEnumConverterFactory stringToEnumConverterFactory;
+
+    // Converter Components
     private final StringToGenderIdentityConverter genderIdentityConverter;
     private final StringToGenerationConverter generationConverter;
     private final StringToEthnicityConverter ethnicityConverter;
+    private final StringToUSRegionConverter usRegionConverter;
 
     public WebConfig(
+            
+            StringToEnumConverterFactory stringToEnumConverterFactory,
+            
             StringToGenderIdentityConverter genderIdentityConverter,
             StringToGenerationConverter generationConverter,
-            StringToEthnicityConverter ethnicityConverter
+            StringToEthnicityConverter ethnicityConverter,
+            StringToUSRegionConverter usRegionConverter
     ) {
+        this.stringToEnumConverterFactory = stringToEnumConverterFactory;
+        
         this.genderIdentityConverter = genderIdentityConverter;
         this.generationConverter = generationConverter;
         this.ethnicityConverter = ethnicityConverter;
+        this.usRegionConverter = usRegionConverter;
     }
 
     /***
@@ -50,9 +64,12 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(genderIdentityConverter);
-        registry.addConverter(generationConverter);
-        registry.addConverter(ethnicityConverter);
+        registry.addConverterFactory(stringToEnumConverterFactory);
+
+        //registry.addConverter(genderIdentityConverter);
+        //registry.addConverter(generationConverter);
+        //registry.addConverter(ethnicityConverter);
+        //registry.addConverter(usRegionConverter);
     }
 
 }

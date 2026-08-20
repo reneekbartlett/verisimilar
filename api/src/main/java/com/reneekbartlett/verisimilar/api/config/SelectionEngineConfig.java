@@ -8,12 +8,14 @@ import com.reneekbartlett.verisimilar.core.selector.engine.MiddleNameSelectionEn
 import com.reneekbartlett.verisimilar.core.selector.engine.UsernameSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelectionEngineRegistry;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SelectionEngineConfig {
+
     @Bean(name="datasetSelectionEngineRegistry")
     public DatasetSelectionEngineRegistry datasetSelectionEngineRegistry(
             @Qualifier("datasetResolverRegistry") DatasetResolverRegistry resolverRegistry

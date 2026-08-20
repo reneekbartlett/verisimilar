@@ -13,6 +13,7 @@ import com.reneekbartlett.verisimilar.api.shared.annotation.RateLimited;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.model.Generation;
+import com.reneekbartlett.verisimilar.core.model.USState;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,7 +44,8 @@ public class GeneratePersonController {
             @RequestParam(name="ETHNICITY", required=false) Ethnicity ethnicity,
             @RequestParam(name="GENERATION", required=false) Generation generation,
             @RequestParam(name="CITY", required=false) String city,
-            @RequestParam(name="STATE", required=false) String state
+            @RequestParam(name="STATE", required=false) USState state,
+            @RequestParam(name="ZIP_CODE", required=false) String zipCode
     ) {
         SelectionFilter.Builder filterBuilder;
         if (filters != null) {
@@ -61,6 +63,10 @@ public class GeneratePersonController {
         if(birthday != null) filterBuilder.birthday(birthday);
         if(ethnicity != null) filterBuilder.ethnicity(ethnicity);
         if(generation != null) filterBuilder.generation(generation);
+
+        if(city != null) filterBuilder.city(city);
+        if(state != null) filterBuilder.state(state);
+        if(zipCode != null) filterBuilder.zipCode(zipCode);
 
         //if(USState.fromAbbreviation(state) != null) 
         //    filterBuilder.states(EnumSet.of(USState.fromAbbreviation(state)));
