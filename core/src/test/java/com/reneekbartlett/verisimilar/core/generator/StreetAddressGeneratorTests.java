@@ -1,6 +1,7 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
-import org.junit.jupiter.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,10 +47,13 @@ public class StreetAddressGeneratorTests {
         StreetAddressGenerator streetAddressGenerator = new StreetAddressGenerator(
                 streetNameSelector, streetSuffixSelector, addressTwoSelector);
 
-        SelectionFilter filter = SelectionFilter.builder().startsWith("M", TemplateField.STREET_NAME).build();
+        SelectionFilter filter = SelectionFilter.builder()
+                .addFilter("MA", TemplateField.STREET_NAME, "startswith")
+                .build();
         StreetAddress streetAddress1 = streetAddressGenerator.generate(filter);
         LOGGER.debug(streetAddress1.toString());
-        Assertions.assertNotNull(streetAddress1.address1());
+
+        assertThat(streetAddress1.addressLineOne()).isNotNull();
     }
 
     @Test
@@ -68,7 +72,7 @@ public class StreetAddressGeneratorTests {
                 .build();
         StreetAddress streetAddress1 = streetAddressGenerator.generate(filter);
         LOGGER.debug(streetAddress1.toString());
-        Assertions.assertNotNull(streetAddress1.address1());
+        assertThat(streetAddress1.addressLineOne()).isNotNull();
         //Assertions.assertTrue(streetAddress1.address1());
     }
 
@@ -91,8 +95,8 @@ public class StreetAddressGeneratorTests {
         StreetAddress streetAddress1 = streetAddressGenerator.generate(filter);
         LOGGER.debug("streetAddress1={}", streetAddress1.toString());
 
-        Assertions.assertNotNull(streetAddress1.address1());
-        Assertions.assertTrue(streetAddress1.address2().toUpperCase().contains("UNIT"));
-        Assertions.assertTrue(streetAddress1.address2().toUpperCase().contains("27"));
+        assertThat(streetAddress1.addressLineOne()).isNotNull();
+        assertThat(streetAddress1.addressLineTwo()).isNotNull();
+        assertThat(streetAddress1.addressLineTwo().address2().toUpperCase()).contains("UNIT").contains("27");
     }
 }

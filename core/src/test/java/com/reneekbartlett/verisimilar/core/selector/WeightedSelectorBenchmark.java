@@ -30,7 +30,10 @@ public class WeightedSelectorBenchmark {
         selector = new WeightedSelectorImpl<>(weights, field);
 
         // Filter that matches only 1 item
-        SelectionFilter filter = SelectionFilter.builder().startsWith("A", field).build(); // assume matches only A
+        SelectionFilter filter = SelectionFilter.builder()
+                .addFilter("A", field, "startswith")
+                //.startsWith("A", field)
+                .build(); // assume matches only A
         selector.setFilter(filter);
 
         // Pre-build filtered selector to measure memoized path

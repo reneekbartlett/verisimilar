@@ -41,7 +41,8 @@ public class AsyncPersonGeneratorTests {
 
         SelectionFilter filter = SelectionFilter.builder()
                 .lastName(lastName)
-                .startsWith("T", TemplateField.FIRST_NAME)
+                //.startsWith("T", TemplateField.FIRST_NAME)
+                .addFilter("T", TemplateField.FIRST_NAME, "startswith")
                 .city("SHREWSBURY")
                 .build();
         PersonRecord person = asyncGenerator.generate(filter);
@@ -66,7 +67,8 @@ public class AsyncPersonGeneratorTests {
         SelectionFilter filter = SelectionFilter.builder()
                 .gender(gender)
                 .firstName(firstName)
-                .startsWith(lastNameChars, TemplateField.LAST_NAME)
+                //.startsWith(lastNameChars, TemplateField.LAST_NAME)
+                .addFilter(lastNameChars, TemplateField.LAST_NAME, "startswith")
                 .streetName(streetName)
                 .domain(domain)
                 .build();

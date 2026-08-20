@@ -69,10 +69,10 @@ public final class UniformEnumSelectorImpl<E extends Enum<E> & WeightedEnumData>
     private UniformEnumSelectorImpl<E> buildFilteredSelector(SelectionFilter filter) {
         List<E> filtered = EntryFilter.applyToList(dataset, filter, field);
         if (filtered.isEmpty()) {
-            LOGGER.trace("Filtered dataset list empty for filter: {}", filter);
+            LOGGER.warn("Filtered dataset list empty for filter: {}", filter);
             return new UniformEnumSelectorImpl<E>(enumSet, field); // fallback to original
         }
-        LOGGER.trace("Filtered selector: original={}, filtered={}, filter={}",
+        LOGGER.debug("Filtered selector: original={}, filtered={}, filter={}",
                 dataset.size(), filtered.size(), filter);
         EnumSet<E> filteredEnumSet = EnumSet.copyOf(filtered);
         return new UniformEnumSelectorImpl<E>(filteredEnumSet, field);

@@ -51,7 +51,10 @@ public class DomainRecordGeneratorTests {
         LOGGER.debug("domain1=" + domain1);
         Assertions.assertNotNull(domain1);
 
-        SelectionFilter filter2 = SelectionFilter.builder().startsWith("gma", TemplateField.DOMAIN).build();
+        SelectionFilter filter2 = SelectionFilter.builder()
+                //.startsWith("gma", TemplateField.DOMAIN)
+                .addFilter("gma", TemplateField.DOMAIN, "startswith")
+                .build();
         DomainRecord domain2 = domainGenerator.generate(filter2);
         LOGGER.debug("domain2=" + domain2);
         Assertions.assertNotNull(domain2);
@@ -79,7 +82,8 @@ public class DomainRecordGeneratorTests {
 
         SelectionFilter filter = SelectionFilter.builder()
                 .domainType(DomainType.GOV)
-                .startsWith("S", TemplateField.DOMAIN)
+                //.startsWith("S", TemplateField.DOMAIN)
+                .addFilter("S", TemplateField.DOMAIN, "startswith")
                 .build();
         DomainRecord domain1 = domainGenerator.generate(filter);
         LOGGER.debug("domain1=" + domain1);
@@ -95,7 +99,8 @@ public class DomainRecordGeneratorTests {
         DomainRecordGenerator domainGenerator = new DomainRecordGenerator(domainSelector);
 
         SelectionFilter filter = SelectionFilter.builder()
-                .startsWith("H", TemplateField.DOMAIN)
+                //.startsWith("H", TemplateField.DOMAIN)
+                .addFilter("H", TemplateField.DOMAIN, "startswith")
                 .build();
         DomainRecord domain1 = domainGenerator.generate(filter);
         LOGGER.debug("domain1=" + domain1);

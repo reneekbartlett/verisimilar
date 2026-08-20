@@ -15,8 +15,16 @@ public class StreetNameDatasetResolver extends AbstractDatasetResolver<StreetNam
 
     private static final String DEFAULT_FILE = "datasets/cfg_postaladdress_address1_streetname_ALL.csv";
 
+    private final String defaultDataFile;
+
+    public StreetNameDatasetResolver(ResourceLoaderUtil loader, String defaultDataFile) {
+        super(loader);
+        this.defaultDataFile = defaultDataFile;
+    }
+
     public StreetNameDatasetResolver(ResourceLoaderUtil loader) {
         super(loader);
+        this.defaultDataFile = DEFAULT_FILE;
     }
 
     @Override
@@ -46,7 +54,7 @@ public class StreetNameDatasetResolver extends AbstractDatasetResolver<StreetNam
     }
 
     private String[] loadValues(StreetNameDatasetKey key) {
-        //LOGGER.debug("Loading default: " + DEFAULT_FILE);
-        return loader.loadStringArray(DEFAULT_FILE);
+        //LOGGER.debug("Loading default: " + this.defaultDataFile);
+        return loader.loadStringArray(this.defaultDataFile);
     }
 }

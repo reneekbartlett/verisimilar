@@ -86,12 +86,12 @@ public final class WeightedSelectorImpl<T> implements RandomSelector<T> {
     }
 
     private WeightedSelectorImpl<T> buildFilteredSelector(SelectionFilter filter) {
-        Map<T, Double> filtered = EntryFilter.apply(dataset, filter, field);
+        Map<T, Double> filtered = EntryFilter.applyToMap(dataset, filter, field);
         if (filtered.isEmpty()) {
-            LOGGER.trace("Filtered dataset map empty for filter {}", filter);
+            LOGGER.warn("Filtered dataset map empty for filter {}", filter);
             return new WeightedSelectorImpl<>(dataset, field); // fallback to original
         }
-        LOGGER.trace("Filtered selector: original={}, filtered={}, filter={}",
+        LOGGER.debug("Filtered selector: original={}, filtered={}, filter={}",
                 dataset.size(), filtered.size(), filter);
         return new WeightedSelectorImpl<>(filtered, field);
     }

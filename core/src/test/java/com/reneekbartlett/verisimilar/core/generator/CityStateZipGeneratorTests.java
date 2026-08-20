@@ -49,7 +49,8 @@ public class CityStateZipGeneratorTests {
         CityStateZip cityStateZip = cityStateZipGenerator.generate(ctx, filter);
         LOGGER.debug("cityStateZip={}", cityStateZip.toString());
 
-        Assertions.assertNotNull(cityStateZip);
+        assertThat(cityStateZip).isNotNull();
+        assertThat(cityStateZip.state()).isEqualTo(USState.MA.getLabel());
         Assertions.assertTrue(states.contains(USState.valueOf(cityStateZip.state())));
     }
 
@@ -109,6 +110,66 @@ public class CityStateZipGeneratorTests {
         LOGGER.debug("cityStateZip={}", cityStateZip.toString());
         assertThat(cityStateZip).isNotNull();
         assertThat(cityStateZip.state()).isIn(ma.getLabel());
+        assertThat(cityStateZip.zip()).isIn(zipCodes);
+    }
+
+    @Test
+    public void GenerateCityStateZip_CityZipCriteria_ShrewsburyMA() {
+        //PostalAddressSelectionEngineRegistry registry = TestUtils.getPostalAddressSelectionEngineRegistry();
+        DatasetResolverRegistry resolvers = TestUtils.getDatasetResolverRegistry();
+        CityStateZipSelectionEngine cityStateZipSelector = new CityStateZipSelectionEngine(resolvers, TestUtils.UNIFORM_RANDOM);
+        CityStateZipGenerator cityStateZipGenerator = new CityStateZipGenerator(cityStateZipSelector);
+
+        String state = "MA";
+        USState ma = USState.MA;
+        EnumSet<USState> states = EnumSet.of(USState.MA);
+        Set<String> zipCodes = Set.of("01545");
+
+        //
+        // SelectionFilter
+        //
+        SelectionFilter filter = SelectionFilter.builder()
+                .city("SHREWSBURY")
+                //.states(states)
+                .zipCodes(zipCodes)
+                .build();
+
+        //
+        // CityStateZip
+        //
+        CityStateZip cityStateZip = cityStateZipGenerator.generate(filter);
+        LOGGER.debug("cityStateZip={}", cityStateZip.toString());
+        assertThat(cityStateZip).isNotNull();
+        //assertThat(cityStateZip.state()).isIn(ma.getLabel());
+        assertThat(cityStateZip.city()).isEqualTo("SHREWSBURY");
+        assertThat(cityStateZip.zip()).isIn(zipCodes);
+    }
+
+    @Test
+    public void GenerateCityStateZip_CityZipsCriteria_Newton_MultiZips() {
+        //PostalAddressSelectionEngineRegistry registry = TestUtils.getPostalAddressSelectionEngineRegistry();
+        DatasetResolverRegistry resolvers = TestUtils.getDatasetResolverRegistry();
+        CityStateZipSelectionEngine cityStateZipSelector = new CityStateZipSelectionEngine(resolvers, TestUtils.UNIFORM_RANDOM);
+        CityStateZipGenerator cityStateZipGenerator = new CityStateZipGenerator(cityStateZipSelector);
+
+        Set<String> zipCodes = Set.of("02458", "02460");
+
+        //
+        // SelectionFilter
+        //
+        SelectionFilter filter = SelectionFilter.builder()
+                .city("NEWTON ")
+                .zipCodes(zipCodes)
+                .build();
+
+        //
+        // CityStateZip
+        //
+        CityStateZip cityStateZip = cityStateZipGenerator.generate(filter);
+        LOGGER.debug("cityStateZip={}", cityStateZip.toString());
+        assertThat(cityStateZip).isNotNull();
+        //assertThat(cityStateZip.state()).isIn(ma.getLabel());
+        assertThat(cityStateZip.city()).isEqualTo("NEWTON");
         assertThat(cityStateZip.zip()).isIn(zipCodes);
     }
 }

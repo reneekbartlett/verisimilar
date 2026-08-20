@@ -58,7 +58,7 @@ public class PostalAddressRecordGenerator extends AbstractValueGenerator<PostalA
 
         LOGGER.debug("generatePostalAddress - cityStateZip={}", cityStateZip);
         
-        return new PostalAddress(streetAddress.address1(), streetAddress.address2(), cityStateZip);
+        return new PostalAddress(streetAddress.addressLineOne(), streetAddress.addressLineTwo(), cityStateZip, null);
     }
 
     private CityStateZip generateCityStateZip(DatasetResolutionContext ctx, SelectionFilter filter) {

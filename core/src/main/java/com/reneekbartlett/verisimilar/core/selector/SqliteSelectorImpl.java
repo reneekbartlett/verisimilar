@@ -18,16 +18,21 @@ import org.sqlite.jdbc4.JDBC4PreparedStatement;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
+/***
+ * Sqlite Implementation for obtaining data in SQLite DB.
+ * @param <T>
+ */
 public class SqliteSelectorImpl<T> implements RandomSelector<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SqliteSelectorImpl.class);
 
+    private final String dbUrl;
+    private final String dbFileName;
+
+    // TODO: 
     private static final String URL = "jdbc:sqlite:C:/S3/netsyms/AddressDatabase2025-lite-onlyplus4/scratch/AddressDatabase2025-lite-onlyplus4.sqlite";
-
     private static final String FILE_NAME = "C:/S3/netsyms/AddressDatabase2025-lite-onlyplus4/scratch/AddressDatabase2025-lite-onlyplus4.sqlite";
-
     private static final Properties PROP;
-
     static {
         PROP = new Properties();
         PROP.setProperty("open_mode", "1"); // read_only
@@ -40,7 +45,18 @@ public class SqliteSelectorImpl<T> implements RandomSelector<T> {
 
     private volatile SelectionFilter filter;
 
+    public SqliteSelectorImpl(String dbUrl, String dbFileName, Class<T> type) {
+        this.dbUrl = dbUrl;
+        this.dbFileName = dbFileName;
+        this.type = type;
+        this.field = TemplateField.STREET_NAME;
+        this.dataset = List.of();
+        this.valueCount = 0;
+    }
+    
     public SqliteSelectorImpl(Class<T> type) {
+        this.dbUrl = URL;
+        this.dbFileName = FILE_NAME;
         this.type = type;
         this.field = TemplateField.STREET_NAME;
         this.dataset = List.of();
@@ -49,6 +65,8 @@ public class SqliteSelectorImpl<T> implements RandomSelector<T> {
 
     public SqliteSelectorImpl(TemplateField field, Class<T> type) {
         Objects.requireNonNull(field, "TemplateField");
+        this.dbUrl = URL;
+        this.dbFileName = FILE_NAME;
         this.field = field;
         this.type = type;
         this.dataset = List.of();
@@ -67,7 +85,7 @@ public class SqliteSelectorImpl<T> implements RandomSelector<T> {
 
     private T selectUnfilteredData() {
         String sql = "SELECT street_name FROM street_names_us ORDER BY RANDOM() LIMIT 1";
-        try (Connection conn = DriverManager.getConnection(URL);
+        try (Connection conn = DriverManager.getConnection(this.dbUrl);
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql)) {
             // if bc query is limit 1
@@ -95,7 +113,7 @@ public class SqliteSelectorImpl<T> implements RandomSelector<T> {
         LOGGER.debug("selectFilteredData sql={}; params={}", sql, params);
 
         // Alt is Connection conn = DriverManager.getConnection(URL, PROP); PreparedStatement stmt = conn.prepareStatement(sql);
-        try (JDBC4Connection conn = new JDBC4Connection(URL, FILE_NAME, PROP);
+        try (JDBC4Connection conn = new JDBC4Connection(this.dbUrl, this.dbFileName, PROP);
                 JDBC4PreparedStatement stmt = new JDBC4PreparedStatement(conn, sql); // (SQLiteConnection, String)
         ) {
             // Add parameters to PreparedStatement

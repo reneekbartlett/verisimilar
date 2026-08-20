@@ -80,7 +80,10 @@ public class WeightedSelectorImplTests {
 
         WeightedSelectorImpl<String> selector = new WeightedSelectorImpl<>(weights, field);
 
-        SelectionFilter filter = SelectionFilter.builder().startsWith("A", field).build(); // assume matches only A
+        SelectionFilter filter = SelectionFilter.builder()
+                //.startsWith("A", field)
+                .addFilter("A", field, "startswith")
+                .build(); // assume matches only A
         selector.setFilter(filter);
 
         String result = selector.select();
@@ -102,7 +105,9 @@ public class WeightedSelectorImplTests {
 
         WeightedSelectorImpl<String> selector = new WeightedSelectorImpl<>(weights, field);
 
-        SelectionFilter filter = SelectionFilter.builder().startsWith("NO MATCH", field).build();
+        SelectionFilter filter = SelectionFilter.builder().addFilter("A", field, "startswith")
+                //.startsWith("NO MATCH", field)
+                .build();
         selector.setFilter(filter);
 
         // Should fall back to unfiltered selection
@@ -126,7 +131,10 @@ public class WeightedSelectorImplTests {
         Map<String, Double> weights = Map.of("ALISON", 1.0, "RENEE", 1.0, "ABBY", 1.0);
         WeightedSelectorImpl<String> selector = new WeightedSelectorImpl<>(weights, field);
 
-        SelectionFilter filter = SelectionFilter.builder().startsWith("A", field).build();
+        SelectionFilter filter = SelectionFilter.builder()
+                //.startsWith("A", field)
+                .addFilter("A", field, "startswith")
+                .build();
         selector.setFilter(filter);
 
         WeightedSelectorImpl<String> first = selector.withFilter(filter);
@@ -140,7 +148,10 @@ public class WeightedSelectorImplTests {
         Map<String, Double> weights = Map.of("ALISON", 1.0, "ABBY", 2.0, "RENEE", 3.0, "JANE", 3.0);
 
         WeightedSelectorImpl<String> selector = new WeightedSelectorImpl<>(weights, field);
-        SelectionFilter filter = SelectionFilter.builder().startsWith("A", field).build();
+        SelectionFilter filter = SelectionFilter.builder()
+                //.startsWith("A", field)
+                .addFilter("A", field, "startswith")
+                .build();
         selector.setFilter(filter);
 
         int threads = 50;
@@ -174,7 +185,9 @@ public class WeightedSelectorImplTests {
         Map<String, Double> weights = Map.of("ALISON", 1.0, "ABBY", 2.0, "RENEE", 3.0, "JANE", 3.0);
         WeightedSelectorImpl<String> selector = new WeightedSelectorImpl<>(weights, field);
 
-        SelectionFilter filter = SelectionFilter.builder().startsWith("A", field).build();
+        SelectionFilter filter = SelectionFilter.builder()
+                .addFilter("A", field, "startswith")
+                .build();
         WeightedSelectorImpl<String> filtered = selector.withFilter(filter);
 
         assertNotSame(selector, filtered);

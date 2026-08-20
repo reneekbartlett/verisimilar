@@ -96,7 +96,7 @@ public final class WeightedEnumSelectorImpl<E extends Enum<E> & WeightedEnumData
     }
 
     private WeightedEnumSelectorImpl<E> buildFilteredSelector(SelectionFilter filter) {
-        Map<E, Double> filtered = EntryFilter.apply(dataset, filter, field);
+        Map<E, Double> filtered = EntryFilter.applyToMap(dataset, filter, field);
         if (filtered.isEmpty()) {
             LOGGER.trace("Filtered dataset map empty for filter {}", filter);
             return new WeightedEnumSelectorImpl<>(enumSet, field); // fallback to original

@@ -56,7 +56,9 @@ public class KeywordSelectionEngineTests {
         String username1 = usernameSelector.select();
         LOGGER.debug("username1={}", username1);
 
-        SelectionFilter filter = SelectionFilter.builder().startsWith("R", TemplateField.USERNAME).build();
+        SelectionFilter filter = SelectionFilter.builder()
+                .addFilter("R", TemplateField.USERNAME, "startswith")
+                .build();
         String username2 = usernameSelector.select(filter);
         LOGGER.debug("username2={}", username2);
     }

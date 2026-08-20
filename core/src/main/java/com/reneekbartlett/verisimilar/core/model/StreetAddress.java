@@ -23,11 +23,15 @@ package com.reneekbartlett.verisimilar.core.model;
  * Rural Route Addresses [Leading 0, hyphens, RFD/RD->RR]
  * Highway Contract Route Addresses HC ## BOX ##
  */
-public record StreetAddress(String address1, String address2, AddressCategory addressCategory){
+public record StreetAddress(AddressLineOne addressLineOne, AddressLineTwo addressLineTwo, AddressCategory addressCategory){
 
-    public StreetAddress(AddressLineOne addressLineOne, AddressLineTwo addressLineTwo, AddressCategory addressCategory){
-        this(addressLineOne.toString(), addressLineTwo.toString(), addressCategory);
-
+    public StreetAddress(
+            String address1,
+            String address2,
+            AddressLineOne addressLineOne,
+            AddressLineTwo addressLineTwo
+    ){
+        this(addressLineOne, addressLineTwo, addressLineOne.addressCategory());
     }
 
     public static StreetAddress empty() {
@@ -37,25 +41,30 @@ public record StreetAddress(String address1, String address2, AddressCategory ad
     public static StreetAddress placeholder() {
         AddressCategory addressCategory = AddressCategory.SINGLE_FAMILY;
         UnitType unitType = UnitType.APARTMENT;
-        AddressLineOne addressLineOne = new AddressLineOne(
-                "STREET_ID",
-                "STREET_NAME",
-                "STREET_SUFFIX",
-                addressCategory);
-        AddressLineTwo addressLineTwo = new AddressLineTwo(
-                "UNIT_NUMBER",
-                "UNIT_XTRA",
-                unitType,
-                null);
-        return new StreetAddress("301 MASSACHUSETTS AVE", "UNIT 2", addressCategory);
+        //AddressLineOne addressLineOne = new AddressLineOne(
+        //        "301 MASSACHUSETTS AVE", "301", //"STREET_ID",
+        //        "MASSACHUSETTS", //"STREET_NAME",
+        //        StreetSuffix.AVENUE, //"STREET_SUFFIX",
+        //        addressCategory);
+        //AddressLineTwo addressLineTwo = new AddressLineTwo("UNIT 2",
+        //        "2", //"UNIT_NUMBER",
+        //        null, //"UNIT_XTRA",
+        //        unitType,
+        //        addressCategory);
+
+        return new StreetAddress(
+                AddressLineOne.placeholder(), 
+                AddressLineTwo.placeholder(), 
+                addressCategory
+        );
     }
 
     @Override
     public String toString() {
         final String VALUE_DELIM = " ";
         StringBuilder sb = new StringBuilder(0);
-        if(address1 != null) sb.append(this.address1);
-        if(address2 != null) sb.append(VALUE_DELIM).append(this.address2);
+        if(addressLineOne != null) sb.append(this.addressLineOne.toString());
+        if(addressLineTwo != null) sb.append(VALUE_DELIM).append(this.addressLineTwo);
         return sb.toString();
     }
 }

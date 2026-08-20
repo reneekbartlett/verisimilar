@@ -1,5 +1,8 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.assertj.core.api.filter.FilterOperator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -10,6 +13,7 @@ import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetRes
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
 import com.reneekbartlett.verisimilar.core.model.FullName;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.engine.FirstNameSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.LastNameSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.MiddleNameSelectionEngine;
@@ -110,5 +114,30 @@ public class FullNameGeneratorTests {
         Assertions.assertTrue(fullName.lastName().equalsIgnoreCase("BARTLETT"));
         Assertions.assertTrue(fullName.firstName().equalsIgnoreCase("RENEE"));
         // TODO ASSERT RENEE {} BARTLETT
+    }
+
+    @Test
+    public void GeneratedFullName_Filtered_FirstNameStartsWith() {
+        //Map<String, String[]> params = HashMap.newHashMap(2);
+        //params.put("filter[FIRST_NAME][eq]", new String[]{"RENEE"});
+        //params.put("filter[LAST_NAME][eq]", new String[]{"BARTLETT"});
+        DatasetResolverRegistry resolvers = TestUtils.getNameDatasetResolverRegistry();
+        FirstNameSelectionEngine firstNameSelector = new FirstNameSelectionEngine(resolvers);
+        MiddleNameSelectionEngine middleNameSelector = new MiddleNameSelectionEngine(resolvers);
+        LastNameSelectionEngine lastNameSelector = new LastNameSelectionEngine(resolvers);
+
+        FullNameGenerator fullNameGenerator = new FullNameGenerator(firstNameSelector, middleNameSelector, lastNameSelector);
+
+        SelectionFilter.Builder filterBuilder = SelectionFilter.builder()
+                .addFilter("R", TemplateField.FIRST_NAME, "startswith")
+                .addFilter("T", TemplateField.LAST_NAME, "endswith");
+
+        FullName fullName = fullNameGenerator.generate(filterBuilder.build());
+
+        LOGGER.debug("fullName=" + fullName.toString());
+        Assertions.assertNotNull(fullName);
+
+        assertThat(fullName.firstName()).startsWith("R");
+        assertThat(fullName.lastName()).endsWith("T");
     }
 }

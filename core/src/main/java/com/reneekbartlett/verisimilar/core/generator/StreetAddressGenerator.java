@@ -9,7 +9,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.apache.commons.text.StringSubstitutor;
 
 import com.reneekbartlett.verisimilar.core.model.AddressCategory;
+import com.reneekbartlett.verisimilar.core.model.AddressLineOne;
+import com.reneekbartlett.verisimilar.core.model.AddressLineTwo;
 import com.reneekbartlett.verisimilar.core.model.StreetAddress;
+import com.reneekbartlett.verisimilar.core.model.StreetSuffix;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.UnitType;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
@@ -83,8 +86,8 @@ public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress
             return new StreetAddress(getPostOfficeBox(filter), null, addressCategory);
         }
 
-        String address1 = getAddressLineOne(filter, addressCategory);
-        String address2 = getAddressLineTwo(filter, addressCategory);
+        AddressLineOne address1 = getAddressLineOne(filter, addressCategory);
+        AddressLineTwo address2 = getAddressLineTwo(filter, addressCategory);
         return new StreetAddress(address1, address2, addressCategory);
     }
 
@@ -98,14 +101,13 @@ public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress
      * @param addressCategory
      * @return
      */
-    private String getAddressLineOne(SelectionFilter filter, AddressCategory addressCategory) {
+    private AddressLineOne getAddressLineOne(SelectionFilter filter, AddressCategory addressCategory) {
         String streetId = filter.streetId().orElseGet(() -> generateStreetId(filter, addressCategory));
         String streetName = filter.streetName().orElseGet(() -> generateStreetName(filter, addressCategory));
         String streetSuffix = filter.streetSuffix().orElseGet(() -> generateStreetSuffix(filter, addressCategory));
-        return new StringBuilder(40)
-                .append(streetId).append(" ")
-                .append(streetName).append(" ")
+        String address1 = new StringBuilder(50).append(streetId).append(" ").append(streetName).append(" ")
                 .append(streetSuffix).toString().toUpperCase();
+        return new AddressLineOne(address1, streetId, streetName, StreetSuffix.fromLabel(streetSuffix), addressCategory);
     }
 
     // TODO: RANDOMIZE 10's, 100's, with weight towards lower number or AddressCategory
@@ -128,7 +130,7 @@ public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress
      * @param addressCategory
      * @return
      */
-    private String getAddressLineTwo(SelectionFilter filter, AddressCategory addressCategory) {
+    private AddressLineTwo getAddressLineTwo(SelectionFilter filter, AddressCategory addressCategory) {
 
         UnitType unitType = filter.unitType().orElseGet(() -> generateUnitType(filter));
 
@@ -149,7 +151,10 @@ public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress
         params.put("UNIT_TYPE", unitType);
         params.put("UNIT_XTRA", unitXtra.orElse(""));
 
-        return StringSubstitutor.replace(template, params, "${", "}");
+        String address2 = StringSubstitutor.replace(template, params, "${", "}");
+
+        //AddressLineTwo (String address2, String unitNumber, String unitXtra, UnitType unitType, AddressCategory addressCategory)
+        return new AddressLineTwo(address2, unitNumberStr, unitXtra.orElse(""), unitType, addressCategory);
     }
 
     private UnitType generateUnitType(SelectionFilter filter) {
@@ -174,9 +179,11 @@ public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress
      * @param filter
      * @return
      */
-    private String getPostOfficeBox(SelectionFilter filter) {
-        int randBoxNum = RandomUtils.getSkewedRandom(1, 10000, 3.0);
-        return new StringBuilder().append("PO BOX ").append(String.valueOf(randBoxNum)).toString();
+    private AddressLineOne getPostOfficeBox(SelectionFilter filter) {
+        String randBoxNum = String.valueOf(RandomUtils.getSkewedRandom(1, 10000, 3.0));
+        String address1 = new StringBuilder().append("PO BOX ").append(String.valueOf(randBoxNum)).toString();
+        //(String streetId, String streetName, StreetSuffix streetSuffix, AddressCategory addressCategory)
+        return new AddressLineOne(address1, randBoxNum, null, StreetSuffix.NONE, AddressCategory.PO_BOX);
     }
 
 }

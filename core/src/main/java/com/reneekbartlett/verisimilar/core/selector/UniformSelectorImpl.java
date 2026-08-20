@@ -66,7 +66,7 @@ public final class UniformSelectorImpl<T> implements RandomSelector<T> {
     }
 
     /***
-     * TODO:  Document filter process
+     * TODO:  Document filter process 
      */
     @Override
     public T select() {
@@ -95,12 +95,18 @@ public final class UniformSelectorImpl<T> implements RandomSelector<T> {
         // TODO:  Convert List<T> to List<String>?
         List<T> filtered = EntryFilter.applyToList(dataset, filter, field);
         if (filtered.isEmpty()) {
-            LOGGER.trace("Filtered dataset list empty for filter: {}", filter);
+            LOGGER.warn("Filtered dataset list empty for filter: {}", filter);
             return new UniformSelectorImpl<T>(dataset, field); // fallback to original
             //return this; // fallback to original
         }
-        LOGGER.trace("Filtered selector: original={}, filtered={}, filter={}",
+        LOGGER.debug("Filtered selector: original={}, filtered={}, filter={}",
                 dataset.size(), filtered.size(), filter);
+
+        if(field == TemplateField.CITY_STATE_ZIP || field == TemplateField.STATE 
+                || field == TemplateField.CITY || field == TemplateField.ZIP_CODE) {
+            LOGGER.debug("{}", field.getLabel());
+        }
+
         return new UniformSelectorImpl<T>(filtered, field);
     }
 

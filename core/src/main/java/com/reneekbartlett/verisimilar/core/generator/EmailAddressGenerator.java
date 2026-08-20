@@ -75,12 +75,10 @@ public class EmailAddressGenerator extends AbstractValueGenerator<EmailAddressRe
     }
 
     private DomainType generateDomainType(SelectionFilter filter) {
-        String valueFilter = filter.equalToMap().get(TemplateField.DOMAIN_TYPE);
-        if (valueFilter != null) {
-            return DomainType.fromText(valueFilter);
-        }
-        RandomSelector<DomainType> domainTypeSelector = new WeightedSelectorImpl<>(DomainType.defaultMap(), TemplateField.DOMAIN_TYPE);
-        return domainTypeSelector.select();
+        return filter.domainType().orElseGet(() -> {
+            RandomSelector<DomainType> domainTypeSelector = new WeightedSelectorImpl<>(DomainType.defaultMap(), TemplateField.DOMAIN_TYPE);
+            return domainTypeSelector.select();
+        });
     }
 
     /***

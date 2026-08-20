@@ -9,6 +9,7 @@ import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.filter.EntryFilter;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,6 +81,14 @@ public abstract class AbstractSelectionEngine<K,R> {
             return map;
         }
         LOGGER.debug("applyFilter started; filter:{}", filter);
-        return EntryFilter.apply(map, filter, field());
+        return EntryFilter.applyToMap(map, filter, field());
+    }
+
+    protected List<String> applyFilter(List<String> values, SelectionFilter filter) {
+        if(filter.isEmpty()) {
+            return values;
+        }
+        LOGGER.debug("applyFilter started; filter:{}", filter);
+        return EntryFilter.applyToList(values, filter, field());
     }
 }

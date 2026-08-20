@@ -68,10 +68,11 @@ public class CityStateZipGenerator extends AbstractValueGenerator<CityStateZip>{
             zipCode = filter.zipCode().orElse(data[2]);
         } catch(Exception e) {
             data = new String[] {"XXXXXXX", "XX", "XXXXX" };
-            city = "XXXXXXX";
+            city = filter.city().orElse("XXXXXXX");
             state = "XX";
-            zipCode = "00000";
-            LOGGER.error("ERROR: {}", e.getMessage());
+            zipCode = filter.zipCode().orElse("00000");
+            LOGGER.error("ERROR: {}", e.getMessage(), e);
+            e.printStackTrace();
         }
 
         // TODO:  Add Zip4 (more complicated than you'd think..)

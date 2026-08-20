@@ -54,6 +54,10 @@ public enum Generation {
         return displayName + " (" + getStartYear() + "-" + getEndYear() + ")";
     }
 
+    public String getLabel() {
+        return this.displayName;
+    }
+
     public static EnumSet<Generation> defaultDatasets(){
         return EnumSet.of(UNKNOWN, BABY_BOOMER, GENERATION_X, MILLENNIAL, GENERATION_Z, GENERATION_ALPHA);
     }

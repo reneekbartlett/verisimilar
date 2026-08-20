@@ -3,7 +3,7 @@ package com.reneekbartlett.verisimilar.core.model;
 public record CityStateZip(String city, String state, String zip){
 
     public CityStateZip(String city, USState state, String zip, String id){
-        this(city, state.name(), zip);
+        this(city, state.getLabel(), zip);
     }
 
     public static CityStateZip empty() {

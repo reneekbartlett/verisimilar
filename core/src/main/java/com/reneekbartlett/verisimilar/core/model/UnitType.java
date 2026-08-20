@@ -49,7 +49,10 @@ public enum UnitType implements WeightedEnumData {
 
     TRAILER("TRLR", 0.0000, "TRAILER","TRLR"),
 
-    NONE("", 0.0000, "", " ", "NONE", "N/A", "BLANK");
+    NONE("", 0.0000, "", "NONE", "N/A", "BLANK"),
+
+    EMPTY("", 0.0000, "EMPTY"),
+    UNKNOWN("", 0.0000, "UNKNOWN");
 
     private final String label;
     private final double weight;

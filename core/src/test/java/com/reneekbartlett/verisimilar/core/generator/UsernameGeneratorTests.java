@@ -86,7 +86,8 @@ public class UsernameGeneratorTests {
 
         SelectionFilter filter = SelectionFilter.builder()
                 .birthday(LocalDate.of(1980, 7, 30))
-                .startsWith("H", TemplateField.USERNAME)
+                //.startsWith("H", TemplateField.USERNAME)
+                .addFilter("H", TemplateField.USERNAME, "startswith")
                 .build();
 
         UsernameGenerator usernameGenerator = new UsernameGenerator(usernameSelector);

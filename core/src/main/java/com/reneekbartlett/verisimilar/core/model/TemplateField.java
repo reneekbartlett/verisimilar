@@ -8,7 +8,7 @@ public enum TemplateField {
     MIDDLE_NAME("MIDDLE", String.class, null),
     LAST_NAME("LAST", String.class, null),
     NICKNAME("NICKNAME", String.class, null),
-    
+
     BIRTHDAY("BIRTHDAY", Date.class, null),
     GENERATION("GENERATION", EnumSet.class, Generation.class),
 
@@ -25,6 +25,7 @@ public enum TemplateField {
     STREET_ID("STREET_ID", String.class, null),
     STREET_NAME("STREET_NAME", String.class, null),
     STREET_SUFFIX("STREET_SUFFIX", EnumSet.class, StreetSuffix.class),
+    ADDRESS1("ADDRESS1", String.class, null),
     ADDRESS2("ADDRESS2", String.class, null),
     CITY("CITY", String.class, null),
     STATE("STATE", EnumSet.class, USState.class),
@@ -33,7 +34,8 @@ public enum TemplateField {
 
     CITY_STATE_ZIP("CITY_STATE_ZIP", String.class, null),
 
-    PHONE_NUMBER_TYPE("PHONE_NUMBER_TYPE", PhoneNumberType.class, null),
+    PHONE_NUMBER("PHONE_NUMBER", String.class, null),
+    PHONE_NUMBER_TYPE("PHONE_NUMBER_TYPE", EnumSet.class, PhoneNumberType.class),
     AREA_CODE("AREA_CODE", String.class, null),
 
     EMAIL_ADDRESS("EMAIL_ADDRESS", String.class, null),
@@ -157,5 +159,12 @@ public enum TemplateField {
                 DOMAIN_TYPE,
                 UNIT_TYPE
         );
+    }
+
+    public static boolean isEnumField(TemplateField field) {
+        if(field.enumType != null) {
+            return true;
+        }
+        return false;
     }
 }

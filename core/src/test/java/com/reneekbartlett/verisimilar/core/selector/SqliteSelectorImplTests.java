@@ -42,9 +42,9 @@ public class SqliteSelectorImplTests {
         SqliteSelectorImpl<String> selector = new SqliteSelectorImpl<>(field, String.class);
         SelectionFilter filter = SelectionFilter.builder()
                 //.startsWith("Ren", field)
-                .endsWith("ZASDFDS", field)
+                .addFilter("ZASDFDS", field, "endswith")
                 //.streetName("WESTCHESTER") // adds TemplateField to equalToMap
-                .contains("WEST", field)
+                .addFilter("WEST", field, "contains")
                 .build();
         selector.setFilter(filter);
         String result = selector.select();

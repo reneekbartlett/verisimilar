@@ -37,21 +37,6 @@ public class UniformSelectorStrategy<T> implements SelectorStrategy<T> {
         return selector.select();
     }
 
-//    public T selectWithFilter(Map<T, Double> map, SelectionFilter filter, TemplateField field) {
-//        if (map.isEmpty()) {
-//            throw new IllegalArgumentException("Map cannot be empty");
-//        }
-//
-//        RandomSelector<T> selector = new UniformSelectorImpl<>(map, field);
-//        selector.setFilter(filter);
-//
-//        var selected = selector.select();
-//        LOGGER.debug("selectWithFilter - selected={}", selected);
-//        return selected;
-//
-//        //TODO: return selector.select();
-//    }
-
     @Override
     public T select(T[] values, TemplateField field) {
         if(values.length == 0) {

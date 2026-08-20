@@ -64,7 +64,9 @@ public class UniformSelectorImplTests {
         List<String> items = List.of("ALISON", "ABBY", "RENEE");
         UniformSelectorImpl<String> selector = new UniformSelectorImpl<>(items, field);
 
-        SelectionFilter filter = SelectionFilter.builder().startsWith("A", field).build();  // assume matches only "A"
+        SelectionFilter filter = SelectionFilter.builder()
+                .addFilter("A", field, "startswith")
+                .build();  // assume matches only "A"
         selector.setFilter(filter);
 
         String result = selector.select();
@@ -76,7 +78,9 @@ public class UniformSelectorImplTests {
         List<String> items = List.of("ALISON", "ABBY", "RENEE");
         UniformSelectorImpl<String> selector = new UniformSelectorImpl<>(items, field);
 
-        SelectionFilter filter = SelectionFilter.builder().startsWith("NO MATCH", field).build();
+        SelectionFilter filter = SelectionFilter.builder()
+                .addFilter("NO MATCH", field, "startswith")
+                .build();
         selector.setFilter(filter);
 
         // Should fall back to un-filtered selection
@@ -112,7 +116,8 @@ public class UniformSelectorImplTests {
         List<String> items = List.of("ALISON", "ABBY", "RENEE");
         UniformSelectorImpl<String> selector = new UniformSelectorImpl<>(items, field);
 
-        SelectionFilter filter = SelectionFilter.builder().startsWith("A", field).build();
+        SelectionFilter filter = SelectionFilter.builder()
+                .addFilter("A", field, "startswith").build();
         selector.setFilter(filter); // optional
 
         int threads = 50;

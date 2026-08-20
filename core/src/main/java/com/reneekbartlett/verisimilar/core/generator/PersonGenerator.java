@@ -78,7 +78,7 @@ public class PersonGenerator extends AbstractValueGenerator<PersonRecord>{
         PostalAddress postalAddress = generatePostalAddress(ctx, filter);
 
         // Use information to create name
-        USState state = USState.fromAbbreviation(postalAddress.state());
+        USState state = postalAddress.state();
         //DatasetResolutionContext.Builder stepTwoConstraint = DatasetResolutionContext.builder().states(Set.of(state)).gender(gender);
         SelectionFilter.Builder stepTwoCriteria = SelectionFilter.builder()
                 .birthday(birthday)

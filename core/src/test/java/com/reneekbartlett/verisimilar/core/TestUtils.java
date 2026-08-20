@@ -50,8 +50,14 @@ import com.reneekbartlett.verisimilar.core.templates.loader.TemplateRegistryLoad
 
 public class TestUtils {
 
+    //private static final boolean testsCoreDisabled = PropertyLoader.getBoolean("tests.core.disabled", false);
+
     public static final SelectorStrategy<String> WEIGHTED_RANDOM = new WeightedSelectorStrategy<>();
     public static final SelectorStrategy<String> UNIFORM_RANDOM = new UniformSelectorStrategy<>();
+
+    private TestUtils() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     public static boolean isCoreTestingDisabled() {
         return false;
@@ -224,4 +230,5 @@ public class TestUtils {
 
         return new PostalAddressGeneratorRegistry(streetAddressGenerator, cityStateZipGenerator);
     }
+
 }

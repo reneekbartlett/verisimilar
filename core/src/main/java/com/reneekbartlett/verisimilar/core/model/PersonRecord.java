@@ -40,11 +40,11 @@ public record PersonRecord(
     }
 
     public String address1() {
-        return this.postalAddress.address1();
+        return this.postalAddress.addressLineOne().address1();
     }
 
     public String address2() {
-        return this.postalAddress.address2();
+        return this.postalAddress.addressLineTwo().address2();
     }
 
     public String city() {
@@ -52,7 +52,7 @@ public record PersonRecord(
     }
 
     public String state() {
-        return this.postalAddress.state();
+        return this.postalAddress.state().getLabel();
     }
 
     public String zip() {

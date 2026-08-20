@@ -1,29 +1,45 @@
 package com.reneekbartlett.verisimilar.core.model;
 
-public record PostalAddress(String address1, String address2, CityStateZip cityStateZip){
+/***
+ * Combined field containing AddressLineOne, AddressLineTwo, CityStateZip, AddressCategory
+ */
+public record PostalAddress(
+        AddressLineOne addressLineOne,
+        AddressLineTwo addressLineTwo,
+        CityStateZip cityStateZip,
+        AddressCategory addressCategory
+){
 
     public PostalAddress(StreetAddress streetAddress, CityStateZip cityStateZip) {
-        this(streetAddress.address1(), streetAddress.address2(), cityStateZip);
+        this(streetAddress.addressLineOne(), streetAddress.addressLineTwo(), cityStateZip, streetAddress.addressCategory());
     }
 
-    public String address1() {
-        return address1;
+    public StreetAddress streetAddress() {
+        return new StreetAddress(address1(), address2(), addressCategory());
     }
 
-    public String address2() {
-        return address2;
+    public AddressLineOne address1() {
+        return addressLineOne;
+    }
+
+    public AddressLineTwo address2() {
+        return addressLineTwo;
     }
 
     public String city() {
         return cityStateZip.city();
     }
 
-    public String state() {
-        return cityStateZip.state();
+    public USState state() {
+        return USState.fromText(cityStateZip.state());
     }
 
     public String zip() {
         return cityStateZip.zip();
+    }
+
+    public AddressCategory addressCategory() {
+        return addressCategory;
     }
 
     public static PostalAddress empty() {
@@ -37,10 +53,10 @@ public record PostalAddress(String address1, String address2, CityStateZip cityS
     @Override
     public String toString() {
         final String VALUE_DELIM = " ";
-        return new StringBuilder()
-            .append(this.address1).append(VALUE_DELIM)
-            .append(this.address2).append(this.address2.length() == 0 ? "" : VALUE_DELIM)
-            .append(cityStateZip.toString())
-            .toString();
+        StringBuilder sb = new StringBuilder(0);
+        if(addressLineOne != null) sb.append(this.addressLineOne.toString()).append(VALUE_DELIM);
+        if(addressLineTwo != null) sb.append(this.addressLineTwo.toString()).append(VALUE_DELIM);
+        if(cityStateZip != null) sb.append(cityStateZip.toString()).append(VALUE_DELIM);
+        return sb.toString();
     }
 }

@@ -79,7 +79,9 @@ public class CityStateZipSelectionEngine extends AbstractSelectionEngine<CitySta
             LOGGER.debug("filter={}", filter.toString());
         }
 
-        return selector.select();
+        String cityStateZip = selector.select();
+        return cityStateZip;
+        //return selector.select();
     }
 
     @Override

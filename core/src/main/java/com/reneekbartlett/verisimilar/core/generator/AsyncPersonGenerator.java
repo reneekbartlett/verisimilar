@@ -94,45 +94,78 @@ public class AsyncPersonGenerator extends AbstractValueGenerator<PersonRecord>{
         // ------------------------------------------------------------
         CompletableFuture<LocalDate> birthdayFuture = CompletableFuture
                 .supplyAsync(() -> {
-                    return birthdayGenerator.generate(originalBuilder.build());
+                    return birthdayGenerator.generate(filter);
                 }, executor);
 
         CompletableFuture<GenderIdentity> genderFuture = CompletableFuture
                 .supplyAsync(() -> {
-                    return genderIdentityGenerator.generate(originalBuilder.build());
+                    return genderIdentityGenerator.generate(filter);
                 }, executor);
 
         // ------------------------------------------------------------
         // 2) Generate postal address (birthday + gender)
         // ------------------------------------------------------------
         CompletableFuture<PostalAddress> addressFuture = birthdayFuture.thenCombineAsync(genderFuture,
-                (birthday, gender) -> generatePostalAddressAsync(originalBuilder, birthday, gender), executor);
+                (birthday, gender) -> {
+                    SelectionFilter.Builder postalFilterBldr = SelectionFilter.toBuilder(originalBuilder.build());
+                    postalFilterBldr.birthday(birthday);
+                    postalFilterBldr.gender(gender);
+                    return generatePostalAddressAsync(postalFilterBldr, birthday, gender);
+                }, executor);
 
         // ------------------------------------------------------------
         // 3A) Generate phone number (address)
         // ------------------------------------------------------------
         CompletableFuture<PhoneNumber> phoneFuture = addressFuture
-                .thenApplyAsync((postalAddress) -> generatePhoneNumberAsync(originalBuilder, postalAddress), executor);
+                .thenApplyAsync((postalAddress) -> {
+                    SelectionFilter.Builder phoneFilterBldr = SelectionFilter.toBuilder(originalBuilder.build());
+                    phoneFilterBldr.postalAddress(postalAddress);
+                    return generatePhoneNumberAsync(phoneFilterBldr, postalAddress);
+                }, executor);
 
         // ------------------------------------------------------------
         // 3B) Generate names (birthday + gender + address)
         // ------------------------------------------------------------
         CompletableFuture<FullName> nameFuture = birthdayFuture.thenCombineAsync(genderFuture,
-                (birthday, gender) -> generateFullNameAsync(originalBuilder, birthday, gender), executor);
+                (birthday, gender) -> {
+                    SelectionFilter.Builder nameFilterBldr = SelectionFilter.toBuilder(originalBuilder.build());
+                    nameFilterBldr.birthday(birthday);
+                    nameFilterBldr.gender(gender);
+                    return generateFullNameAsync(nameFilterBldr, birthday, gender); 
+                }, executor);
 
         // ------------------------------------------------------------
         // 4) Generate email (name + birthday + gender + address)
         // ------------------------------------------------------------
         CompletableFuture<EmailAddressRecord> emailFuture = nameFuture
-                .thenCombineAsync(birthdayFuture, (name, birthday) -> new Object[] { name, birthday }, executor)
-                .thenCombineAsync(genderFuture, (arr, gender) -> new Object[] { arr[0], arr[1], gender }, executor)
-                .thenCombineAsync(addressFuture, (arr, address) -> new Object[] { arr[0], arr[1], arr[2], address }, executor)
+                .thenCombineAsync(birthdayFuture, (name, birthday) -> { 
+                    return new Object[] { name, birthday };
+                }, executor)
+                .thenCombineAsync(genderFuture, (arr, gender) -> {
+                    return new Object[] { arr[0], arr[1], gender };
+                }, executor)
+                .thenCombineAsync(addressFuture, (arr, address) -> {
+                    return new Object[] { arr[0], arr[1], arr[2], address };
+                }, executor)
                 .thenApplyAsync(arr -> {
-                    FullName name = (FullName) arr[0];
+                    FullName fullName = (FullName) arr[0];
                     LocalDate birthday = (LocalDate) arr[1];
                     GenderIdentity gender = (GenderIdentity) arr[2];
                     PostalAddress postalAddress = (PostalAddress) arr[3];
-                    EmailAddressRecord emailAddressRecord = generateEmailAddressAsync(originalBuilder, name, birthday, gender, postalAddress);
+                    LOGGER.debug("postalAddress={}", postalAddress);
+
+                    SelectionFilter.Builder emailFilterBldr = SelectionFilter.toBuilder(originalBuilder.build());
+                    emailFilterBldr.birthday(birthday);
+                    emailFilterBldr.gender(gender);
+                    emailFilterBldr.firstName(fullName.firstName());
+                    emailFilterBldr.middleName(fullName.middleName());
+                    emailFilterBldr.lastName(fullName.lastName());
+                    emailFilterBldr.postalAddress(postalAddress);
+                    //emailFilterBldr.city(postalAddress.city());
+                    //emailFilterBldr.state(postalAddress.state());
+                    //emailFilterBldr.zipCode(postalAddress.zip());
+
+                    EmailAddressRecord emailAddressRecord = generateEmailAddressAsync(emailFilterBldr, fullName, birthday, gender, postalAddress);
                     return emailAddressRecord;
                 }, executor);
 
@@ -151,8 +184,6 @@ public class AsyncPersonGenerator extends AbstractValueGenerator<PersonRecord>{
     }
 
     private PostalAddress generatePostalAddressAsync(SelectionFilter.Builder filterBldr, LocalDate birthday, GenderIdentity gender) {
-        filterBldr.birthday(birthday)
-            .gender(gender);
         LOGGER.debug("generatePostalAddressAsync - postalAddressfilter={}", filterBldr);
         return postalAddressGenerator.generate(filterBldr.build());
     }
@@ -176,16 +207,16 @@ public class AsyncPersonGenerator extends AbstractValueGenerator<PersonRecord>{
     private EmailAddressRecord generateEmailAddressAsync(
             SelectionFilter.Builder filterBldr, FullName fullName, LocalDate birthday, GenderIdentity gender, PostalAddress postalAddress
     ) {
-        SelectionFilter emailAddressFilter = filterBldr
-                .firstName(fullName.firstName())
-                .middleName(fullName.middleName())
-                .lastName(fullName.lastName())
-                .birthday(birthday)
-                .gender(gender)
-                .postalAddress(postalAddress)
-                .build();
-        LOGGER.debug("generateEmailAddressAsync - filter={}", emailAddressFilter);
-        return emailAddressGenerator.generate(emailAddressFilter);
+//        SelectionFilter emailAddressFilter = filterBldr
+//                .firstName(fullName.firstName())
+//                .middleName(fullName.middleName())
+//                .lastName(fullName.lastName())
+//                .birthday(birthday)
+//                .gender(gender)
+//                .postalAddress(postalAddress)
+//                .build();
+        LOGGER.debug("generateEmailAddressAsync - filter={}", filterBldr);
+        return emailAddressGenerator.generate(filterBldr.build());
     }
 
     @Override
