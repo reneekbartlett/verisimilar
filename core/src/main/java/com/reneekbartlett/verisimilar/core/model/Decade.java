@@ -15,6 +15,8 @@ public enum Decade implements WeightedEnumData {
     TWO_THOUSANDS(2000, 2009, 0.0000, "2000"),
     TWO_THOUSAND_TENS(2010, 2019, 0.0000, "2010"),
 
+    CURRENT(2025, 2025, 0.0000, "2025"),
+
     ALL(1940, 2026, 0.0000, "ALL");
 
     private final Integer startYear;
@@ -50,7 +52,7 @@ public enum Decade implements WeightedEnumData {
     }
 
     public static EnumSet<Decade> defaultDatasets(){
-        return EnumSet.of(ALL);
+        return EnumSet.of(CURRENT);
     }
 
     public static Map<Decade, Double> defaultMap() {

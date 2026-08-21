@@ -28,7 +28,8 @@ public enum Generation {
     GEN_Z_1("gen_z_1", true, 1995, 2002, 0.0000),
     GEN_Z_2("gen_z_2", true, 2003, 2012, 0.0000),
 
-    UNKNOWN("Unknown", false, 0, 0, 1.0000);
+    UNKNOWN("Unknown", false, 0, 0, 0.0000),
+    EMPTY("", false, 0, 0, 0.0000);
 
     private final String displayName;
     private final boolean isMicro;
@@ -69,6 +70,13 @@ public enum Generation {
             defaultMap.put(g, g.weight);
         }
         return defaultMap;
+    }
+
+    public static Set<String> labels(Set<Generation> values) {
+        return values.stream()
+            .map(Generation::getLabel)
+            .filter(label -> !label.isBlank())
+            .collect(Collectors.toSet());
     }
 
     // TODO: Return list?

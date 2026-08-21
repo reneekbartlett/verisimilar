@@ -10,11 +10,12 @@ import com.reneekbartlett.verisimilar.core.selector.engine.FirstNameSelectionEng
 
 public record FirstNameDatasetResult(Map<NameKey, Map<String, Double>> datasets) implements DatasetResult {
 
-    public FirstNameDatasetResult(Map<String, Double> femaleNames, Map<String, Double> maleNames) {
+    public FirstNameDatasetResult(Map<String, Double> femaleNames, Map<String, Double> maleNames, Map<String, Double> unisexNames) {
         this(
                 Map.of(
                         new NameKey(GenderIdentity.FEMALE, null, Decade.ALL), femaleNames, 
-                        new NameKey(GenderIdentity.MALE, null, Decade.ALL), maleNames
+                        new NameKey(GenderIdentity.MALE, null, Decade.ALL), maleNames,
+                        new NameKey(GenderIdentity.GENDER_UNSPECIFIED, null, Decade.ALL), unisexNames
                 )
         );
     }

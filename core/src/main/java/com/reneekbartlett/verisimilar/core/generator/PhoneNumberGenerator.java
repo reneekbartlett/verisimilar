@@ -13,9 +13,18 @@ import com.reneekbartlett.verisimilar.core.selector.engine.AreaCodeSelectionEngi
 import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelectionEngineRegistry;
 
 /***
+ * Generates a PhoneNumber record, default North American Format (555-555-5555)
+ * > AreaCode
+ * > ExchangeCode
+ * > LineNumber
+ * 
  * Map<String, String[]> AREACODES_BY_STATE ResourceMapLoader.loadArrayMap("/phone_areacode_bystate_us.txt");
  * EXCHANGE_CODES_BY_AREACODE
  * PHONE_NUMBER_TYPE
+ * 
+ * USSTATE,AREA_CODES
+ * AZ,480|520|602|623|928
+ * 
  */
 public class PhoneNumberGenerator extends AbstractValueGenerator<PhoneNumber> {
 
@@ -52,6 +61,9 @@ public class PhoneNumberGenerator extends AbstractValueGenerator<PhoneNumber> {
         return filter.areaCode().orElseGet(() -> areaCodeSelector.select(areaCodeKey, filter));
     }
 
+    /***
+     * ExchangeCode is used to routes the call to a specific central switching office or town block.
+     */
     private String generateExchangeCode(SelectionFilter filter) {
         // Generate exchange code (NXX)
         int firstDigit = ThreadLocalRandom.current().nextInt(2, 10); // 2–9
@@ -63,6 +75,10 @@ public class PhoneNumberGenerator extends AbstractValueGenerator<PhoneNumber> {
         return formatExchangeCode(exchangeCode);
     }
 
+    /***
+     * LineNumber or Subscriber Line.
+     * Matches the final 4 digits, unique to the specific individual phone line.
+     */
     private String generateLineNumber(SelectionFilter filter) {
         // Line number (0000–9999)
         int lineNumber = ThreadLocalRandom.current().nextInt(0, 10000);

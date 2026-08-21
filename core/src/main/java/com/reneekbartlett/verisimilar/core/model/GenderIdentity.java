@@ -4,12 +4,14 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public enum GenderIdentity implements WeightedEnumData {
     MALE("MALE", 1, 0.4995, "male"),
     FEMALE("FEMALE", 2, 0.4995, "female"),
     NONBINARY("NON-BINARY", 3, 0.0010, "unisex"),
-    GENDER_UNSPECIFIED("UNSPECIFIED", 0, 0.0000, "unisex");
+    GENDER_UNSPECIFIED("UNSPECIFIED", 0, 0.0000, "unisex"),
+    EMPTY("", 0, 0.0000, "unisex");
 
     private final String label;
     private final int value;
@@ -73,7 +75,7 @@ public enum GenderIdentity implements WeightedEnumData {
     }
 
     public static EnumSet<GenderIdentity> defaultDatasets(){
-        return EnumSet.of(MALE, FEMALE);
+        return EnumSet.of(MALE, FEMALE, GENDER_UNSPECIFIED);
     }
 
     public static EnumSet<GenderIdentity> defaults() {
@@ -86,6 +88,13 @@ public enum GenderIdentity implements WeightedEnumData {
             defaultMap.put(genderIdentity, 0.5000); // TODO:  use genderIdentity.getWeight()
         }
         return defaultMap;
+    }
+
+    public static Set<String> labels(Set<GenderIdentity> values) {
+        return values.stream()
+            .map(GenderIdentity::getLabel)
+            .filter(label -> !label.isBlank())
+            .collect(Collectors.toSet());
     }
 
     public static EnumSet<GenderIdentity> convertToEnumSet(Set<String> stringVals){

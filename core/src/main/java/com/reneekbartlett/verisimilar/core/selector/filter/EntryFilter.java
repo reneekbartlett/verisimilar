@@ -223,51 +223,58 @@ public final class EntryFilter {
      * @return
      */
     protected static SelectionPredicate<String> buildPredicate(SelectionFilter filter, TemplateField field) {
-        SelectionPredicate<String> p = s -> true;
-        //SelectionPredicate<String> p = s -> s != null && !s.strip().isEmpty();
+        SelectionPredicate<String> filterPredicate = s -> true;
+
+        if(field == null) {
+            return filterPredicate;
+        }
 
         StringBuilder sb = new StringBuilder(0);
 
+        // TODO: remove and shift left
         if(field != null) {
             String fieldLabel = field.getLabel();
 
             if(filter.customPredicateMap().containsKey(field)) {
                 Set<DescribedPredicate<String>> customPredicates = filter.customPredicateMap().get(field);
                 for(DescribedPredicate<String> customP : customPredicates) {
-                    p = p.and(customP.condition());
+                    filterPredicate = filterPredicate.and(customP.condition());
+                    sb.append(customP.text()).append(",");
                     LOGGER.debug("customP={}", customP.text());
                 }
                 LOGGER.debug("field {} found in customPredicateMap {}", field.getPlaceholder());
+                // TODO:  Return?
             }
 
             if(filter.startsWithMap().containsKey(field)) {
                 String searchStr = filter.startsWithMap().get(field).toUpperCase();
-                p = p.and(s -> s.toUpperCase().startsWith(searchStr));
+                filterPredicate = filterPredicate.and(s -> s.toUpperCase().startsWith(searchStr));
                 sb.append(fieldLabel + " startsWith " + searchStr).append(",");
                 LOGGER.debug("field {} startsWith {}", fieldLabel, searchStr);
             }
     
             if(filter.endsWithMap().containsKey(field)) {
                 String searchStr = filter.endsWithMap().get(field).toUpperCase();
-                p = p.and(s -> s.toUpperCase().endsWith(searchStr));
+                filterPredicate = filterPredicate.and(s -> s.toUpperCase().endsWith(searchStr));
                 sb.append(fieldLabel + " endswith " + searchStr).append(",");
                 LOGGER.debug("field {} endsWith {}", fieldLabel, searchStr);
             }
     
             if(filter.containsMap().containsKey(field)) {
                 String searchStr = filter.containsMap().get(field).toUpperCase();
-                p = p.and(s -> s.toUpperCase().contains(searchStr));
+                filterPredicate = filterPredicate.and(s -> s.toUpperCase().contains(searchStr));
                 sb.append(fieldLabel + " contains " + searchStr).append(",");
                 LOGGER.debug("field {} contains {}", fieldLabel, searchStr);
             }
         }
 
-        var describedPredicate = new DescribedPredicate<String>(p, sb.toString());
+        LOGGER.debug("filter={}", filter.toString());
+        var describedPredicate = new DescribedPredicate<String>(filterPredicate, sb.toString());
         LOGGER.debug("describedPredicate for field {} [text='{}']", field.getLabel(), describedPredicate.text());
 
         // TODO: Check custom predicates for non-city_state_zip fields?
 
-        return p;
+        return filterPredicate;
     }
 
     public static <T> SelectionPredicate<String> equalTo(T value) {

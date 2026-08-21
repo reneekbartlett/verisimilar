@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public enum USState implements WeightedEnumData {
     AL("Alabama",24,0.003262),
@@ -116,6 +117,7 @@ public enum USState implements WeightedEnumData {
         return EnumSet.allOf(USState.class);
     }
 
+    // TODO: use labels instead?
     public static Set<String> names(Set<USState> states) {
         Set<String> stateNames = new HashSet<>();
         for(USState state : states) {
@@ -124,6 +126,13 @@ public enum USState implements WeightedEnumData {
             }
         }
         return stateNames;
+    }
+
+    public static Set<String> labels(Set<USState> values) {
+        return values.stream()
+            .map(USState::getLabel)
+            .filter(label -> !label.isBlank())
+            .collect(Collectors.toSet());
     }
 
     public static EnumSet<USState> defaultDatasets(){

@@ -5,11 +5,11 @@ import java.util.Map;
 import java.util.Set;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.AreaCodeDatasetKey;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.AreaCodeDatasetResolver;
+import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.datasets.result.AreaCodeDatasetResult;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.USState;
-import com.reneekbartlett.verisimilar.core.datasets.resolver.AreaCodeDatasetResolver;
-import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.UniformSelectorImpl;
@@ -58,6 +58,8 @@ public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDat
             RandomSelector<String> selector = strategy.buildSelector(map, field());
             selectorsByNameKey.put(nameKey, selector);
         });
+
+        this.usStateOptions = USState.defaultDatasets();
         //LOGGER.debug("AreaCodeDatasetResult=[{}]", result);
     }
 
@@ -65,17 +67,26 @@ public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDat
     public String select(AreaCodeDatasetKey key, SelectionFilter filter) {
         // TODO:  Revise/streamline logic
 
-        // If area code is already populated, just return it.
-        if(filter != null && filter.equalToMap().containsKey(field())) {
-            return filter.equalToMap().get(field());
-        }
+        USState usState;
+        if(filter != null) {
+            // If area code is already populated, just return it.
+            if(filter.areaCode().isPresent()) {
+                return filter.areaCode().get();
+            }
+            if(filter.equalToMap().containsKey(field())) {
+                return filter.equalToMap().get(field());
+            }
 
-        // Then check if State is assigned.
-        // TODO
-        //this.usStateOptions = filter.inMap().getOrDefault(TemplateField.STATE, USState.defaultDatasets());
-        this.usStateOptions = (Set<USState>) filter.inEnumMap().getOrDefault(TemplateField.STATE, USState.defaultDatasets());
-        //this.usStateOptions = filter.states().orElse(USState.defaultDatasets());
-        USState usState = filter.state().orElseGet(this::getRandomState);
+            // Get state from filter or pick a random one to speed up selection.
+            if(!filter.state().isPresent()) {
+                filter.states().ifPresent(values -> this.setStateOptions(values));
+                usState = getRandomState();
+            } else {
+                usState = filter.state().get();
+            }
+        } else {
+            usState = getRandomState();
+        }
 
         NameKey nameKey = new NameKey(usState.name());
         RandomSelector<String> selector = selectorsByNameKey.get(nameKey);
@@ -110,6 +121,14 @@ public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDat
         return TemplateField.AREA_CODE;
     }
 
+    private void setStateOptions(Set<USState> usStateOptions) {
+        this.usStateOptions = usStateOptions;
+    }
+
+    /***
+     * 
+     * @return
+     */
     private USState getRandomState() {
         RandomSelector<USState> stateSelector = new UniformSelectorImpl<>(usStateOptions, TemplateField.STATE);
         return stateSelector.select();

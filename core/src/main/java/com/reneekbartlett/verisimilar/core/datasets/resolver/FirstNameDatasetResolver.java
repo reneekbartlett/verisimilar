@@ -12,6 +12,9 @@ import com.reneekbartlett.verisimilar.core.model.Ethnicity;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.selector.engine.FirstNameSelectionEngine.NameKey;
 
+/***
+ * 
+ */
 public class FirstNameDatasetResolver extends AbstractDatasetResolver<FirstNameDatasetKey, FirstNameDatasetResult> {
 
     private static final String DEFAULT_FILE = "datasets/cfg_fullname_first_%s_%s.csv";
@@ -32,9 +35,14 @@ public class FirstNameDatasetResolver extends AbstractDatasetResolver<FirstNameD
     public FirstNameDatasetResult loadForKey(FirstNameDatasetKey key) {
         Map<NameKey, Map<String, Double>> datasets = HashMap.newHashMap(0);
 
-        // Load both datasets (male + female) for the given ethnicity
+        // Load datasets that have ethnicity data (male + female) for the given ethnicity
         for(GenderIdentity genderIdentity : genderIdentities) {
             datasets.put(new NameKey(genderIdentity, Ethnicity.UNKNOWN, Decade.ALL), loadGenderDataset(genderIdentity));
+        }
+
+        // Load Unisex names, without ethnicity for now.
+        if(GenderIdentity.defaultDatasets().contains(GenderIdentity.GENDER_UNSPECIFIED)) {
+            datasets.put(new NameKey(GenderIdentity.GENDER_UNSPECIFIED, Ethnicity.UNKNOWN, Decade.ALL), loadGenderDataset(GenderIdentity.GENDER_UNSPECIFIED));
         }
 
         for(Decade decade : decades) {
@@ -68,17 +76,18 @@ public class FirstNameDatasetResolver extends AbstractDatasetResolver<FirstNameD
     }
 
     private Map<String, Double> loadGenderDataset(GenderIdentity gender) {
-        String filePath = String.format(DEFAULT_FILE, gender.name().toLowerCase(), "ALL");
+        String filePath = String.format(DEFAULT_FILE, gender.getPlaceholder().toLowerCase(), "ALL");
         return load(filePath);
     }
 
+    @SuppressWarnings("unused")
     private Map<String, Double> loadDecadeDataset(GenderIdentity gender, Decade decade, Ethnicity ethnicity) {
-        String filePath = String.format(DEFAULT_FILE_V2, gender.name().toLowerCase(), decade.getPlaceholder());
+        String filePath = String.format(DEFAULT_FILE_V2, gender.getPlaceholder().toLowerCase(), decade.getPlaceholder());
         return load(filePath);
     }
 
     private Map<String, Double> loadEthnicityDataset(GenderIdentity gender, Ethnicity ethnicity) {
-        String filePath = String.format(DEFAULT_FILE, gender.name().toLowerCase(), ethnicity.getPlaceholder());
+        String filePath = String.format(DEFAULT_FILE, gender.getPlaceholder().toLowerCase(), ethnicity.getPlaceholder());
         return load(filePath);
     }
 

@@ -24,19 +24,29 @@ public class DomainDatasetResolver extends AbstractDatasetResolver<DomainDataset
             //TODO:  iterate DomainDatasetKey.domainTypes[]
         }
 
-        // TODO:  Add b2b, disposable
+        // TODO:  Add disposable
         Map<String, Double> b2c = loadTypeDataset("b2c", key);
-        //Map<String, Double> b2b = loadTypeDataset("b2b", key);
+        Map<String, Double> b2b = loadTypeDataset("b2b", key);
         Map<String, Double> edu = loadTypeDataset("edu", key);
         Map<String, Double> gov = loadTypeDataset("gov", key);
         //Map<String, Double> disposable = loadTypeDataset("disposable", key);
 
+        // Loading temp map of disposable domains for now.
+        Map<String, Double> disposable = new HashMap<>();
+        disposable.put("mailinator.com", 1.0000);
+        disposable.put("guerrillamail.com", 1.0000);
+        disposable.put("10minutemail.com", 1.0000);
+        disposable.put("yopmail.com", 1.0000);
+        disposable.put("temp-mail.org", 1.0000);
+        disposable.put("dropmail.me", 1.0000);
+        disposable.put("onetimeemail.net", 1.0000);
+
         return new DomainDatasetResult(
                 b2c, 
-                HashMap.newHashMap(1), // b2b
+                b2b,
                 edu, 
                 gov, 
-                HashMap.newHashMap(1) // disposable
+                disposable
         );
     }
 

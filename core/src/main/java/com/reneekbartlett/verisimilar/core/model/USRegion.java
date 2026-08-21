@@ -2,6 +2,7 @@ package com.reneekbartlett.verisimilar.core.model;
 
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 // TODO: Implement
 public enum USRegion implements WeightedEnumData {
@@ -58,6 +59,13 @@ public enum USRegion implements WeightedEnumData {
     public static EnumSet<USRegion> defaultDatasets(){
         // TODO:  Add defaults when xtra data is added
         return EnumSet.noneOf(USRegion.class);
+    }
+
+    public static Set<String> labels(Set<USRegion> values) {
+        return values.stream()
+            .map(USRegion::getLabel)
+            .filter(label -> !label.isBlank())
+            .collect(Collectors.toSet());
     }
 
     public static USRegion getRegionForState(String stateAbbreviation) {

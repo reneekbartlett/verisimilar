@@ -5,21 +5,20 @@ import java.util.List;
 import com.reneekbartlett.verisimilar.core.datasets.key.DomainDatasetKey;
 import com.reneekbartlett.verisimilar.core.model.DomainRecord;
 import com.reneekbartlett.verisimilar.core.model.DomainType;
-import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
-import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
-import com.reneekbartlett.verisimilar.core.selector.UniformSelectorImpl;
 import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorImpl;
 import com.reneekbartlett.verisimilar.core.selector.engine.DomainSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelectionEngineRegistry;
+import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
 /***
  * 
  */
 public class DomainRecordGenerator extends AbstractValueGenerator<DomainRecord> {
     private final DomainSelectionEngine domainSelector;
+    @SuppressWarnings("unused")
     private final List<TemplateField> filterFields;
 
     public DomainRecordGenerator(DomainSelectionEngine domainSelector) {
@@ -34,19 +33,22 @@ public class DomainRecordGenerator extends AbstractValueGenerator<DomainRecord> 
 
     @Override
     protected DomainRecord generateValue(DatasetResolutionContext ctx, SelectionFilter filter) {
-        DomainDatasetKey key = DomainDatasetKey.fromContext(ctx);
 
-        DomainType domainType = filter.domainType().orElseGet(() -> {
-            return generateDomainType(filter);
-        });
+        DomainType domainType = filter.domainType().orElse(generateDomainType(filter));
+        //DomainDatasetKey key = DomainDatasetKey.fromDomainType(domainType);
+        DomainDatasetKey key = DomainDatasetKey.fromContext(ctx);
+        //LOGGER.debug("DomainDatasetKey={}", key);
 
         String domain;
+        SelectionFilter domainFilter;
         if(filter.domainType().isEmpty()) {
-            SelectionFilter domainFilter = SelectionFilter.toBuilder(filter).domainType(domainType).build();
-            domain = generateDomain(key, domainFilter);
+            SelectionFilter.Builder domainFilterBldr = SelectionFilter.toBuilder(filter);
+            domainFilter = domainFilterBldr.domainType(domainType).build();
         } else {
-            domain = generateDomain(key, filter);
+            domainFilter = filter;
         }
+
+        domain = generateDomain(key, domainFilter);
 
         return new DomainRecord(domain, domainType);
     }

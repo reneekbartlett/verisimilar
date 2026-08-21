@@ -6,6 +6,9 @@ import java.util.Map;
 import com.reneekbartlett.verisimilar.core.model.DomainType;
 import com.reneekbartlett.verisimilar.core.selector.engine.DomainSelectionEngine.NameKey;
 
+/***
+ * 
+ */
 public record DomainDatasetResult(
         Map<NameKey, Map<String, Double>> datasets
 ) implements DatasetResult {
@@ -19,10 +22,10 @@ public record DomainDatasetResult(
         this(
                 Map.of(
                         new NameKey(DomainType.B2C), b2c, 
-                        //new NameKey(DomainType.B2B), b2b, 
+                        new NameKey(DomainType.B2B), b2b, 
                         new NameKey(DomainType.EDU), edu,
-                        new NameKey(DomainType.GOV), gov
-                        //new NameKey(DomainType.DISPOSABLE), disposable
+                        new NameKey(DomainType.GOV), gov,
+                        new NameKey(DomainType.DISPOSABLE), disposable
                 )
         );
     }
@@ -43,7 +46,7 @@ public record DomainDatasetResult(
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(0);
-        sb.append("datasets:" + datasets.size());
+        sb.append("datasets:").append(datasets.size());
         return sb.toString();
     }
 }

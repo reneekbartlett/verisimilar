@@ -1,9 +1,7 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,12 +9,10 @@ import org.slf4j.LoggerFactory;
 import com.reneekbartlett.verisimilar.core.datasets.key.CityStateZipDatasetKey;
 import com.reneekbartlett.verisimilar.core.model.CityStateZip;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
-import com.reneekbartlett.verisimilar.core.model.USState;
 import com.reneekbartlett.verisimilar.core.model.Zip4Range;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
-import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.selector.engine.CityStateZipSelectionEngine;
-import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelectionEngineRegistry;
+import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
 /***
  * Select from dataset with CITY$STATE$ZIP INFO TIED TOGETHER

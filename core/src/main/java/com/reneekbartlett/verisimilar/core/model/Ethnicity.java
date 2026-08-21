@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 // TODO: Rename to US_CENSUS_?
 
@@ -70,6 +71,13 @@ public enum Ethnicity implements WeightedEnumData {
             defaultMap.put(ethnicity, 0.5000); // TODO:  use ethnicity.getWeight()
         }
         return defaultMap;
+    }
+
+    public static Set<String> labels(Set<Ethnicity> values) {
+        return values.stream()
+            .map(Ethnicity::getLabel)
+            .filter(label -> !label.isBlank())
+            .collect(Collectors.toSet());
     }
 
     public static Ethnicity fromText(String textVal) {

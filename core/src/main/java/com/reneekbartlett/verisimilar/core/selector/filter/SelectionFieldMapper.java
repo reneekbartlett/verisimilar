@@ -6,8 +6,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.reneekbartlett.verisimilar.core.model.CityStateZip;
 import com.reneekbartlett.verisimilar.core.model.DomainType;
@@ -91,7 +95,7 @@ public enum SelectionFieldMapper {
     ),
     UNIT_TYPE(
         TemplateField.UNIT_TYPE, 
-        (builder, value) -> builder.unitType((UnitType) value),
+        (builder, value) -> builder.unitType((UnitType) value), // TODO
         //(builder, values) -> builder.unitTypes((Set<UnitType>) values)
         null
     ),
@@ -102,7 +106,7 @@ public enum SelectionFieldMapper {
     ),
     REGION(
         TemplateField.REGION, 
-        (builder, value) -> builder.region((USRegion) value),
+        (builder, value) -> builder.region((USRegion) value), // TODO
         //(builder, values) -> builder.regions((Set<USRegion>) values)
         null
     ),
@@ -114,7 +118,7 @@ public enum SelectionFieldMapper {
     ),
     USERNAME_TYPE(
         TemplateField.USERNAME_TYPE, 
-        (builder, value) -> builder.usernameType((UsernameType) value),
+        (builder, value) -> builder.usernameType((UsernameType) value), // TODO
         //(builder, values) -> builder.usernameTypes((Set<UsernameType>) values)
         null
     ),
@@ -125,9 +129,12 @@ public enum SelectionFieldMapper {
     ),
     DOMAIN_TYPE(
         TemplateField.DOMAIN_TYPE, 
-        (builder, value) -> builder.domainType((DomainType) value),
-        //(builder, values) -> builder.domainTypes((Set<DomainType>) values)
-        null
+        (builder, value) -> {
+            return builder.domainType(DomainType.fromValue(value.toString())); 
+        },
+        (builder, values) -> {
+            return builder.domainTypes(DomainType.fromValues(castStringSet(values))); 
+        }
     ),
     EMAIL_ADDRESS(
         TemplateField.EMAIL_ADDRESS, 
@@ -145,8 +152,7 @@ public enum SelectionFieldMapper {
     ),
     PHONE_NUMBER(
         TemplateField.PHONE_NUMBER, 
-        //(builder, value) -> builder.phoneNumber((String) value),
-        null,
+        (builder, value) -> builder.phoneNumber((String) value),
         //(builder, values) -> builder.phoneNumbers((Set<String>) values)
         null
     ),
@@ -162,9 +168,10 @@ public enum SelectionFieldMapper {
         null
     );
 
+    protected static final Logger LOGGER = LoggerFactory.getLogger(SelectionFieldMapper.class);
     private final TemplateField templateField;
-    private final BiConsumer<Builder, Object> singleConsumer;
-    private final BiConsumer<Builder, Set<?>> multiConsumer;
+    private final BiFunction<Builder, Object, Builder> singleConsumer;
+    private final BiFunction<Builder, Set<?>, Builder> multiConsumer;
 
     // Static lookup cache for fast, non-loop O(1) performance
     static final Map<TemplateField, SelectionFieldMapper> LOOKUP = Arrays.stream(values())
@@ -172,8 +179,8 @@ public enum SelectionFieldMapper {
 
     SelectionFieldMapper(
             TemplateField templateField, 
-            BiConsumer<Builder, Object> singleConsumer, 
-            BiConsumer<Builder, Set<?>> multiConsumer
+            BiFunction<Builder, Object, Builder> singleConsumer, 
+            BiFunction<Builder, Set<?>, Builder> multiConsumer
     ) {
         this.templateField = templateField;
         this.singleConsumer = singleConsumer;
@@ -182,18 +189,23 @@ public enum SelectionFieldMapper {
 
     public TemplateField getTemplateField() { return templateField; }
 
-    public void applySingle(Builder builder, Object value) {
+    public Builder applySingle(Builder builder, Object value) {
         if (singleConsumer  == null) {
+            LOGGER.warn("UnsupportedOperationException");
             throw new UnsupportedOperationException("Single-value operator not supported for field: " + templateField);
         }
-        this.singleConsumer.accept(builder, value);
+        LOGGER.debug("applySingle");
+
+        // TODO:  Check type
+        return this.singleConsumer.apply(builder, value);
     }
 
-    public void applyMulti(Builder builder, Set<?> values) {
+    public Builder applyMulti(Builder builder, Set<?> values) {
         if (multiConsumer  == null) {
             throw new UnsupportedOperationException("Multi-value operator not supported for field: " + templateField);
         }
-        this.multiConsumer.accept(builder, values);
+        LOGGER.debug("applyMulti");
+        return this.multiConsumer.apply(builder, values);
     }
 
     public static SelectionFieldMapper fromTemplateField(TemplateField field) {
@@ -234,5 +246,20 @@ public enum SelectionFieldMapper {
             }
         }
         return names;
+    }
+
+    public static Object getFirstValue(Set<?> set) {
+        if (set == null || set.isEmpty()) {
+            return null; // Or throw an exception depending on your needs
+        }
+        return set.iterator().next();
+    }
+
+    public static <T extends Enum<T>> String toEnumName(Set<?> enumValue) {
+        Object o = getFirstValue(enumValue);
+        if (o instanceof Enum<?> e) {
+            return e.name();
+        }
+        return null;
     }
 }

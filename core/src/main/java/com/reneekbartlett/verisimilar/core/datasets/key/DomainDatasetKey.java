@@ -32,8 +32,7 @@ public record DomainDatasetKey(
     }
 
     public static EnumSet<DomainType> defaultDomainTypes() {
-        // TODO:  Add in DomainType.B2B, DomainType.DISPOSABLE
-        return EnumSet.of(DomainType.B2C, DomainType.EDU, DomainType.GOV);
+        return EnumSet.of(DomainType.B2C, DomainType.B2B, DomainType.EDU, DomainType.GOV, DomainType.DISPOSABLE);
     }
 
     // TODO:  Add to others?
@@ -42,6 +41,13 @@ public record DomainDatasetKey(
         EnumSet<Decade> decades = ctx.decades().orElse(Decade.defaultDatasets());
         return new DomainDatasetKey(KEY_ID, domainTypes, decades);
     }
+
+//    public static DomainDatasetKey fromDomainType(DomainType domainType) {
+//        EnumSet<DomainType> domainTypes = EnumSet.of(domainType);
+//        // TODO:  decade currently set to 2025
+//        EnumSet<Decade> decades = Decade.defaultDatasets();
+//        return new DomainDatasetKey(KEY_ID, domainTypes, decades);
+//    }
 
     @Override
     public String toString() {

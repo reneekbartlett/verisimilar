@@ -4,14 +4,15 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public enum DomainType implements WeightedEnumData {
 
     B2C("B2C", 0.5000),
     EDU("EDU", 0.0250),
     GOV("GOV", 0.0250),
-    DISPOSABLE("DISPOSABLE", 0.0000),
-    B2B("B2B", 0.0000);
+    DISPOSABLE("DISPOSABLE", 0.0250),
+    B2B("B2B", 0.0250);
 
     private final String label;
     private final double weight;
@@ -33,10 +34,35 @@ public enum DomainType implements WeightedEnumData {
         return label;
     }
 
+    public static DomainType fromValue(String value) {
+        if (value == null) return null;
+        for (DomainType domainType : EnumSet.allOf(DomainType.class)) {
+            if (domainType.getLabel().equals(value.toUpperCase())) {
+                return domainType;
+            }
+        }
+        return null;
+    }
+
+    public static Set<DomainType> fromValues(Set<String> values) {
+        if (values == null || values.isEmpty()) return null;
+
+        EnumSet<DomainType> domainTypes = EnumSet.noneOf(DomainType.class);
+        for (String value : values) {
+            try {
+                // Assumes DomainType.valueOf(String) matches your label
+                domainTypes.add(DomainType.valueOf(value.toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                // Skip values that don't match any enum constant
+                System.out.println("");
+            }
+        }
+        return domainTypes.isEmpty() ? null : domainTypes;
+    }
+
+    // TODO:  Get from config, add DomainType.DISPOSABLE
     public static EnumSet<DomainType> defaultDatasets(){
-        return EnumSet.of(DomainType.B2C, DomainType.EDU, DomainType.GOV
-                //, DomainType.B2B, DomainType.DISPOSABLE
-                );
+        return EnumSet.of(DomainType.B2C, DomainType.EDU, DomainType.GOV, DomainType.B2B, DomainType.DISPOSABLE);
     }
 
     public static Map<DomainType, Double> defaultMap() {
@@ -45,6 +71,13 @@ public enum DomainType implements WeightedEnumData {
             defaultMap.put(domainType, domainType.getWeight());
         });
         return defaultMap;
+    }
+
+    public static Set<String> labels(Set<DomainType> values) {
+        return values.stream()
+            .map(DomainType::getLabel)
+            .filter(label -> !label.isBlank())
+            .collect(Collectors.toSet());
     }
 
     public static DomainType fromText(String textVal) {

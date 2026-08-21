@@ -3,10 +3,14 @@ package com.reneekbartlett.verisimilar.core.model;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public enum PhoneNumberType implements WeightedEnumData {
     MOBILE("mobile", 0.9000),
-    HOME("home", 0.0100);
+    HOME("home", 0.0100),
+    UNKNOWN("", 0.0000),
+    EMPTY("", 0.0000);
 
     /***
      * Placeholder used in the StringTemplate
@@ -47,6 +51,13 @@ public enum PhoneNumberType implements WeightedEnumData {
         return EnumSet.of(
                 PhoneNumberType.MOBILE, PhoneNumberType.HOME
         );
+    }
+
+    public static Set<String> labels(Set<PhoneNumberType> values) {
+        return values.stream()
+            .map(PhoneNumberType::getLabel)
+            .filter(label -> !label.isBlank())
+            .collect(Collectors.toSet());
     }
 
     public static Map<PhoneNumberType, Double> defaultMap() {

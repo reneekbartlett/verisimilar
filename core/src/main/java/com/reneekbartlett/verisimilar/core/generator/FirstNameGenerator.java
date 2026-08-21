@@ -2,6 +2,9 @@ package com.reneekbartlett.verisimilar.core.generator;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.reneekbartlett.verisimilar.core.datasets.key.FirstNameDatasetKey;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
@@ -10,6 +13,8 @@ import com.reneekbartlett.verisimilar.core.selector.engine.FirstNameSelectionEng
 import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelectionEngineRegistry;
 
 public class FirstNameGenerator extends AbstractStringGenerator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FirstNameGenerator.class);
 
     private final FirstNameSelectionEngine selector;
     private final List<TemplateField> filterFields;
@@ -35,6 +40,7 @@ public class FirstNameGenerator extends AbstractStringGenerator {
     }
 
     private String generateFirstName(FirstNameDatasetKey key, SelectionFilter filter) {
+        //LOGGER.debug("FirstNameDatasetKey={}", key.toString());
         return selector.select(key, filter);
     }
 

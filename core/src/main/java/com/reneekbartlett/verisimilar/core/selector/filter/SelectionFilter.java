@@ -80,6 +80,7 @@ public record SelectionFilter(
         Optional<Ethnicity> ethnicity,
 
         Optional<DomainType> domainType,
+        Optional<Set<DomainType>> domainTypes,
         Optional<String> domain,
 
         Optional<UsernameType> usernameType,
@@ -195,11 +196,14 @@ public record SelectionFilter(
 
         region = region == null ? Optional.empty() : region;
         ethnicity = ethnicity == null ? Optional.empty() : ethnicity;
+        //ethnicities = ethnicities == null ? Optional.empty() : ethnicities;
 
         phoneNumberType = phoneNumberType == null ? Optional.empty() : phoneNumberType;
         areaCode = areaCode == null ? Optional.empty() : areaCode;
+        phoneNumber = phoneNumber == null ? Optional.empty() : phoneNumber;
 
         domainType = domainType == null ? Optional.empty() : domainType;
+        domainTypes = domainTypes == null ? Optional.empty() : domainTypes;
         domain = domain == null ? Optional.empty() : domain;
 
         usernameType = usernameType == null ? Optional.empty() : usernameType;
@@ -255,6 +259,7 @@ public record SelectionFilter(
                 && usernameType.isEmpty()
                 && username.isEmpty()
                 && domainType.isEmpty()
+                && domainTypes.isEmpty()
                 && domain.isEmpty()
                 && phoneNumberType.isEmpty()
                 && areaCode.isEmpty()
@@ -305,6 +310,7 @@ public record SelectionFilter(
                 Optional.empty(), // ethnicity
 
                 Optional.empty(), // domainType
+                Optional.empty(), // domainTypes
                 Optional.empty(), // domain
 
                 Optional.empty(), // usernameType
@@ -378,6 +384,7 @@ public record SelectionFilter(
         private Ethnicity ethnicity;
 
         private DomainType domainType;
+        private Set<DomainType> domainTypes;
         private String domain;
 
         private UsernameType usernameType;
@@ -458,12 +465,14 @@ public record SelectionFilter(
 
             this.phoneNumberType = filter.phoneNumberType.orElse(null);
             this.areaCode = filter.areaCode.orElse(null);
+            this.phoneNumber = filter.phoneNumber.orElse(null);
 
             this.username = filter.username.orElse(null);
             this.usernameType = filter.usernameType.orElse(null);
 
             this.domain = filter.domain.orElse(null);
             this.domainType = filter.domainType.orElse(null);
+            this.domainTypes = filter.domainTypes.orElse(null);
 
             filter.startsWithMap().forEach((k,v) -> this.startsWithMap.putIfAbsent(k, v));
             filter.endsWithMap().forEach((k,v) -> this.endsWithMap.putIfAbsent(k, v));
@@ -735,7 +744,6 @@ public record SelectionFilter(
             if(value != null) {
                 this.region = value;
                 this.equalToMap.putIfAbsent(TemplateField.REGION, value.getRegionName());
-                //this.regions(EnumSet.of(value));
             }
             return this;
         }
@@ -752,7 +760,6 @@ public record SelectionFilter(
             if(value != null) {
                 this.ethnicity = value;
                 this.equalToMap.putIfAbsent(TemplateField.ETHNICITY, value.getPlaceholder());
-                //this.ethnicities(EnumSet.of(value));
             }
             return this;
         }
@@ -770,7 +777,15 @@ public record SelectionFilter(
                 this.equalToMap.putIfAbsent(TemplateField.DOMAIN_TYPE, value.getPlaceholder());
                 // TODO:  Add domainTypes?
                 //this.inEnumMap.putIfAbsent(TemplateField.DOMAIN_TYPE, EnumSet.of(value));
+                //LOGGER.debug("domainType set to {}", value.getLabel());
             }
+            return this;
+        }
+
+        public Builder domainTypes(Set<DomainType> values) {
+            if (values == null || values.isEmpty()) return this;
+            this.domainTypes = values;
+            this.inEnumMap.putIfAbsent(TemplateField.DOMAIN_TYPE, values);
             return this;
         }
 
@@ -821,6 +836,14 @@ public record SelectionFilter(
             if(value != null && !value.isBlank()) {
                 this.areaCode = StringUtils.deleteWhitespace(value);
                 this.equalToMap.putIfAbsent(TemplateField.AREA_CODE, this.areaCode);
+            }
+            return this;
+        }
+
+        public Builder phoneNumber(String value) {
+            if(value != null && !value.isBlank()) {
+                this.phoneNumber = StringUtils.deleteWhitespace(value);
+                this.equalToMap.putIfAbsent(TemplateField.PHONE_NUMBER, this.phoneNumber);
             }
             return this;
         }
@@ -889,25 +912,27 @@ public record SelectionFilter(
          * To access outside of SelectionFilter, use addFilter
          */
         protected Builder equalTo(String value, TemplateField field) {
-            if(value != null) {
-                //this.equalToMap.putIfAbsent(field, value);
-                SelectionFieldMapper.LOOKUP.get(field).applySingle(this, value);
+            if(value == null) return this;
+            try {
+                return SelectionFieldMapper.LOOKUP.get(field).applySingle(this, value);
+            } catch(Exception e) {
+                LOGGER.warn("could not set field {}", field.getLabel());
             }
             return this;
         }
 
-        public Builder in(Set<?> values, TemplateField field) {
+        protected Builder in(Set<?> values, TemplateField field) {
             if(values != null && !values.isEmpty()) {
                 //this.inMap.putIfAbsent(field, values);
-                SelectionFieldMapper.LOOKUP.get(field).applyMulti(this, values);
+                return SelectionFieldMapper.LOOKUP.get(field).applyMulti(this, values);
             }
             return this;
         }
 
-        public <E> Builder inEnum(Set<?> values, TemplateField field) {
+        protected <E> Builder inEnum(Set<?> values, TemplateField field) {
             if(values != null && !values.isEmpty()) {
-                this.inEnumMap.putIfAbsent(field, values);
-                SelectionFieldMapper.LOOKUP.get(field).applyMulti(this, values);
+                //this.inEnumMap.putIfAbsent(field, values);
+                return SelectionFieldMapper.LOOKUP.get(field).applyMulti(this, values);
             }
             return this;
         }
@@ -956,9 +981,17 @@ public record SelectionFilter(
                     // add to contains map
                     return this.contains(value, field);
                 case "eq":
+                    LOGGER.debug("addFilter - equalTo {}", value);
                     return this.equalTo(value, field);
                 case "in":
-                    // Pass to addFilter(Set<T>...)
+                    // Parse values (if applicable) and pass to addFilter(Set<T>...)
+                    // Fields that could contain multiple values
+                    if(value.contains(",") && (field.equals(TemplateField.DOMAIN_TYPE) || field.equals(TemplateField.STATE) 
+                            || field.equals(TemplateField.ZIP_CODE))) {
+                        String[] values = StringUtils.split(value, ",");
+                        return this.addFilter(Set.of(values), field, filterOperator);
+                    }
+                    // single value
                     return this.addFilter(Set.of(value), field, filterOperator);
                 default:
                     // TODO:  Do nothing?
@@ -992,19 +1025,17 @@ public record SelectionFilter(
 
             switch(filterOperator) {
                 case "in":
-                    SelectionFieldMapper.LOOKUP.get(field).applyMulti(this, values);
                     // TODO:  Remove.. adding for testing
                     Set<String> strSet = TemplateField.isEnumField(field) ? SelectionFieldMapper.toEnumNameSet(values) : 
                         SelectionFieldMapper.castStringSet(values);
                     LOGGER.debug("addFilter - field {} in {}", field.getLabel(), strSet);
-                    break;
+                    return SelectionFieldMapper.LOOKUP.get(field).applyMulti(this, values);
                 case "eq":
-                    SelectionFieldMapper eqFieldMapper = SelectionFieldMapper.LOOKUP.get(field);
-                    eqFieldMapper.applySingle(this, firstElement);
                     Set<String> eqStrSet = TemplateField.isEnumField(field) ? SelectionFieldMapper.toEnumNameSet(Set.of(firstElement)) : 
                         SelectionFieldMapper.castStringSet(Set.of(firstElement));
                     LOGGER.debug("addFilter - {} eq {}?", field.getLabel(), eqStrSet);
-                    break;
+                    SelectionFieldMapper eqFieldMapper = SelectionFieldMapper.LOOKUP.get(field);
+                    return eqFieldMapper.applySingle(this, firstElement);
                 default:
                     LOGGER.warn("addFilter - unhandled operator.");
                     break;
@@ -1015,17 +1046,13 @@ public record SelectionFilter(
         // TODO: Not used.
         protected Builder addCustomPredicate(SelectionPredicate<String> predicate, TemplateField field, String desc) {
             if(predicate == null) return this;
-            this.customPredicates.add(predicate);
-
             DescribedPredicate<String> describedPredicate = new DescribedPredicate<String>(predicate, field.getLabel()+" "+desc);
             //LOGGER.debug("describedPredicate[text='{}']", describedPredicate.text());
             this.customPredicateMap.merge(field, new HashSet<>(Set.of(describedPredicate)), (oldSet, newSet) -> {
                 oldSet.addAll(newSet);
                 return oldSet;
             });
-
             LOGGER.debug("{}", customPredicateMap.keySet());
-
             return this;
         }
 
@@ -1073,6 +1100,7 @@ public record SelectionFilter(
                     Optional.ofNullable(region),
                     Optional.ofNullable(ethnicity),
                     Optional.ofNullable(domainType),
+                    Optional.ofNullable(domainTypes),
                     Optional.ofNullable(domain),
                     Optional.ofNullable(usernameType),
                     Optional.ofNullable(username),
@@ -1104,93 +1132,78 @@ public record SelectionFilter(
     public String toString() {
         final String FIELD_DELIM = " ";
         StringBuilder sb = new StringBuilder(0);
-        //if(!customPredicates.isEmpty()) {
-        //    sb.append("customPredicates=" + "TRUE" + FIELD_DELIM);
-        //}
-        if(customPredicateMap != null && !customPredicateMap.isEmpty()) {
-            sb.append("customPredicateMap.size()=" + this.customPredicateMap.size() + FIELD_DELIM);
-        }
-        if(startsWithMap != null && !startsWithMap.isEmpty()) {
-            sb.append("startsWithMap.size()=" + this.startsWithMap.size() + FIELD_DELIM);
-        }
-        if(endsWithMap != null && !endsWithMap.isEmpty()) {
-            sb.append("endsWithMap.size()=" + this.endsWithMap.size() + FIELD_DELIM);
-        }
-        if(containsMap != null && !containsMap.isEmpty()) {
-            sb.append("containsMap.size()=" + this.containsMap.size() + FIELD_DELIM);
-        }
-        if(equalToMap != null && !equalToMap.isEmpty()) {
-            sb.append("equalToMap.size()=" + this.equalToMap.size() + FIELD_DELIM);
-        }
-        if(inMap != null && !inMap.isEmpty()) {
-            sb.append("inMap.size()=" + this.inMap.size() + FIELD_DELIM);
-        }
-        if(inEnumMap != null && !inEnumMap.isEmpty()) {
+
+        if(customPredicateMap != null && !customPredicateMap.isEmpty())
+            sb.append("customPredicateMap.size=").append(customPredicateMap.size()).append(FIELD_DELIM);
+
+        if(startsWithMap != null && !startsWithMap.isEmpty())
+            sb.append("startsWithMap.size=").append(startsWithMap.size()).append(FIELD_DELIM);
+
+        if(endsWithMap != null && !endsWithMap.isEmpty())
+            sb.append("endsWithMap.size=").append(endsWithMap.size()).append(FIELD_DELIM);
+
+        if(containsMap != null && !containsMap.isEmpty())
+            sb.append("containsMap.size=").append(containsMap.size()).append(FIELD_DELIM);
+
+        if(equalToMap != null && !equalToMap.isEmpty())
+            sb.append("equalToMap.size=").append(equalToMap.size()).append(FIELD_DELIM);
+
+        if(inMap != null && !inMap.isEmpty())
+            sb.append("inMap.size=").append(inMap.size()).append(FIELD_DELIM);
+
+        if(inEnumMap != null && !inEnumMap.isEmpty())
             sb.append("inEnumMap.size()=" + this.inEnumMap.size() + FIELD_DELIM);
-        }
 
         //
         // 
         //
-        if(!firstName.isEmpty()) sb.append("firstName=" + this.firstName.get()+ FIELD_DELIM);
-        if(!middleName.isEmpty()) sb.append("middleName=" + this.middleName.get()+ FIELD_DELIM);
-        if(!lastName.isEmpty()) sb.append("lastName=" + this.lastName.get()+ FIELD_DELIM);
-        if(!nickName.isEmpty()) sb.append("nickName=" + this.nickName.get()+ FIELD_DELIM);
+        firstName.ifPresent(v -> sb.append("firstName=").append(v).append(FIELD_DELIM));
+        middleName.ifPresent(v -> sb.append("middleName=").append(v).append(FIELD_DELIM));
+        lastName.ifPresent(v -> sb.append("lastName=").append(v).append(FIELD_DELIM));
+        nickName.ifPresent(v -> sb.append("nickName=").append(v).append(FIELD_DELIM));
 
-        if(!gender.isEmpty()) sb.append("gender=" + this.gender.get().name() + FIELD_DELIM);
-        if(!genders.isEmpty()) {
-            //sb.append("genders=" + Arrays.toString(Stream.of(genders.get()).map(GenderIdentity::name).toArray(String[]::new)) + FIELD_DELIM);
-            sb.append("genders=" + genders.get().stream().map(GenderIdentity::name).collect(Collectors.joining()) + FIELD_DELIM);
-        }
+        gender.ifPresent(v -> sb.append("gender=").append(v).append(FIELD_DELIM));
+        genders.ifPresent(vals -> sb.append("genders=").append(String.join(",", GenderIdentity.labels(vals))).append(FIELD_DELIM));
 
-        if(!addressCategory.isEmpty()) sb.append("addressCategory=" + this.addressCategory.get().toString()+ FIELD_DELIM);
-        if(!streetId.isEmpty()) sb.append("streetId=" + this.streetId.get()+ FIELD_DELIM);
+        addressCategory.ifPresent(v -> sb.append("addressCategory=").append(v.getLabel()).append(FIELD_DELIM));
 
-        if(!streetName.isEmpty()) sb.append("streetName=" + this.streetName.get()+ FIELD_DELIM);
-        if(!streetSuffix.isEmpty()) sb.append("streetSuffix=" + this.streetSuffix.get()+ FIELD_DELIM);
+        streetId.ifPresent(v -> sb.append("streetId=").append(v).append(FIELD_DELIM));
+        streetName.ifPresent(v -> sb.append("streetName=").append(v).append(FIELD_DELIM));
+        streetSuffix.ifPresent(v -> sb.append("streetSuffix=").append(v).append(FIELD_DELIM));
 
-        if(!address1.isEmpty()) sb.append("address1=" + this.address1.get().toString()+ FIELD_DELIM);
-        if(!address2.isEmpty()) sb.append("address2=" + this.address2.get().toString()+ FIELD_DELIM);
+        address1.ifPresent(v -> sb.append("address1=").append(v).append(FIELD_DELIM));
+        address2.ifPresent(v -> sb.append("address2=").append(v).append(FIELD_DELIM));
 
-        if(!city.isEmpty()) sb.append("city=" + this.city.get()+ FIELD_DELIM);
+        city.ifPresent(v -> sb.append("city=").append(v).append(FIELD_DELIM));
 
-        if(!state.isEmpty()) {
-            sb.append("state=" + state.get().name() + FIELD_DELIM);
-        }
-        if(!states.isEmpty()) {
-            sb.append("states=" + String.join("$", USState.names(states.get())) + FIELD_DELIM);
-        }
+        state.ifPresent(v -> sb.append("state=").append(v.getLabel()).append(FIELD_DELIM));
+        states.ifPresent(vals -> sb.append("states=").append(String.join("$", USState.labels(vals))).append(FIELD_DELIM));
 
-        if(!zipCode.isEmpty()) {
-            sb.append("zipCode=" + zipCode.get() + FIELD_DELIM);
-        }
-        if(!zipCodes.isEmpty()) {
-            sb.append("zipCodes=" + String.join("$", zipCodes.get()) + FIELD_DELIM);
-        }
+        zipCode.ifPresent(v -> sb.append("zipCode=").append(v).append(FIELD_DELIM));
+        zipCodes.ifPresent(values -> sb.append("zipCodes=").append(String.join("$", values)).append(FIELD_DELIM));
 
-        if(!unitNumber.isEmpty()) {
-            sb.append("unitNumber=" + unitNumber.get().toString() + FIELD_DELIM);
-        }
+        unitNumber.ifPresent(v -> sb.append("unitNumber=").append(v).append(FIELD_DELIM));
+        unitType.ifPresent(v -> sb.append("unitType=").append(v.getLabel()).append(FIELD_DELIM));
 
-        if(!unitType.isEmpty()) {
-            sb.append("unitType=" + unitType.get().toString() + FIELD_DELIM);
-        }
+        birthday.ifPresent(v -> sb.append("birthday=").append(v.format(DATE_FORMATTER)).append(FIELD_DELIM));
 
-        if(!birthday.isEmpty()) sb.append("birthday=" + this.birthday.get().toString() + FIELD_DELIM);
+        generation.ifPresent(g -> sb.append("generation=").append(g.getLabel()).append(FIELD_DELIM));
+        generations.ifPresent(vals -> sb.append("generations=").append(Generation.labels(vals).toString()).append(FIELD_DELIM));
 
-        if(!generation.isEmpty()) sb.append("generation=" + this.generation.get().toString() + FIELD_DELIM);
-        if(!generations.isEmpty()) sb.append("generations=" + this.generations.get().toString() + FIELD_DELIM);
+        ethnicity.ifPresent(v -> sb.append("ethnicity=").append(v.getLabel()).append(FIELD_DELIM));
 
-        if(!ethnicity.isEmpty()) sb.append("ethnicity=" + this.ethnicity.get().toString() + FIELD_DELIM);
+        phoneNumberType.ifPresent(v -> sb.append("phoneNumberType=").append(v.getLabel()).append(FIELD_DELIM));
+        areaCode.ifPresent(v -> sb.append("areaCode=").append(v).append(FIELD_DELIM));
+        phoneNumber.ifPresent(v -> sb.append("phoneNumber=").append(v).append(FIELD_DELIM));
 
-        if(!phoneNumberType.isEmpty()) sb.append("phoneNumberType=" + this.phoneNumberType.get().toString()+ FIELD_DELIM);
-        if(!areaCode.isEmpty()) sb.append("areaCode=" + this.areaCode.get()+ FIELD_DELIM);
+        usernameType.ifPresent(v -> sb.append("usernameType=").append(v.getLabel()).append(FIELD_DELIM));
+        username.ifPresent(v -> sb.append("username=").append(v).append(FIELD_DELIM));
 
-        if(!usernameType.isEmpty()) sb.append("usernameType=" + this.usernameType.get().toString() + FIELD_DELIM);
-        if(!username.isEmpty()) sb.append("username=" + this.username.get()+ FIELD_DELIM);
+        domainType.ifPresent(v -> sb.append("domainType=").append(v.getLabel()).append(FIELD_DELIM));
+        // TODO:  string join?
+        domainTypes.ifPresent(vals -> sb.append("domainTypes=").append(DomainType.labels(vals).toString()).append(FIELD_DELIM));
+        domain.ifPresent(v -> sb.append("domain=").append(v).append(FIELD_DELIM));
 
-        if(!domainType.isEmpty()) sb.append("domainType=" + this.domainType.get().toString() + FIELD_DELIM);
-        if(!domain.isEmpty()) sb.append("domain=" + this.domain.get().toString() + FIELD_DELIM);
         return sb.toString();
     }
 

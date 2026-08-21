@@ -16,9 +16,9 @@ import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetRes
 import com.reneekbartlett.verisimilar.core.model.CityStateZip;
 import com.reneekbartlett.verisimilar.core.model.USState;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
-import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.selector.engine.CityStateZipSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.registry.PostalAddressSelectionEngineRegistry;
+import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
 @DisabledIf(value = "com.reneekbartlett.verisimilar.core.TestUtils#isCoreTestingDisabled")
 public class CityStateZipGeneratorTests {
@@ -61,7 +61,6 @@ public class CityStateZipGeneratorTests {
         CityStateZipSelectionEngine cityStateZipSelector = new CityStateZipSelectionEngine(resolvers, TestUtils.UNIFORM_RANDOM);
         CityStateZipGenerator cityStateZipGenerator = new CityStateZipGenerator(cityStateZipSelector);
 
-        String state = "MA";
         USState ma = USState.MA;
         EnumSet<USState> states = EnumSet.of(USState.MA);
         Set<String> zipCodes = Set.of("01545");
@@ -120,9 +119,6 @@ public class CityStateZipGeneratorTests {
         CityStateZipSelectionEngine cityStateZipSelector = new CityStateZipSelectionEngine(resolvers, TestUtils.UNIFORM_RANDOM);
         CityStateZipGenerator cityStateZipGenerator = new CityStateZipGenerator(cityStateZipSelector);
 
-        String state = "MA";
-        USState ma = USState.MA;
-        EnumSet<USState> states = EnumSet.of(USState.MA);
         Set<String> zipCodes = Set.of("01545");
 
         //
@@ -130,7 +126,6 @@ public class CityStateZipGeneratorTests {
         //
         SelectionFilter filter = SelectionFilter.builder()
                 .city("SHREWSBURY")
-                //.states(states)
                 .zipCodes(zipCodes)
                 .build();
 
