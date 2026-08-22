@@ -1,8 +1,6 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +21,7 @@ public class LastNameGeneratorTests {
 
         String lastName = lastNameGenerator.generate();
         LOGGER.debug("lastName="+lastName);
-        Assertions.assertNotNull(lastName);
+        Assertions.assertThat(lastName).isNotNull();
     }
 
     @Test
@@ -33,7 +31,7 @@ public class LastNameGeneratorTests {
 
         String lastName = lastNameGenerator.generate();
         LOGGER.debug("lastName="+lastName);
-        Assertions.assertNotNull(lastName);
+        Assertions.assertThat(lastName).isNotNull();
     }
 
     @Test
@@ -43,13 +41,13 @@ public class LastNameGeneratorTests {
 
         SelectionFilter filter = SelectionFilter.builder()
                 .ethnicity(Ethnicity.CHINESE).build();
-        assertThat(filter.ethnicity()).isPresent();
-        assertThat(filter.ethnicity().get()).isEqualTo(Ethnicity.CHINESE);
+        Assertions.assertThat(filter.ethnicity()).isPresent();
+        Assertions.assertThat(filter.ethnicity().get()).isEqualTo(Ethnicity.CHINESE);
 
         String lastName = lastNameGenerator.generate(filter);
 
         LOGGER.debug("lastName="+lastName);
-        assertThat(lastName).isNotNull();
+        Assertions.assertThat(lastName).isNotNull();
     }
 
     @Test
@@ -64,8 +62,8 @@ public class LastNameGeneratorTests {
         String lastName = lastNameGenerator.generate(filter);
 
         LOGGER.debug("lastName="+lastName);
-        assertThat(lastName).isNotNull();
-        assertThat(lastName).endsWith("TT");
+        Assertions.assertThat(lastName).isNotNull();
+        Assertions.assertThat(lastName).endsWith("TT");
 
     }
 }

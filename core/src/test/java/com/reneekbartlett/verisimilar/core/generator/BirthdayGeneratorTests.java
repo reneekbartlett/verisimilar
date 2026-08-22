@@ -2,7 +2,7 @@ package com.reneekbartlett.verisimilar.core.generator;
 
 import java.time.LocalDate;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.slf4j.Logger;
@@ -22,15 +22,14 @@ public class BirthdayGeneratorTests {
     @Test
     public void GeneratedBirthday_ShouldBeBetweenDefaults() {
         BirthdayGenerator birthdayGenerator = new BirthdayGenerator();
-        LocalDate birthday = birthdayGenerator.generate();
 
+        LocalDate birthday = birthdayGenerator.generate();
         LOGGER.debug("birthday=" + birthday + ", DEFAULT_MIN_YEAR=" + BirthdayGenerator.DEFAULT_MIN_YEAR + 
                 ", DEFAULT_MAX_YEAR=" + BirthdayGenerator.DEFAULT_MAX_YEAR);
-        Assertions.assertNotNull(birthday);
-        Assertions.assertTrue(birthday.getYear() >= BirthdayGenerator.DEFAULT_MIN_YEAR, 
-                "Should be between " + BirthdayGenerator.DEFAULT_MIN_YEAR + " and " + BirthdayGenerator.DEFAULT_MAX_YEAR +"");
-        Assertions.assertTrue(birthday.getYear() <= BirthdayGenerator.DEFAULT_MAX_YEAR, 
-                "Should be between " + BirthdayGenerator.DEFAULT_MIN_YEAR + " and " + BirthdayGenerator.DEFAULT_MAX_YEAR +"");
+        Assertions.assertThat(birthday).isNotNull();
+
+        Assertions.assertThat(birthday.getYear()).isGreaterThanOrEqualTo(BirthdayGenerator.DEFAULT_MIN_YEAR)
+            .isLessThanOrEqualTo(BirthdayGenerator.DEFAULT_MAX_YEAR);
     }
 
     @Test
@@ -46,7 +45,7 @@ public class BirthdayGeneratorTests {
 
         LOGGER.debug("birthday=" + birthday + ", minYear=" + minYear + 
                 ", maxYear=" + maxYear);
-        Assertions.assertTrue(birthday.getYear() >= minYear, "Should be between " + minYear + " and " + maxYear +"");
-        Assertions.assertTrue(birthday.getYear() <= maxYear, "Should be between " + minYear + " and " + maxYear +"");
+        
+        Assertions.assertThat(birthday.getYear()).isGreaterThanOrEqualTo(minYear).isLessThanOrEqualTo(maxYear);
     }
 }

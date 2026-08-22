@@ -1,11 +1,9 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.EnumSet;
 import java.util.Set;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.slf4j.Logger;
@@ -33,7 +31,7 @@ public class PostalAddressGeneratorTests {
         PostalAddress postalAddress = postalAddressGenerator.generate();
         //LOGGER.debug(postalAddress.toString());
 
-        Assertions.assertNotNull(postalAddress);
+        Assertions.assertThat(postalAddress).isNotNull();
     }
 
     @Test
@@ -49,8 +47,8 @@ public class PostalAddressGeneratorTests {
         PostalAddress postalAddress = postalAddressGenerator.generate(filter);
         //LOGGER.debug(postalAddress.toString());
 
-        Assertions.assertNotNull(postalAddress);
-        Assertions.assertTrue(states.contains(postalAddress.state()));
+        Assertions.assertThat(postalAddress).isNotNull();
+        Assertions.assertThat(postalAddress.state()).isIn(states);
     }
 
     @Test
@@ -65,17 +63,18 @@ public class PostalAddressGeneratorTests {
         SelectionFilter filter1 = SelectionFilter.builder().states(states).build();
         PostalAddress postalAddress1 = postalAddressGenerator.generate(filter1);
         //LOGGER.debug(postalAddress1.toString());
-        Assertions.assertTrue(states.contains(postalAddress1.state()));
+        Assertions.assertThat(postalAddress1.state()).isIn(states);
 
         SelectionFilter filter2 = SelectionFilter.builder().states(states).build();
         PostalAddress postalAddress2 = postalAddressGenerator.generate(filter2);
         //LOGGER.debug(postalAddress2.toString());
-        Assertions.assertTrue(states.contains(postalAddress2.state()));
+        //Assertions.assertTrue(states.contains(postalAddress2.state()));
+        Assertions.assertThat(postalAddress2.state()).isIn(states);
 
         SelectionFilter filter3 = SelectionFilter.builder().states(states).build();
         PostalAddress postalAddress3 = postalAddressGenerator.generate(filter3);
         //LOGGER.debug(postalAddress3.toString());
-        Assertions.assertTrue(states.contains(postalAddress3.state()));
+        Assertions.assertThat(postalAddress3.state()).isIn(states);
     }
 
     @Test
@@ -90,9 +89,9 @@ public class PostalAddressGeneratorTests {
 
         //LOGGER.debug(postalAddress.toString());
 
-        Assertions.assertNotNull(postalAddress);
-        Assertions.assertTrue(postalAddress.state().equals(USState.MA));
-        Assertions.assertTrue(postalAddress.zip().equalsIgnoreCase("01545"));
+        Assertions.assertThat(postalAddress).isNotNull();
+        Assertions.assertThat(postalAddress.state()).isEqualTo(USState.MA);
+        Assertions.assertThat(postalAddress.zip()).isEqualTo("01545");
     }
 
     @Test
@@ -109,8 +108,9 @@ public class PostalAddressGeneratorTests {
 
         //LOGGER.debug(postalAddress.toString());
 
-        Assertions.assertNotNull(postalAddress);
-        Assertions.assertTrue(postalAddress.state().equals(USState.MA));
+        Assertions.assertThat(postalAddress).isNotNull();
+        Assertions.assertThat(postalAddress.state()).isEqualTo(USState.MA);
+        //Assertions.assertTrue(postalAddress.state().equals(USState.MA));
         //Assertions.assertTrue(postalAddress.zip().equalsIgnoreCase("01545"));
     }
 
@@ -126,9 +126,8 @@ public class PostalAddressGeneratorTests {
         PostalAddress postalAddress = postalAddressGenerator.generate(filterBuilder.build());
 
         //LOGGER.debug("postalAddress=" + postalAddress.toString());
-        Assertions.assertNotNull(postalAddress);
-        Assertions.assertTrue(states.contains(postalAddress.state()));
-
+        Assertions.assertThat(postalAddress).isNotNull();
+        Assertions.assertThat(postalAddress.state()).isIn(states);
     }
 
     @Test
@@ -142,8 +141,8 @@ public class PostalAddressGeneratorTests {
         PostalAddress postalAddress = postalAddressGenerator.generate(filterBuilder.build());
 
         //LOGGER.debug("postalAddress=" + postalAddress.toString());
-        Assertions.assertNotNull(postalAddress);
-        Assertions.assertTrue(postalAddress.address1().toString().toUpperCase().contains(" MAIN "));
+        Assertions.assertThat(postalAddress).isNotNull();
+        Assertions.assertThat(postalAddress.address1().toString()).containsIgnoringCase(" MAIN ");
 
     }
 
@@ -160,9 +159,8 @@ public class PostalAddressGeneratorTests {
         PostalAddress postalAddress = postalAddressGenerator.generate(filterBuilder.build());
 
         LOGGER.debug("postalAddress=" + postalAddress.toString());
-        Assertions.assertNotNull(postalAddress);
-        Assertions.assertTrue(postalAddress.address1().toString().toUpperCase().contains(" ST"));
-
+        Assertions.assertThat(postalAddress).isNotNull();
+        Assertions.assertThat(postalAddress.address1().toString()).containsIgnoringCase("ST");
     }
 
     @Test
@@ -178,8 +176,8 @@ public class PostalAddressGeneratorTests {
 
         LOGGER.debug("postalAddress=" + postalAddress.toString());
 
-        assertThat(postalAddress).isNotNull();
-        assertThat(postalAddress.address2().toString().toUpperCase()).contains("UNIT").contains("27");
-        assertThat(postalAddress.address2().unitType()).isEqualTo(UnitType.UNIT);
+        Assertions.assertThat(postalAddress).isNotNull();
+        Assertions.assertThat(postalAddress.address2().toString().toUpperCase()).contains("UNIT").contains("27");
+        Assertions.assertThat(postalAddress.address2().unitType()).isEqualTo(UnitType.UNIT);
     }
 }

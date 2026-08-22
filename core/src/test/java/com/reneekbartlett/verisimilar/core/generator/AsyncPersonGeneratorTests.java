@@ -1,8 +1,6 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +26,7 @@ public class AsyncPersonGeneratorTests {
         AsyncPersonGenerator generator = new AsyncPersonGenerator(TestUtils.getDatasetSelectionEngineRegistry());
         PersonRecord person = generator.generate();
         LOGGER.debug("Generated person: {}", person);
-        Assertions.assertNotNull(person);
+        Assertions.assertThat(person).isNotNull();
     }
 
     // TODO:  Fix.
@@ -48,10 +46,10 @@ public class AsyncPersonGeneratorTests {
         PersonRecord person = asyncGenerator.generate(filter);
         LOGGER.debug("Generated person: {}", person);
 
-        assertThat(person).isNotNull();
-        assertThat(person.firstName().toUpperCase()).startsWith("T");
-        assertThat(person.lastName().toUpperCase()).isEqualTo(lastName);
-        assertThat(person.city().toUpperCase()).isEqualTo(city);
+        Assertions.assertThat(person).isNotNull();
+        Assertions.assertThat(person.firstName().toUpperCase()).startsWith("T");
+        Assertions.assertThat(person.lastName().toUpperCase()).isEqualTo(lastName);
+        Assertions.assertThat(person.city().toUpperCase()).isEqualTo(city);
     }
 
     @Test
@@ -75,9 +73,9 @@ public class AsyncPersonGeneratorTests {
         PersonRecord person = asyncGenerator.generate(filter);
         LOGGER.debug("Generated person: {}", person);
 
-        Assertions.assertTrue(person.firstName().equalsIgnoreCase(firstName));
-        Assertions.assertTrue(person.lastName().toUpperCase().startsWith(lastNameChars));
+        Assertions.assertThat(person.firstName()).isEqualToIgnoringCase(firstName);
+        Assertions.assertThat(person.lastName()).startsWithIgnoringCase(lastNameChars);
 
-        Assertions.assertTrue(person.emailAddress().domain().equalsIgnoreCase(domain));
+        Assertions.assertThat(person.emailAddress().domain()).isEqualToIgnoringCase(domain);
     }
 }

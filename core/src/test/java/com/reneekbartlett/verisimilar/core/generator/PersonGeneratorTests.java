@@ -1,11 +1,9 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.EnumSet;
 import java.util.Set;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,15 +28,14 @@ public class PersonGeneratorTests {
         PersonRecord person = personGenerator.generate();
 
         LOGGER.debug("person=" + person.toString());
-        Assertions.assertNotNull(person);
+        Assertions.assertThat(person).isNotNull();
 
-        assertThat(person).isNotNull();
-        assertThat(person.fullName()).isNotNull();
-        assertThat(person.firstName()).isNotNull();
-        assertThat(person.middleName()).isNotNull();
-        assertThat(person.lastName()).isNotNull();
+        Assertions.assertThat(person.fullName()).isNotNull();
+        Assertions.assertThat(person.firstName()).isNotNull();
+        Assertions.assertThat(person.middleName()).isNotNull();
+        Assertions.assertThat(person.lastName()).isNotNull();
 
-        assertThat(person.firstName()).isNotEqualTo(person.middleName());
+        Assertions.assertThat(person.firstName()).isNotEqualTo(person.middleName());
     }
 
     @Test
@@ -59,7 +56,7 @@ public class PersonGeneratorTests {
         PersonRecord person1 = personGenerator.generate(filter1);
 
         LOGGER.debug("person1=" + person1.toString());
-        assertThat(person1).isNotNull();
+        Assertions.assertThat(person1).isNotNull();
 
 
         SelectionFilter filter2 = SelectionFilter.builder()
@@ -67,7 +64,7 @@ public class PersonGeneratorTests {
         PersonRecord person2 = personGenerator.generate(filter2);
 
         LOGGER.debug("person2=" + person2.toString());
-        assertThat(person2).isNotNull();
+        Assertions.assertThat(person2).isNotNull();
     }
     
 }

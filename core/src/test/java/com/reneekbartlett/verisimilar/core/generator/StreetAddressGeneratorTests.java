@@ -1,7 +1,6 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +52,7 @@ public class StreetAddressGeneratorTests {
         StreetAddress streetAddress1 = streetAddressGenerator.generate(filter);
         LOGGER.debug(streetAddress1.toString());
 
-        assertThat(streetAddress1.addressLineOne()).isNotNull();
+        Assertions.assertThat(streetAddress1.addressLineOne()).isNotNull();
     }
 
     @Test
@@ -72,7 +71,7 @@ public class StreetAddressGeneratorTests {
                 .build();
         StreetAddress streetAddress1 = streetAddressGenerator.generate(filter);
         LOGGER.debug(streetAddress1.toString());
-        assertThat(streetAddress1.addressLineOne()).isNotNull();
+        Assertions.assertThat(streetAddress1.addressLineOne()).isNotNull();
         //Assertions.assertTrue(streetAddress1.address1());
     }
 
@@ -95,8 +94,8 @@ public class StreetAddressGeneratorTests {
         StreetAddress streetAddress1 = streetAddressGenerator.generate(filter);
         LOGGER.debug("streetAddress1={}", streetAddress1.toString());
 
-        assertThat(streetAddress1.addressLineOne()).isNotNull();
-        assertThat(streetAddress1.addressLineTwo()).isNotNull();
-        assertThat(streetAddress1.addressLineTwo().address2().toUpperCase()).contains("UNIT").contains("27");
+        Assertions.assertThat(streetAddress1.addressLineOne()).isNotNull();
+        Assertions.assertThat(streetAddress1.addressLineTwo()).isNotNull();
+        Assertions.assertThat(streetAddress1.addressLineTwo().address2().toUpperCase()).contains("UNIT").contains("27");
     }
 }

@@ -1,11 +1,10 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +56,7 @@ public class PhoneNumberGeneratorTests {
         String areaCodesStrForMA = "339|351|413|508|617|774|781|857|978";
         List<String> areaCodesForMA = Arrays.asList(areaCodesStrForMA.split("\\|"));
 
-        assertThat(phoneNumber1.areaCode()).isIn(areaCodesForMA);
+        Assertions.assertThat(phoneNumber1.areaCode()).isIn(areaCodesForMA);
     }
 
     //AK,907
@@ -80,7 +79,7 @@ public class PhoneNumberGeneratorTests {
         String areaCodesStrForAK = "907";
         List<String> areaCodesForAK = Arrays.asList(areaCodesStrForAK.split("\\|"));
 
-        assertThat(phoneNumber1.areaCode()).isEqualTo("907").isIn(areaCodesForAK);
+        Assertions.assertThat(phoneNumber1.areaCode()).isEqualTo("907").isIn(areaCodesForAK);
     }
 
     @Test
@@ -96,13 +95,13 @@ public class PhoneNumberGeneratorTests {
         PhoneNumber phoneNumber1 = phoneNumberGenerator.generate(criteria);
         LOGGER.debug(phoneNumber1.toString());
 
-        assertThat(phoneNumber1.toString()).matches("^\\d{3}-\\d{3}-\\d{4}$");
+        Assertions.assertThat(phoneNumber1.toString()).matches("^\\d{3}-\\d{3}-\\d{4}$");
 
-        assertThat(phoneNumber1.areaCode()).isEqualTo("917").containsOnlyDigits();
+        Assertions.assertThat(phoneNumber1.areaCode()).isEqualTo("917").containsOnlyDigits();
 
-        assertThat(phoneNumber1.exchangeCode()).isNotNull().containsOnlyDigits();
+        Assertions.assertThat(phoneNumber1.exchangeCode()).isNotNull().containsOnlyDigits();
 
-        assertThat(phoneNumber1.lineNumber()).isNotNull().containsOnlyDigits();
+        Assertions.assertThat(phoneNumber1.lineNumber()).isNotNull().containsOnlyDigits();
 
     }
 }

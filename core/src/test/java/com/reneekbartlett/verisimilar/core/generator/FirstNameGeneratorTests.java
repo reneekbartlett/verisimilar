@@ -1,8 +1,6 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +24,7 @@ public class FirstNameGeneratorTests {
 
         String firstName = firstNameGenerator.generate();
         LOGGER.debug("firstName="+firstName);
-        Assertions.assertNotNull(firstName);
+        Assertions.assertThat(firstName).isNotNull();
     }
 
     @Test
@@ -40,7 +38,7 @@ public class FirstNameGeneratorTests {
 
         String femaleName = firstNameGenerator.generate(ctx, criteria);
         LOGGER.debug("femaleName="+femaleName);
-        Assertions.assertNotNull(femaleName);
+        Assertions.assertThat(femaleName).isNotNull();
     }
 
     @Test
@@ -54,7 +52,7 @@ public class FirstNameGeneratorTests {
 
         String maleName = firstNameGenerator.generate(criteria);
         LOGGER.debug("maleName="+maleName);
-        Assertions.assertNotNull(maleName);
+        Assertions.assertThat(maleName).isNotNull();
     }
 
     @Test
@@ -67,12 +65,12 @@ public class FirstNameGeneratorTests {
                 .gender(GenderIdentity.GENDER_UNSPECIFIED)
                 .addFilter("SKYLER", TemplateField.FIRST_NAME, "startswith")
                 .build();
-        assertThat(filter.gender()).isPresent();
-        assertThat(filter.gender().get()).isEqualTo(GenderIdentity.GENDER_UNSPECIFIED);
+        Assertions.assertThat(filter.gender()).isPresent();
+        Assertions.assertThat(filter.gender().get()).isEqualTo(GenderIdentity.GENDER_UNSPECIFIED);
 
         String unisexName = firstNameGenerator.generate(filter);
         LOGGER.debug("unisexName="+unisexName);
-        assertThat(unisexName).isNotNull();
+        Assertions.assertThat(unisexName).isNotNull();
         
         
     }

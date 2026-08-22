@@ -1,9 +1,6 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.assertj.core.api.filter.FilterOperator;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +31,9 @@ public class FullNameGeneratorTests {
 
         FullName fullName = fullNameGenerator.generate();
         LOGGER.debug("fullName=" + fullName.toString());
-        Assertions.assertNotNull(fullName);
+        Assertions.assertThat(fullName).isNotNull();
 
-        Assertions.assertTrue(fullName.firstName() != fullName.middleName());
+        Assertions.assertThat(fullName.firstName()).isNotEqualToIgnoringCase(fullName.middleName());
     }
 
     @Test
@@ -52,7 +49,7 @@ public class FullNameGeneratorTests {
         FullName fullNameFemale = fullNameGenerator.generate(filter);
 
         LOGGER.debug("fullNameFemale=" + fullNameFemale.toString());
-        Assertions.assertNotNull(fullNameFemale);
+        Assertions.assertThat(fullNameFemale).isNotNull();
     }
 
     @Test
@@ -69,7 +66,7 @@ public class FullNameGeneratorTests {
         SelectionFilter filter = SelectionFilter.builder().gender(GenderIdentity.MALE).build();
         FullName fullNameMale = fullNameGenerator.generate(filter);
         LOGGER.debug("fullNameMale=" + fullNameMale.toString());
-        Assertions.assertNotNull(fullNameMale);
+        Assertions.assertThat(fullNameMale).isNotNull();
     }
 
     @Test
@@ -86,7 +83,7 @@ public class FullNameGeneratorTests {
         FullName fullName = fullNameGenerator.generate(filter);
 
         LOGGER.debug("fullName=" + fullName.toString());
-        Assertions.assertNotNull(fullName);
+        Assertions.assertThat(fullName).isNotNull();
     }
 
     @Test
@@ -109,10 +106,10 @@ public class FullNameGeneratorTests {
         FullName fullName = fullNameGenerator.generate(filterBuilder.build());
 
         LOGGER.debug("fullName=" + fullName.toString());
-        Assertions.assertNotNull(fullName);
-        
-        Assertions.assertTrue(fullName.lastName().equalsIgnoreCase("BARTLETT"));
-        Assertions.assertTrue(fullName.firstName().equalsIgnoreCase("RENEE"));
+        Assertions.assertThat(fullName).isNotNull();
+
+        Assertions.assertThat(fullName.lastName()).isEqualToIgnoringCase("BARTLETT");
+        Assertions.assertThat(fullName.firstName()).isEqualToIgnoringCase("RENEE");
         // TODO ASSERT RENEE {} BARTLETT
     }
 
@@ -135,9 +132,9 @@ public class FullNameGeneratorTests {
         FullName fullName = fullNameGenerator.generate(filterBuilder.build());
 
         LOGGER.debug("fullName=" + fullName.toString());
-        Assertions.assertNotNull(fullName);
+        Assertions.assertThat(fullName).isNotNull();
 
-        assertThat(fullName.firstName()).startsWith("R");
-        assertThat(fullName.lastName()).endsWith("T");
+        Assertions.assertThat(fullName.firstName()).startsWith("R");
+        Assertions.assertThat(fullName.lastName()).endsWith("T");
     }
 }

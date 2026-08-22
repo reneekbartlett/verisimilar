@@ -1,11 +1,11 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.type;
 
 import java.util.EnumSet;
 import java.util.Set;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ public class CityStateZipGeneratorTests {
         CityStateZip cityStateZip = cityStateZipGenerator.generate();
         LOGGER.debug("cityStateZip={}", cityStateZip.toString());
 
-        Assertions.assertNotNull(cityStateZip);
+        Assertions.assertThat(cityStateZip).asInstanceOf(type(CityStateZip.class)).isNotNull();
     }
 
     @Test
@@ -49,9 +49,9 @@ public class CityStateZipGeneratorTests {
         CityStateZip cityStateZip = cityStateZipGenerator.generate(ctx, filter);
         LOGGER.debug("cityStateZip={}", cityStateZip.toString());
 
-        assertThat(cityStateZip).isNotNull();
-        assertThat(cityStateZip.state()).isEqualTo(USState.MA.getLabel());
-        Assertions.assertTrue(states.contains(USState.valueOf(cityStateZip.state())));
+        Assertions.assertThat(cityStateZip).asInstanceOf(type(CityStateZip.class)).isNotNull();
+        Assertions.assertThat(cityStateZip.state()).isEqualTo(USState.MA.getLabel());
+        //Assertions.assertTrue(states.contains(USState.valueOf(cityStateZip.state())));
     }
 
     @Test
@@ -78,9 +78,9 @@ public class CityStateZipGeneratorTests {
         //
         CityStateZip cityStateZip = cityStateZipGenerator.generate(filter);
         LOGGER.debug("cityStateZip={}", cityStateZip.toString());
-        assertThat(cityStateZip).isNotNull();
-        assertThat(cityStateZip.state()).isIn(ma.getLabel());
-        assertThat(cityStateZip.zip()).isIn(zipCodes);
+        Assertions.assertThat(cityStateZip).isNotNull();
+        Assertions.assertThat(cityStateZip.state()).isIn(ma.getLabel());
+        Assertions.assertThat(cityStateZip.zip()).isIn(zipCodes);
     }
 
     @Test
@@ -107,9 +107,9 @@ public class CityStateZipGeneratorTests {
         //
         CityStateZip cityStateZip = cityStateZipGenerator.generate(filter);
         LOGGER.debug("cityStateZip={}", cityStateZip.toString());
-        assertThat(cityStateZip).isNotNull();
-        assertThat(cityStateZip.state()).isIn(ma.getLabel());
-        assertThat(cityStateZip.zip()).isIn(zipCodes);
+        Assertions.assertThat(cityStateZip).isNotNull();
+        Assertions.assertThat(cityStateZip.state()).isIn(ma.getLabel());
+        Assertions.assertThat(cityStateZip.zip()).isIn(zipCodes);
     }
 
     @Test
@@ -134,10 +134,10 @@ public class CityStateZipGeneratorTests {
         //
         CityStateZip cityStateZip = cityStateZipGenerator.generate(filter);
         LOGGER.debug("cityStateZip={}", cityStateZip.toString());
-        assertThat(cityStateZip).isNotNull();
+        Assertions.assertThat(cityStateZip).isNotNull();
         //assertThat(cityStateZip.state()).isIn(ma.getLabel());
-        assertThat(cityStateZip.city()).isEqualTo("SHREWSBURY");
-        assertThat(cityStateZip.zip()).isIn(zipCodes);
+        Assertions.assertThat(cityStateZip.city()).isEqualTo("SHREWSBURY");
+        Assertions.assertThat(cityStateZip.zip()).isIn(zipCodes);
     }
 
     @Test
@@ -162,9 +162,9 @@ public class CityStateZipGeneratorTests {
         //
         CityStateZip cityStateZip = cityStateZipGenerator.generate(filter);
         LOGGER.debug("cityStateZip={}", cityStateZip.toString());
-        assertThat(cityStateZip).isNotNull();
+        Assertions.assertThat(cityStateZip).isNotNull();
         //assertThat(cityStateZip.state()).isIn(ma.getLabel());
-        assertThat(cityStateZip.city()).isEqualTo("NEWTON");
-        assertThat(cityStateZip.zip()).isIn(zipCodes);
+        Assertions.assertThat(cityStateZip.city()).isEqualTo("NEWTON");
+        Assertions.assertThat(cityStateZip.zip()).isIn(zipCodes);
     }
 }

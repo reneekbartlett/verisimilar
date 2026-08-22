@@ -1,6 +1,6 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.slf4j.Logger;
@@ -32,6 +32,8 @@ public class EmailAddressGeneratorTests {
 
         EmailAddressRecord emailAddress1 = emailAddressGenerator.generate();
         LOGGER.debug("emailAddress1=" + emailAddress1.email());
+
+        Assertions.assertThat(emailAddress1).isNotNull();
     }
 
     @Test
@@ -44,9 +46,14 @@ public class EmailAddressGeneratorTests {
 
         EmailAddressGenerator emailAddressGenerator = new EmailAddressGenerator(usernameSelector, domainSelector, keywordSelector);
 
-        SelectionFilter filter = SelectionFilter.builder().firstName("Chip").build();
+        SelectionFilter filter = SelectionFilter.builder()
+                .firstName("Chip")
+                .build();
         EmailAddressRecord emailAddress1 = emailAddressGenerator.generate(filter);
         LOGGER.debug("emailAddress1=" + emailAddress1.email());
+
+        Assertions.assertThat(emailAddress1).isNotNull();
+        Assertions.assertThat(emailAddress1.email()).isNotNull();
     }
 
     @Test
@@ -62,6 +69,8 @@ public class EmailAddressGeneratorTests {
         SelectionFilter filter = SelectionFilter.builder().firstName("CHIP").lastName("SMITH").build();
         EmailAddressRecord emailAddress1 = emailAddressGenerator.generate(filter);
         LOGGER.debug("emailAddress1=" + emailAddress1.email());
+
+        Assertions.assertThat(emailAddress1).isNotNull();
     }
 
     @Test
@@ -80,7 +89,8 @@ public class EmailAddressGeneratorTests {
         EmailAddressRecord emailAddress1 = emailAddressGenerator.generate(filter);
         LOGGER.debug("emailAddress1=" + emailAddress1.email());
 
-        Assertions.assertTrue(emailAddress1.domain().equalsIgnoreCase("CHEWY.COM"));
+        Assertions.assertThat(emailAddress1).isNotNull();
+        Assertions.assertThat(emailAddress1.domain()).isEqualToIgnoringCase("CHEWY.COM");
     }
 
     @Test
@@ -99,7 +109,7 @@ public class EmailAddressGeneratorTests {
         EmailAddressRecord emailAddress1 = emailAddressGenerator.generate(filter);
         LOGGER.debug("emailAddress1=" + emailAddress1.email());
 
-        Assertions.assertTrue(emailAddress1.username().equalsIgnoreCase("CHIPPYCHIPPY123"));
+        Assertions.assertThat(emailAddress1.username()).isEqualToIgnoringCase("CHIPPYCHIPPY123");
     }
 
     /***
@@ -121,6 +131,7 @@ public class EmailAddressGeneratorTests {
         EmailAddressRecord emailAddress1 = emailAddressGenerator.generate(filter);
         LOGGER.debug("emailAddress1=" + emailAddress1.email());
 
-        Assertions.assertTrue(emailAddress1.type().equals(DomainType.GOV));
+        Assertions.assertThat(emailAddress1).isNotNull();
+        Assertions.assertThat(emailAddress1.type()).isEqualTo(DomainType.GOV);
     }
 }

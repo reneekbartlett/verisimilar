@@ -1,6 +1,6 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ public class MiddleNameGeneratorTests {
 
         String middleName = middleNameGenerator.generate();
         LOGGER.debug("middleName="+middleName);
-        Assertions.assertNotNull(middleName);
+        Assertions.assertThat(middleName).isNotNull();
     }
 
     @Test
@@ -34,7 +34,7 @@ public class MiddleNameGeneratorTests {
 
         String femaleName = middleNameGenerator.generate(ctx, criteria);
         LOGGER.debug("femaleName="+femaleName);
-        Assertions.assertNotNull(femaleName);
+        Assertions.assertThat(femaleName).isNotNull();
     }
 
     @Test
@@ -47,6 +47,6 @@ public class MiddleNameGeneratorTests {
 
         String maleName = middleNameGenerator.generate(ctx, criteria);
         LOGGER.debug("maleName="+maleName);
-        Assertions.assertNotNull(maleName);
+        Assertions.assertThat(maleName).isNotNull();
     }
 }
