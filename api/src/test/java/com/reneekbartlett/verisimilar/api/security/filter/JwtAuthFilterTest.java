@@ -2,6 +2,8 @@ package com.reneekbartlett.verisimilar.api.security.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +24,7 @@ import com.reneekbartlett.verisimilar.api.security.JwtAuthToken;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -69,12 +71,12 @@ public class JwtAuthFilterTest {
         // 1. Verify the manager was invoked with the extracted credentials
         ArgumentCaptor<Authentication> authCaptor = ArgumentCaptor.forClass(Authentication.class);
         verify(authenticationManager).authenticate(authCaptor.capture());
-        assertEquals(rawToken, authCaptor.getValue().getCredentials());
+        Assertions.assertThat(authCaptor.getValue().getCredentials()).isEqualTo(rawToken);
 
         // 2. Verify security context holds the authentication payload
         Authentication contextAuth = SecurityContextHolder.getContext().getAuthentication();
-        assertNotNull(contextAuth);
-        assertEquals("john_doe", contextAuth.getPrincipal());
+        Assertions.assertThat(contextAuth).isNotNull();
+        Assertions.assertThat(contextAuth.getPrincipal()).isEqualTo("john_doe");
 
         // 3. Verify filter chain execution successfully continued to the next filter
         verify(filterChain).doFilter(request, response);
@@ -88,7 +90,7 @@ public class JwtAuthFilterTest {
         // Assert
         // Filter should bypass token parsing if the header isn't present
         verify(authenticationManager, never()).authenticate(any());
-        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        Assertions.assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
         verify(filterChain).doFilter(request, response);
     }
 
@@ -102,7 +104,7 @@ public class JwtAuthFilterTest {
 
         // Assert
         verify(authenticationManager, never()).authenticate(any());
-        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        Assertions.assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
         verify(filterChain).doFilter(request, response);
     }
 
@@ -119,13 +121,13 @@ public class JwtAuthFilterTest {
                 .thenThrow(new BadCredentialsException("The provided JSON Web Token is invalid or expired."));
 
         // Act & Assert
-        assertThrows(BadCredentialsException.class, () -> {
-            jwtAuthFilter.doFilterInternal(request, response, filterChain);
-        });
+        assertThatThrownBy(() -> jwtAuthFilter.doFilterInternal(request, response, filterChain))
+            .isInstanceOf(BadCredentialsException.class)
+            .hasMessageContaining("The provided JSON Web Token is invalid or expired.");
 
         // Context must be nullified to prevent stale/incorrect sessions
-        assertNull(SecurityContextHolder.getContext().getAuthentication());
-        
+        Assertions.assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
+
         // Chain should abort immediately—never continuing down to controllers
         verify(filterChain, never()).doFilter(request, response);
     }
