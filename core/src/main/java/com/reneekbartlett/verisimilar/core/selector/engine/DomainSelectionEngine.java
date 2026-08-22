@@ -29,12 +29,12 @@ public class DomainSelectionEngine extends AbstractSelectionEngine<DomainDataset
         }
     }
 
-    public DomainSelectionEngine(DatasetResolverRegistry resolvers) {
-        this(resolvers, DEFAULT_SELECTOR_STRATEGY);
-    }
-
     public DomainSelectionEngine(DatasetResolverRegistry resolvers, SelectorStrategy<String> strategy) {
         super(resolvers, strategy);
+    }
+
+    public DomainSelectionEngine(DatasetResolverRegistry resolvers) {
+        this(resolvers, DEFAULT_SELECTOR_STRATEGY);
     }
 
     public DomainSelectionEngine(DomainDatasetResolver resolver) {
@@ -42,6 +42,7 @@ public class DomainSelectionEngine extends AbstractSelectionEngine<DomainDataset
     }
 
     protected void setup() {
+        //LOGGER.debug("setup started");
         this.domainTypesMap = DomainType.defaultMap();
         DomainDatasetResult domainDatasetResult = datasetResolver().resolve(DomainDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(domainDatasetResult.datasets().size());
@@ -49,6 +50,7 @@ public class DomainSelectionEngine extends AbstractSelectionEngine<DomainDataset
             RandomSelector<String> selector = strategy.buildSelector(map, field());
             selectorsByNameKey.put(nameKey, selector);
         });
+        //LOGGER.debug("setup - {}", selectorsByNameKey.keySet().toString());
     }
 
     @Override

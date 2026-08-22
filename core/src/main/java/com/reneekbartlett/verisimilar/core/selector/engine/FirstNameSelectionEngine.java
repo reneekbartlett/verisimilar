@@ -33,7 +33,7 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
         }
         @Override
         public String toString() {
-            StringBuilder sb = new StringBuilder(0).append("dataset$firstname");
+            StringBuilder sb = new StringBuilder(0).append("dataset$first_name");
             if(gender != null) sb.append("$gender:"+gender.getPlaceholder());
             if(ethnicity != null) sb.append("$ethnicity:" + ethnicity.getPlaceholder());
             return sb.toString();
@@ -75,12 +75,15 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
             for(Ethnicity ethnicity : ethnicitiesMap.keySet()){
                 genderIdentityMap.keySet().forEach(gender -> {
                     NameKey nameKey = new NameKey(gender, ethnicity, Decade.ALL);
+                    LOGGER.debug("{}", nameKey);
+                    var tmpValMap = firstNameDatasetResult.get(nameKey);
+                    
                     RandomSelector<String> selector = strategy.buildSelector(firstNameDatasetResult.get(nameKey), field());
                     selectorsByNameKey.put(nameKey, selector);
                 });
             }
         }
-        //LOGGER.debug("FirstNameSelectioEngine setup complete");
+        LOGGER.debug("FirstNameSelectionEngine setup complete");
         return;
     }
 
