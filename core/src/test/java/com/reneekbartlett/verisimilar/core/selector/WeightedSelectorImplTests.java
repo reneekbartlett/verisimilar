@@ -1,20 +1,22 @@
 package com.reneekbartlett.verisimilar.core.selector;
 
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.assertj.core.api.Assertions;
+//import org.jspecify.annotations.Nullable;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.UnitType;
-import com.reneekbartlett.verisimilar.core.model.WeightedEnumData;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
-
-import org.assertj.core.api.Assertions;
-//import org.jspecify.annotations.Nullable;
-import org.junit.jupiter.api.BeforeEach;
-
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @DisabledIf(value = "com.reneekbartlett.verisimilar.core.TestUtils#isCoreTestingDisabled")
 public class WeightedSelectorImplTests {
@@ -45,10 +47,8 @@ public class WeightedSelectorImplTests {
 
         final String countsStr = "RENEE=" + countB + ", ALISON=" + countA + "";
 
-        //assertTrue(countB > countA, () -> "RENEE should be selected more often than ALISON. [" + countsStr + "]");
-        //assertTrue(countOther == 0, "countOther should be 0");
-
-        Assertions.assertThat(countB).isGreaterThan(countA);
+        Assertions.assertThat(countB).isGreaterThan(countA)
+            .withFailMessage(() -> "RENEE should be selected more often than ALISON. [" + countsStr + "]");
         Assertions.assertThat(countOther).isEqualTo(0);
     }
 
@@ -59,7 +59,7 @@ public class WeightedSelectorImplTests {
 
         int expected = 4;
         int actual = selector.getValueCount();
-        //assertEquals(expected, actual, () -> "Expected value to be " + expected + " but was " + actual);
+
         Assertions.assertThat(actual).isEqualTo(expected);
     }
 
@@ -73,7 +73,6 @@ public class WeightedSelectorImplTests {
 
         // Should not throw, and should still select valid items
         for (int i = 0; i < 1000; i++) {
-            //assertTrue(weights.containsKey(selector.select()));
             Assertions.assertThat(weights).containsKey(selector.select());
         }
     }
@@ -85,13 +84,12 @@ public class WeightedSelectorImplTests {
         WeightedSelectorImpl<String> selector = new WeightedSelectorImpl<>(weights, field);
 
         SelectionFilter filter = SelectionFilter.builder()
-                //.startsWith("A", field)
                 .addFilter("A", field, "startswith")
                 .build(); // assume matches only A
         selector.setFilter(filter);
 
         String result = selector.select();
-        //assertTrue(result.startsWith("A"));
+
         Assertions.assertThat(result).startsWithIgnoringCase("A");
     }
 
@@ -100,8 +98,9 @@ public class WeightedSelectorImplTests {
         EnumSet<UnitType> unitTypes = EnumSet.allOf(UnitType.class);
         WeightedEnumSelectorImpl<?> selector = new WeightedEnumSelectorImpl<>(unitTypes, field);
 
-        //UnitType result = selector.select();
+        UnitType result = (UnitType)selector.select();
         //assertTrue(unitTypes.contains(result), () -> "Selected value '" + result + "' not found in EnumSet.");
+        Assertions.assertThat(result).isIn(unitTypes);
     }
 
     @Test
@@ -110,7 +109,8 @@ public class WeightedSelectorImplTests {
 
         WeightedSelectorImpl<String> selector = new WeightedSelectorImpl<>(weights, field);
 
-        SelectionFilter filter = SelectionFilter.builder().addFilter("A", field, "startswith")
+        SelectionFilter filter = SelectionFilter.builder()
+                .addFilter("NO MATCH", field, "startswith")
                 //.startsWith("NO MATCH", field)
                 .build();
         selector.setFilter(filter);
@@ -118,7 +118,7 @@ public class WeightedSelectorImplTests {
         // Should fall back to unfiltered selection
         String result = selector.select();
 
-        Assertions.assertThat(weights).containsKey(result);
+        Assertions.assertThat(result).isNotNull().isIn(weights.keySet());
     }
 
     @Test
@@ -129,8 +129,8 @@ public class WeightedSelectorImplTests {
         selector.setFilter(SelectionFilter.empty());
 
         String result = selector.select();
-        //assertTrue(weights.containsKey(result));
-        Assertions.assertThat(weights).containsKey(result);
+
+        Assertions.assertThat(result).isNotNull().isIn(weights.keySet());
     }
 
     @Test
@@ -158,7 +158,6 @@ public class WeightedSelectorImplTests {
 
         WeightedSelectorImpl<String> selector = new WeightedSelectorImpl<>(weights, field);
         SelectionFilter filter = SelectionFilter.builder()
-                //.startsWith("A", field)
                 .addFilter("A", field, "startswith")
                 .build();
         selector.setFilter(filter);
@@ -185,8 +184,8 @@ public class WeightedSelectorImplTests {
         executor.shutdown();
         executor.awaitTermination(10, TimeUnit.SECONDS);
 
-        //assertFalse(failed.get(), "Concurrent access caused failure");
-        Assertions.assertThat(failed.get()).isFalse();
+        Assertions.assertThat(failed.get()).isFalse()
+            .withFailMessage(() -> "Concurrent access caused failure");
     }
 
     @Test

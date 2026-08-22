@@ -37,9 +37,6 @@ public class WeightedEnumSelectorImplTests {
 
         final String countsStr = "PENTHOUSE=" + countPenthouse + ", APARTMENT=" + countApartment 
                 + ", OTHER=" + countOther;
-        //assertTrue(countApartment > countPenthouse, () -> "APARTMENT should be selected more often than PENTHOUSE. [" + countsStr + "]");
-        //assertTrue(countOther > 0, "countOther should be GT 0");
-
         Assertions.assertThat(countApartment).isGreaterThan(countPenthouse)
             .withFailMessage(() -> "APARTMENT should be selected more often than PENTHOUSE. [" + countsStr + "]");
         Assertions.assertThat(countOther).isGreaterThan(0);

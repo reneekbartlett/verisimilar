@@ -28,8 +28,9 @@ public class UniformSelectorImplTests {
         UniformSelectorImpl<String> selector = new UniformSelectorImpl<>(items, field);
 
         String result = selector.select();
-        //assertTrue(items.contains(result), () -> "Selected value '" + result + "' not found in dataset.");
-        Assertions.assertThat(result).isIn(items);
+
+        Assertions.assertThat(result).isNotNull().isIn(items)
+            .withFailMessage(() -> "Selected value '" + result + "' not found in dataset.");
     }
 
     @Test
@@ -38,8 +39,9 @@ public class UniformSelectorImplTests {
         UniformSelectorImpl<String> selector = new UniformSelectorImpl<>(items, field);
 
         String result = selector.select();
-        //assertTrue(items.contains(result), () -> "Selected value '" + result + "' not found in dataset.");
-        Assertions.assertThat(result).isIn(items);
+
+        Assertions.assertThat(result).isNotNull().isIn(items)
+            .withFailMessage(() -> "Selected value '" + result + "' not found in dataset.");
     }
 
     @Test
@@ -48,10 +50,9 @@ public class UniformSelectorImplTests {
         UniformSelectorImpl<String> selector = new UniformSelectorImpl<>(weights, field);
 
         String result = selector.select();
-        //LOGGER.debug("{}", result);
 
-        //assertTrue(weights.containsKey(result), () -> "Selected value '" + result + "' not found in weight map");
-        Assertions.assertThat(result).isIn(weights.keySet());
+        Assertions.assertThat(result).isIn(weights.keySet())
+            .withFailMessage(() -> "Selected value '" + result + "' not found in weight map.");
     }
 
     @Test
@@ -60,8 +61,9 @@ public class UniformSelectorImplTests {
         UniformSelectorImpl<UnitType> selector = new UniformSelectorImpl<>(unitTypes, field);
 
         UnitType result = selector.select();
-        //assertTrue(unitTypes.contains(result), () -> "Selected value '" + result + "' not found in EnumSet.");
-        Assertions.assertThat(result).isIn(unitTypes);
+
+        Assertions.assertThat(result).isIn(unitTypes)
+            .withFailMessage(() -> "Selected value '" + result + "' not found in EnumSet.");
     }
 
     @Test
@@ -75,8 +77,9 @@ public class UniformSelectorImplTests {
         selector.setFilter(filter);
 
         String result = selector.select();
-        //assertTrue(result.startsWith("A"), () -> "Result should be start with A but was: " + result);
-        Assertions.assertThat(result).startsWithIgnoringCase("A");
+
+        Assertions.assertThat(result).startsWithIgnoringCase("A")
+            .withFailMessage(() -> "Result should be start with A but was: " + result);
     }
 
     @Test
@@ -91,11 +94,10 @@ public class UniformSelectorImplTests {
 
         // Should fall back to un-filtered selection
         String result = selector.select();
-        
-        //assertNotNull(result, "Selected value should not be null");
-        //assertTrue(items.contains(result), () -> "Selected value '" + result + "' not found in dataset.");
+
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result).isIn(items);
+            //.withFailMessage(() -> "Selected value '" + result + "' not found in dataset.");
     }
 
     @Test
@@ -106,9 +108,9 @@ public class UniformSelectorImplTests {
         selector.setFilter(SelectionFilter.empty());
 
         String result = selector.select();
-        Assertions.assertThat(result).isNotNull();
-        //assertTrue(items.contains(result), () -> "Selected value '" + result + "' not found in dataset.");
-        Assertions.assertThat(result).isIn(items);
+
+        Assertions.assertThat(result).isNotNull().isIn(items)
+            .withFailMessage(() -> "Empty filter should not affect selection");
     }
 
     @Test
@@ -119,7 +121,6 @@ public class UniformSelectorImplTests {
         int expected = 4;
         int actual = selector.getValueCount();
         Assertions.assertThat(actual).isEqualTo(expected);
-        //assertEquals(expected, actual, () -> "Expected value to be " + expected + " but was " + actual);
     }
 
     @Test
@@ -142,7 +143,6 @@ public class UniformSelectorImplTests {
                 try {
                     for (int i = 0; i < iterations; i++) {
                         String result = selector.select();
-                        //assertNotNull(result);
                         Assertions.assertThat(result).isNotNull();
                     }
                 } catch (Throwable ex) {
@@ -154,7 +154,6 @@ public class UniformSelectorImplTests {
         executor.shutdown();
         executor.awaitTermination(10, TimeUnit.SECONDS);
 
-        //assertFalse(failed.get(), "Concurrent access caused failure");
-        Assertions.assertThat(failed.get()).isFalse();
+        Assertions.assertThat(failed.get()).isFalse().withFailMessage(() -> "Concurrent access caused failure");
     }
 }
