@@ -1,8 +1,10 @@
 package com.reneekbartlett.verisimilar.core.model;
 
+import java.util.Set;
+
 import ch.qos.logback.core.util.StringUtil;
 
-public record EmailAddressRecord(String username, String domain, DomainType type){
+public record EmailAddressRecord(String username, String domain, DomainType type) implements CombinationResultField {
 
     public EmailAddressRecord(String username, String domain) {
         // TODO:  Use default DomainType? Or set to Unknown?
@@ -43,5 +45,17 @@ public record EmailAddressRecord(String username, String domain, DomainType type
         sb.append(this.domain).append(VALUE_DELIM);
         if(type != null) sb.append(this.type.getPlaceholder());
         return sb.toString().toUpperCase();
+    }
+
+    @Override
+    public String toValueString() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Set<TemplateField> getFields() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -2,6 +2,9 @@ package com.reneekbartlett.verisimilar.core.generator;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.reneekbartlett.verisimilar.core.datasets.key.LastNameDatasetKey;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
@@ -9,7 +12,12 @@ import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.selector.engine.LastNameSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelectionEngineRegistry;
 
+/***
+ * 
+ */
 public class LastNameGenerator extends AbstractStringGenerator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LastNameGenerator.class);
+
     private final LastNameSelectionEngine selector;
     private final List<TemplateField> filterFields;
 
@@ -29,8 +37,12 @@ public class LastNameGenerator extends AbstractStringGenerator {
 
     @Override
     protected String generateString(DatasetResolutionContext ctx, SelectionFilter filter) {
+        
         // TODO: LastNameDatasetKey key = new LastNameDatasetKey(ctx.ethnicities().orElse(Set.of(Ethnicity.UNKNOWN)));
         LastNameDatasetKey key = LastNameDatasetKey.fromContext(ctx);
+
+        LOGGER.debug("{}", key);
+
         return generateLastName(key, filter);
     }
 

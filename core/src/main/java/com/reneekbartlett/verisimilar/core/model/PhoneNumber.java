@@ -1,5 +1,7 @@
 package com.reneekbartlett.verisimilar.core.model;
 
+import java.util.Set;
+
 /***
  * North American Numbering Plan Administrator (NANPA) handles all official phone number assignments 
  * for the US, Canada, and various Caribbean countries. They provide free, regularly updated raw datasets
@@ -10,7 +12,12 @@ package com.reneekbartlett.verisimilar.core.model;
  * For Exchange Codes (NXX): You can download zipped, tab-delimited text files containing every single assigned 
  * or available prefix sorted by state via the NANPA Central Office Code Assignment Records.
  */
-public record PhoneNumber(String areaCode, String exchangeCode, String lineNumber, PhoneNumberType phoneNumberType){
+public record PhoneNumber(
+        String areaCode, 
+        String exchangeCode, 
+        String lineNumber, 
+        PhoneNumberType phoneNumberType
+) implements CombinationResultField {
 
     public PhoneNumber(String areaCode, String exchangeCode, String lineNumber) {
         this(areaCode, exchangeCode, lineNumber, PhoneNumberType.UNKNOWN);
@@ -32,5 +39,16 @@ public record PhoneNumber(String areaCode, String exchangeCode, String lineNumbe
             .append(this.exchangeCode).append(VALUE_DELIM)
             .append(this.lineNumber)
             .toString();
+    }
+
+    @Override
+    public String toValueString() {
+        return this.toString();
+    }
+
+    @Override
+    public Set<TemplateField> getFields() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

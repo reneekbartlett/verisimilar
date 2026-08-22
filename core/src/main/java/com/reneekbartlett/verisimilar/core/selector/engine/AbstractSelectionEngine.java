@@ -1,5 +1,11 @@
 package com.reneekbartlett.verisimilar.core.selector.engine;
 
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.reneekbartlett.verisimilar.core.datasets.resolver.DatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.datasets.result.DatasetResult;
@@ -9,11 +15,14 @@ import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.filter.EntryFilter;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
-import java.util.List;
-import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+/***
+ * DomainSelectionEngine extends AbstractSelectionEngine<DomainDatasetKey,DomainDatasetResult>
+ * @param <K>   DatasetKey      DomainDatasetKey
+ * @param <R>   DatasetResult   DomainDatasetResult
+ * 
+ * DatasetResolverRegistry resolvers
+ * SelectorStrategy<String> strategy
+ */
 public abstract class AbstractSelectionEngine<K,R> {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractSelectionEngine.class);

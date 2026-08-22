@@ -62,7 +62,7 @@ public enum GenderIdentity implements WeightedEnumData {
         if(text != null) {
             for (GenderIdentity g : EnumSet.allOf(GenderIdentity.class)) {
                 // TODO:  Expand match values
-                if (g.name().equalsIgnoreCase(text)) {
+                if (g.getLabel().equalsIgnoreCase(text)) {
                     return g;
                 } else if (text.equalsIgnoreCase("F")) {
                     return GenderIdentity.FEMALE;
@@ -76,6 +76,7 @@ public enum GenderIdentity implements WeightedEnumData {
 
     public static EnumSet<GenderIdentity> defaultDatasets(){
         return EnumSet.of(MALE, FEMALE, GENDER_UNSPECIFIED);
+        //return EnumSet.of(MALE, FEMALE);
     }
 
     public static EnumSet<GenderIdentity> defaults() {

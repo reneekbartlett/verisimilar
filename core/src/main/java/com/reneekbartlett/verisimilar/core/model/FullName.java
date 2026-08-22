@@ -1,6 +1,8 @@
 package com.reneekbartlett.verisimilar.core.model;
 
-public record FullName(String firstName, String middleName, String lastName, GenderIdentity gender){
+import java.util.Set;
+
+public record FullName(String firstName, String middleName, String lastName, GenderIdentity gender) implements CombinationResultField {
 
     public FullName(String firstName, String middleName, String lastName){
         this(firstName, middleName, lastName, null);
@@ -23,5 +25,17 @@ public record FullName(String firstName, String middleName, String lastName, Gen
         sb.append(this.lastName).append(VALUE_DELIM);
         //if(gender != null) sb.append(this.gender.name());
         return sb.toString().toUpperCase();
+    }
+
+    @Override
+    public String toValueString() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Set<TemplateField> getFields() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

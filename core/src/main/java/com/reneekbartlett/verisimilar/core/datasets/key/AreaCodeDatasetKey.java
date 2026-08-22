@@ -8,7 +8,7 @@ import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 
 public record AreaCodeDatasetKey(String id, EnumSet<USState> states) implements DatasetKey {
 
-    public static final String KEY_ID = "AREACODE";
+    public static final String KEY_ID = "AREA_CODE";
 
     public AreaCodeDatasetKey() {
         this(KEY_ID, USState.defaultDatasets());

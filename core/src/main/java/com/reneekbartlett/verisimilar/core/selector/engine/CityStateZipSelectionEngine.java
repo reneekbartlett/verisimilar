@@ -25,7 +25,7 @@ public class CityStateZipSelectionEngine extends AbstractSelectionEngine<CitySta
     public record NameKey() {
         @Override
         public String toString() {
-            StringBuilder sb = new StringBuilder(0).append("dataset$citystatezip");
+            StringBuilder sb = new StringBuilder(0).append("dataset$city_state_zip");
             return sb.toString();
         }
     }

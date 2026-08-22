@@ -7,11 +7,12 @@ import com.reneekbartlett.verisimilar.core.model.Ethnicity;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 
 /***
- * Ethnicity
+ * DatasetKey for LastName dataset files, i.e. Ethnicity
+ * See LastNameDatasetResolver
  */
 public record LastNameDatasetKey(String id, EnumSet<Ethnicity> ethnicities) implements DatasetKey {
 
-    public static final String KEY_ID = "LASTNAME";
+    public static final String KEY_ID = "LAST_NAME";
 
     public LastNameDatasetKey(EnumSet<Ethnicity> ethnicities) {
         this(KEY_ID, ethnicities);

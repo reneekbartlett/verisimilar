@@ -1,5 +1,7 @@
 package com.reneekbartlett.verisimilar.core.model;
 
+import java.util.Set;
+
 /***
  * Combined field containing AddressLineOne, AddressLineTwo, CityStateZip, AddressCategory
  */
@@ -8,7 +10,7 @@ public record PostalAddress(
         AddressLineTwo addressLineTwo,
         CityStateZip cityStateZip,
         AddressCategory addressCategory
-){
+) implements CombinationResultField {
 
     public PostalAddress(StreetAddress streetAddress, CityStateZip cityStateZip) {
         this(streetAddress.addressLineOne(), streetAddress.addressLineTwo(), cityStateZip, streetAddress.addressCategory());
@@ -58,5 +60,17 @@ public record PostalAddress(
         if(addressLineTwo != null) sb.append(this.addressLineTwo.toString()).append(VALUE_DELIM);
         if(cityStateZip != null) sb.append(cityStateZip.toString()).append(VALUE_DELIM);
         return sb.toString();
+    }
+
+    @Override
+    public String toValueString() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Set<TemplateField> getFields() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

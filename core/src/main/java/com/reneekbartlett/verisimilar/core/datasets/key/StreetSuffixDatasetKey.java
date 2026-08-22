@@ -4,7 +4,7 @@ import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 
 public record StreetSuffixDatasetKey(String id) implements DatasetKey {
 
-    public static final String KEY_ID = "STREETSUFFIX";
+    public static final String KEY_ID = "STREET_SUFFIX";
 
     public StreetSuffixDatasetKey() {
         this(KEY_ID);

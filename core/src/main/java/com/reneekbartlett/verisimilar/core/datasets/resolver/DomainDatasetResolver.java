@@ -8,14 +8,21 @@ import com.reneekbartlett.verisimilar.core.datasets.loader.ResourceLoaderUtil;
 import com.reneekbartlett.verisimilar.core.datasets.result.DomainDatasetResult;
 
 /***
- * 
+ * For resolving and retrieving DOMAIN values from dataset files
  */
 public class DomainDatasetResolver extends AbstractDatasetResolver<DomainDatasetKey, DomainDatasetResult> {
 
-    private static final String DEFAULT_FILE = "datasets/cfg_domains_%s_2025.csv";
+    private static final String DEFAULT_FILE_FORMAT = "datasets/cfg_domain_%s_2025.csv";
+
+    private final String filePathFormat;
+
+    public DomainDatasetResolver(ResourceLoaderUtil loader, String filePathFormat) {
+        super(loader);
+        this.filePathFormat = filePathFormat;
+    }
 
     public DomainDatasetResolver(ResourceLoaderUtil loader) {
-        super(loader);
+        this(loader, DEFAULT_FILE_FORMAT);
     }
 
     @Override
@@ -61,7 +68,7 @@ public class DomainDatasetResolver extends AbstractDatasetResolver<DomainDataset
     }
 
     private Map<String, Double> loadTypeDataset(String type, DomainDatasetKey key) {
-        String datasetPath = String.format(DEFAULT_FILE, type);
+        String datasetPath = String.format(filePathFormat, type);
         return load(datasetPath);
     }
 }

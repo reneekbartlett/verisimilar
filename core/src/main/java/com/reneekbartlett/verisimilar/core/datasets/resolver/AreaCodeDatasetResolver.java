@@ -11,14 +11,20 @@ import com.reneekbartlett.verisimilar.core.selector.engine.AreaCodeSelectionEngi
 
 public class AreaCodeDatasetResolver extends AbstractDatasetResolver<AreaCodeDatasetKey, AreaCodeDatasetResult> {
 
-    private static final String DEFAULT_FILE_FORMAT = "datasets/cfg_phonenumber_areacode_bystate_%s.csv";
+    private static final String DEFAULT_FILE_FORMAT = "datasets/cfg_phone_number_area_code_bystate_%s.csv";
+    private final String filePathFormat;
 
     /***
-     * Map<String, String[]> AREACODES_BY_STATE = ResourceMapLoader.loadArrayMap("/cfg_phonenumber_areacode_bystate_ALL.csv");
+     * Map<String, String[]> AREACODES_BY_STATE = ResourceMapLoader.loadArrayMap("/cfg_phone_number_area_code_bystate_ALL.csv");
      * AZ,480|520|602|623|928
      */
-    public AreaCodeDatasetResolver(ResourceLoaderUtil loader) {
+    public AreaCodeDatasetResolver(ResourceLoaderUtil loader, String filePathFormat) {
         super(loader);
+        this.filePathFormat = filePathFormat;
+    }
+
+    public AreaCodeDatasetResolver(ResourceLoaderUtil loader) {
+        this(loader, DEFAULT_FILE_FORMAT);
     }
 
     @Override
@@ -28,7 +34,7 @@ public class AreaCodeDatasetResolver extends AbstractDatasetResolver<AreaCodeDat
     }
 
     private Map<NameKey, Map<String, Double>> loadDatasetsByKey(AreaCodeDatasetKey key) {
-        String filePath = String.format(DEFAULT_FILE_FORMAT, "ALL");
+        String filePath = String.format(filePathFormat, "ALL");
         Map<String, String[]> areaCodesByState = loader.loadArrayMap(filePath);
         Map<NameKey, Map<String, Double>> datasets = HashMap.newHashMap(1);
         areaCodesByState.forEach((state, areaCodeArr) -> {

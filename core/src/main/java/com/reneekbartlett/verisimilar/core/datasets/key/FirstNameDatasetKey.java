@@ -18,7 +18,7 @@ public record FirstNameDatasetKey(
         EnumSet<Decade> decades
 ) implements DatasetKey {
 
-    public static final String KEY_ID = "FIRSTNAME";
+    public static final String KEY_ID = "FIRST_NAME";
 
     public FirstNameDatasetKey(GenderIdentity gender) {
         this(KEY_ID, EnumSet.of(gender), Ethnicity.defaultDatasets(), Decade.defaultDatasets());

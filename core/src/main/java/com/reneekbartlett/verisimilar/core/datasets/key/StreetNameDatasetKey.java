@@ -3,26 +3,30 @@ package com.reneekbartlett.verisimilar.core.datasets.key;
 import java.util.EnumSet;
 import java.util.stream.Collectors;
 
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.USState;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 
+/***
+ * 
+ */
 public record StreetNameDatasetKey(
         String id, 
         EnumSet<USState> states
 ) implements DatasetKey {
 
-    public static final String KEY_ID = "STREETNAME";
-
-    public static StreetNameDatasetKey defaults() {
-        return new StreetNameDatasetKey(KEY_ID, null);
-    }
+    private static final String KEY_ID = "STREET_NAME"; //TemplateField.STREET_NAME.getLabel()
 
     public StreetNameDatasetKey(EnumSet<USState> state) {
         this(KEY_ID, state);
     }
-    
+
     public StreetNameDatasetKey(USState state) {
         this(KEY_ID, EnumSet.of(state));
+    }
+
+    public static StreetNameDatasetKey defaults() {
+        return new StreetNameDatasetKey(KEY_ID, null);
     }
 
     public static StreetNameDatasetKey fromContext(DatasetResolutionContext ctx) {

@@ -140,8 +140,8 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
             //usernameTemplateFields.stream().map(x -> x.fieldValue())
             Map<String, Object> resolvedValueParams = HashMap.newHashMap(usernameTemplateFields.size());
             for(UsernameTemplateParam templateParam : usernameTemplateFields) {
-                templateParam.templateField.getPlaceholder();
-                templateParam.fieldValue();
+                //templateParam.templateField.getPlaceholder();
+                //templateParam.fieldValue();
                 resolvedValueParams.put(templateParam.templateField.getPlaceholder(), templateParam.fieldValue());
             }
 
@@ -155,18 +155,19 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
                 resolvedValueParams.put("BIRTHDAY_SIGN", sign.name());
             }
 
-            if(resolvedValueParams.containsKey(TemplateField.FIRST_NAME.getPlaceholder())) {
-                String firstName = (String) resolvedValueParams.get("FIRST");
+            String firstNamePlaceholder = TemplateField.FIRST_NAME.getPlaceholder();
+            if(resolvedValueParams.containsKey(firstNamePlaceholder)) {
+                String firstName = (String) resolvedValueParams.get(firstNamePlaceholder);
                 resolvedValueParams.put("FIRST_INITIAL", firstName.charAt(0));
             }
 
-            if(resolvedValueParams.containsKey("LAST")) {
-                 String lastName = (String) resolvedValueParams.get("LAST");
+            if(resolvedValueParams.containsKey(TemplateField.LAST_NAME.getPlaceholder())) {
+                 String lastName = (String) resolvedValueParams.get(TemplateField.LAST_NAME.getPlaceholder());
                  resolvedValueParams.put("LAST_INITIAL", lastName.charAt(0));
             }
 
-            if(resolvedValueParams.containsKey("MIDDLE")) {
-                 String middleName = (String) resolvedValueParams.get("MIDDLE");
+            if(resolvedValueParams.containsKey(TemplateField.MIDDLE_NAME.getPlaceholder())) {
+                 String middleName = (String) resolvedValueParams.get(TemplateField.MIDDLE_NAME.getPlaceholder());
                  resolvedValueParams.put("MIDDLE_INITIAL", middleName.charAt(0));
             }
 

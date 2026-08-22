@@ -29,7 +29,7 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
         }
         @Override
         public String toString() {
-            StringBuilder sb = new StringBuilder(0).append("dataset$middlename");
+            StringBuilder sb = new StringBuilder(0).append("dataset$middle_name");
             if(gender != null) sb.append("$gender:"+gender.getPlaceholder());
             if(ethnicity != null) sb.append("$ethnicity:"+ethnicity.getPlaceholder());
             return sb.toString();
@@ -55,7 +55,7 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
         this.genderIdentityMap = GenderIdentity.defaultMap();
         this.genderSelector = new WeightedSelectorImpl<>(genderIdentityMap, TemplateField.GENDER_IDENTITY);
 
-        // TODO:  Create cfg_fullname_middle_female_ETHNICITY.csv & cfg_fullname_middle_male_ETHNICITY.csv files.
+        // TODO:  Create cfg_full_name_middle_name_female_ETHNICITY.csv & cfg_full_name_middle_name_male_ETHNICITY.csv files.
         this.ethnicitiesMap = Map.of(Ethnicity.UNKNOWN, 0.0001);
 
         // This DatasetResult contains both genders, so only call once.

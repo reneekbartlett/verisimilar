@@ -13,9 +13,8 @@ import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
 /***
- * Map<String, Double> ADDRESS2_UNIT_TYPES_WEIGHTED = ResourceMapLoader.loadDoubleMap("/address_unit_types_weighted.txt");
+ * Map<String, Double> ADDRESS2_UNIT_TYPES_WEIGHTED
  * APARTMENT,1.0
- * 
  * 
  */
 public class AddressTwoSelectionEngine extends AbstractSelectionEngine<AddressTwoDatasetKey, AddressTwoDatasetResult> {
@@ -28,7 +27,7 @@ public class AddressTwoSelectionEngine extends AbstractSelectionEngine<AddressTw
     public record NameKey() {
         @Override
         public String toString() {
-            return new StringBuilder(0).append("dataset$addresstwo").toString();
+            return new StringBuilder(0).append("dataset$address2").toString();
         }
     }
 

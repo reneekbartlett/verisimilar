@@ -1,6 +1,8 @@
 package com.reneekbartlett.verisimilar.core.model;
 
-public record CityStateZip(String city, String state, String zip){
+import java.util.Set;
+
+public record CityStateZip(String city, String state, String zip) implements CombinationResultField {
 
     public CityStateZip(String city, USState state, String zip, String id){
         this(city, state.getLabel(), zip);
@@ -22,5 +24,17 @@ public record CityStateZip(String city, String state, String zip){
         if(state != null) sb.append(this.state).append(VALUE_DELIM);
         if(zip != null) sb.append(this.zip).append(VALUE_DELIM);
         return sb.toString();
+    }
+
+    @Override
+    public String toValueString() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Set<TemplateField> getFields() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

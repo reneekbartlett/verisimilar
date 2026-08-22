@@ -7,19 +7,29 @@ import java.util.Map;
 import com.reneekbartlett.verisimilar.core.datasets.key.NicknameDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.loader.ResourceLoaderUtil;
 import com.reneekbartlett.verisimilar.core.datasets.result.NicknameDatasetResult;
+import com.reneekbartlett.verisimilar.core.model.Decade;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.selector.engine.NicknameSelectionEngine.NameKey;
 
 public class NicknameDatasetResolver extends AbstractDatasetResolver<NicknameDatasetKey, NicknameDatasetResult> {
 
-    private static final String DEFAULT_FILE = "datasets/cfg_nickname_%s_%s.csv";
+    private static final String DEFAULT_FILE_FORMAT = "datasets/cfg_nickname_%s_%s.csv";
 
     private EnumSet<GenderIdentity> genderIdentities;
     private EnumSet<Ethnicity> ethnicities;
 
-    public NicknameDatasetResolver(ResourceLoaderUtil loader) {
+    private final String filePathFormat;
+
+    public NicknameDatasetResolver(ResourceLoaderUtil loader, String filePathFormat) {
         super(loader);
+        this.filePathFormat = filePathFormat;
+        //this.genderIdentities = GenderIdentity.defaults();
+        //this.ethnicities = Ethnicity.defaultDatasets();
+    }
+
+    public NicknameDatasetResolver(ResourceLoaderUtil loader) {
+        this(loader, DEFAULT_FILE_FORMAT);
     }
 
     @Override
@@ -48,17 +58,17 @@ public class NicknameDatasetResolver extends AbstractDatasetResolver<NicknameDat
     }
 
     private Map<String, Double> loadGenderDataset(GenderIdentity gender) {
-        String genderStr = gender.name().toLowerCase();
-        String fallback = String.format(DEFAULT_FILE, genderStr, "ALL");
-
+        String genderStr = gender.getPlaceholder().toLowerCase();
+        String fallback = String.format(filePathFormat, genderStr, "ALL");
+        LOGGER.debug("{}", fallback);
         return load(fallback);
     }
 
     @SuppressWarnings("unused")
-    private Map<String, Double> loadEthnicityDataset(GenderIdentity gender, Ethnicity ethnicity) {
-        String filePath = String.format(DEFAULT_FILE, gender.name().toLowerCase(), ethnicity.getPlaceholder());
-        return load(filePath);
-    }
+    //private Map<String, Double> loadEthnicityDataset(GenderIdentity gender, Ethnicity ethnicity) {
+    //    String filePath = String.format(filePathFormat, gender.name().toLowerCase(), ethnicity.getPlaceholder());
+    //    return load(filePath);
+    //}
 
     @Override
     public Class<NicknameDatasetKey> keyType() {

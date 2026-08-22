@@ -6,7 +6,9 @@ import java.util.Map;
 
 import com.reneekbartlett.verisimilar.core.datasets.key.LastNameDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.result.LastNameDatasetResult;
+import com.reneekbartlett.verisimilar.core.model.Decade;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
+import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.LastNameDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
@@ -15,16 +17,29 @@ import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
+/***
+ * 
+ */
 public class LastNameSelectionEngine extends AbstractSelectionEngine<LastNameDatasetKey, LastNameDatasetResult> {
     private static final SelectorStrategy<String> DEFAULT_SELECTOR_STRATEGY = new WeightedSelectorStrategy<>();
     private Map<Ethnicity, Double> ethnicitiesMap;
     private Map<NameKey, RandomSelector<String>> selectorsByNameKey;
 
-    public record NameKey(Ethnicity ethnicity) {
+    /***
+     * LastNameSelectionEngine.NameKey
+     * > Ethnicity
+     * > Decade (not implemented)
+     */
+    public record NameKey(Ethnicity ethnicity, Decade decade) {
+        public NameKey(Ethnicity ethnicity) {
+            this(ethnicity, Decade.ALL);
+        }
+
         @Override
         public String toString() {
-            StringBuilder sb = new StringBuilder(0).append("dataset$lastname");
+            StringBuilder sb = new StringBuilder(0).append("dataset$last_name");
             if(ethnicity != null) sb.append("$ethnicity:" + ethnicity.getPlaceholder());
+            if(decade != null) sb.append("$decade:" + decade.getPlaceholder());
             return sb.toString();
         }
     }

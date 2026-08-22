@@ -14,6 +14,7 @@ import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelec
 
 public class FirstNameGenerator extends AbstractStringGenerator {
 
+    @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(FirstNameGenerator.class);
 
     private final FirstNameSelectionEngine selector;

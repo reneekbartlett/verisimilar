@@ -51,6 +51,7 @@ public class NicknameSelectionEngine extends AbstractSelectionEngine<NicknameDat
             this.selectorsByNameKey.put(nameKey, selector);
         });
         //LOGGER.debug("setup - result:{}", result.toString());
+        LOGGER.debug("NicknameSelectionEngine setup complete");
     }
 
     @Override

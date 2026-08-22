@@ -13,7 +13,7 @@ public record CityStateZipDatasetKey(
         EnumSet<USRegion> regions
 ) implements DatasetKey {
 
-    public static final String KEY_ID = "CITYSTATEZIP";
+    protected static final String KEY_ID = "CITY_STATE_ZIP";
 
     public static CityStateZipDatasetKey defaults() {
         return new CityStateZipDatasetKey(KEY_ID, null, null);

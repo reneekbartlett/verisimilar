@@ -24,6 +24,7 @@ import com.reneekbartlett.verisimilar.core.model.USRegion;
 import com.reneekbartlett.verisimilar.core.model.USState;
 import com.reneekbartlett.verisimilar.core.model.UnitType;
 import com.reneekbartlett.verisimilar.core.model.UsernameType;
+import com.reneekbartlett.verisimilar.core.model.WeightedEnumData;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter.Builder;
 
 /***
@@ -261,5 +262,32 @@ public enum SelectionFieldMapper {
             return e.name();
         }
         return null;
+    }
+
+    /***
+     * 
+     * @param <E>
+     * @param value
+     * @return
+     */
+    public static <E extends Enum<E>> String extractLabel(E value) {
+        if (value instanceof WeightedEnumData weightedEnumValue) {
+            return weightedEnumValue.getLabel();
+        }
+        return value.name();
+    }
+    
+    public static String normalizeEnum(Object value) {
+        if (value instanceof WeightedEnumData weightedEnumValue) {
+            return weightedEnumValue.getLabel().toUpperCase();
+        }
+        return value.toString().toUpperCase();
+    }
+
+    public static <E extends Enum<E>> Set<String> toLabels(Set<E> values) {
+        return values.stream()
+            .map(v -> v instanceof WeightedEnumData w ? w.getLabel() : v.name())
+            .filter(label -> !label.isBlank())
+            .collect(Collectors.toSet());
     }
 }

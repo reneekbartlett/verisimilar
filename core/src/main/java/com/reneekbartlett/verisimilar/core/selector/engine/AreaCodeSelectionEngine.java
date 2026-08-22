@@ -17,7 +17,7 @@ import com.reneekbartlett.verisimilar.core.selector.UniformSelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
 /***
- * Map<String, String[]> AREACODES_BY_STATE = ResourceMapLoader.loadArrayMap("/cfg_phonenumber_areacode_bystate_ALL.csv");
+ * Map<String, String[]> AREACODES_BY_STATE = ResourceMapLoader.loadArrayMap("/cfg_phone_number_area_code_bystate_ALL.csv");
  * AZ,480|520|602|623|928
  */
 public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDatasetKey, AreaCodeDatasetResult> {
@@ -32,8 +32,8 @@ public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDat
         }
         @Override
         public String toString() {
-            StringBuilder sb = new StringBuilder(0).append("dataset$areacode");
-            if(usStateAbbr.length() > 0) sb.append("$usstate:" + usStateAbbr);
+            StringBuilder sb = new StringBuilder(0).append("dataset$area_code");
+            if(usStateAbbr.length() > 0) sb.append("$us_state:" + usStateAbbr);
             return sb.toString();
         }
     }

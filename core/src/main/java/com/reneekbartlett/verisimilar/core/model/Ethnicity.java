@@ -61,10 +61,16 @@ public enum Ethnicity implements WeightedEnumData {
         return placeholder;
     }
 
+    /***
+     * Default Ethnicity Datasets
+     */
     public static EnumSet<Ethnicity> defaultDatasets(){
-        return EnumSet.of(UNKNOWN, INDIAN);
+        return EnumSet.of(UNKNOWN, INDIAN, CHINESE);
     }
 
+    /***
+     * Default Ethnicity Datasets
+     */
     public static Map<Ethnicity, Double> defaultMap() {
         Map<Ethnicity, Double> defaultMap = HashMap.newHashMap(0);
         for(Ethnicity ethnicity : defaultDatasets()) {

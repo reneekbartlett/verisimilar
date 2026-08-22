@@ -20,7 +20,7 @@ public class StreetNameSelectionEngine extends AbstractSelectionEngine<StreetNam
     public record NameKey() {
         @Override
         public String toString() {
-            StringBuilder sb = new StringBuilder(0).append("dataset$streetname");
+            StringBuilder sb = new StringBuilder(0).append("dataset$street_name");
             return sb.toString();
         }
     }

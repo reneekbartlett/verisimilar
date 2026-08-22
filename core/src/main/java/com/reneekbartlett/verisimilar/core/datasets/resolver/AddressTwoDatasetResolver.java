@@ -11,7 +11,7 @@ import com.reneekbartlett.verisimilar.core.datasets.result.AddressTwoDatasetResu
  */
 public class AddressTwoDatasetResolver extends AbstractDatasetResolver<AddressTwoDatasetKey, AddressTwoDatasetResult> {
 
-    private static final String DEFAULT_FILE_FORMAT = "datasets/cfg_postaladdress_address2_unit_%s.csv";
+    private static final String DEFAULT_FILE_FORMAT = "datasets/cfg_postal_address_address2_unit_type_%s.csv";
 
     public AddressTwoDatasetResolver(ResourceLoaderUtil loader) {
         super(loader);

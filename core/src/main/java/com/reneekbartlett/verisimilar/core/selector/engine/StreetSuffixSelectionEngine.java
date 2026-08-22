@@ -20,7 +20,7 @@ public class StreetSuffixSelectionEngine extends AbstractSelectionEngine<StreetS
     public record NameKey() {
         @Override
         public String toString() {
-            StringBuilder sb = new StringBuilder(0).append("dataset$streetsuffix");
+            StringBuilder sb = new StringBuilder(0).append("dataset$street_suffix");
             return sb.toString();
         }
     }

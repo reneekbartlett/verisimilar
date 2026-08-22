@@ -19,7 +19,7 @@ public record MiddleNameDatasetKey(
         EnumSet<Decade> decades
 ) implements DatasetKey {
 
-    public static final String KEY_ID = "MIDDLENAME";
+    public static final String KEY_ID = "MIDDLE_NAME";
 
     public static MiddleNameDatasetKey defaults() {
         return new MiddleNameDatasetKey(KEY_ID, GenderIdentity.defaultDatasets(), Decade.defaultDatasets());

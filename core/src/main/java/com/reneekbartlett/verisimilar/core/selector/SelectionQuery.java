@@ -102,9 +102,9 @@ public class SelectionQuery {
         return switch (field.name()) {
             case "STREET_NAME" -> "street_names_us";
             case "STREET_SUFFIX" -> "address1_street_suffix";
-            case "FIRST_NAME" -> "cfg_fullname_first";
-            case "MIDDLE_NAME" -> "cfg_fullname_middle";
-            case "LAST_NAME" -> "cfg_fullname_last";
+            case "FIRST_NAME" -> "cfg_full_name_first_name";
+            case "MIDDLE_NAME" -> "cfg_full_name_middle_name";
+            case "LAST_NAME" -> "cfg_full_name_last_name";
             //case "KEYWORD1" -> "keywords";
             default -> ""; // TODO: put generic word table here.
         };

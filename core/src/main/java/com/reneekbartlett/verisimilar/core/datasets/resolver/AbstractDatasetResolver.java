@@ -1,14 +1,21 @@
 package com.reneekbartlett.verisimilar.core.datasets.resolver;
 
-import com.reneekbartlett.verisimilar.core.datasets.key.DatasetKey;
-import com.reneekbartlett.verisimilar.core.datasets.loader.ResourceLoaderUtil;
-import com.reneekbartlett.verisimilar.core.datasets.result.DatasetResult;
-
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.reneekbartlett.verisimilar.core.datasets.key.DatasetKey;
+import com.reneekbartlett.verisimilar.core.datasets.loader.ResourceLoaderUtil;
+import com.reneekbartlett.verisimilar.core.datasets.result.DatasetResult;
+
+/***
+ * AbstractDatasetResolver<DomainDatasetKey, DomainDatasetResult>
+ * @param <K>   DatasetKey
+ * @param <R>   DatasetResult
+ * 
+ * 
+ */
 public abstract class AbstractDatasetResolver<K, R> implements DatasetResolver<K, R> {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractDatasetResolver.class);

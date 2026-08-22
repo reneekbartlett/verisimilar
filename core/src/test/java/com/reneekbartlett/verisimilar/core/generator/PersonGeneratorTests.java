@@ -1,5 +1,7 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -19,17 +21,24 @@ public class PersonGeneratorTests {
     //PersonGenerator(DatasetResolverRegistry resolvers)
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonGeneratorTests.class);
 
-    //@Test
+    @Test
     public void GenerateFullName_RandomGender() {
         DatasetResolverRegistry resolvers = TestUtils.getDatasetResolverRegistry();
 
         PersonGenerator personGenerator = new PersonGenerator(resolvers);
 
         PersonRecord person = personGenerator.generate();
+
         LOGGER.debug("person=" + person.toString());
         Assertions.assertNotNull(person);
 
-        //Assertions.assertTrue(fullName.firstName() != fullName.middleName());
+        assertThat(person).isNotNull();
+        assertThat(person.fullName()).isNotNull();
+        assertThat(person.firstName()).isNotNull();
+        assertThat(person.middleName()).isNotNull();
+        assertThat(person.lastName()).isNotNull();
+
+        assertThat(person.firstName()).isNotEqualTo(person.middleName());
     }
 
     @Test
@@ -48,15 +57,17 @@ public class PersonGeneratorTests {
         //List<String> areaCodesForMA = Arrays.asList(areaCodesStrForMA.split("\\|"));
 
         PersonRecord person1 = personGenerator.generate(filter1);
+
         LOGGER.debug("person1=" + person1.toString());
-        Assertions.assertNotNull(person1);
+        assertThat(person1).isNotNull();
+
 
         SelectionFilter filter2 = SelectionFilter.builder()
                 .gender(GenderIdentity.MALE).states(EnumSet.of(USState.MA)).build();
         PersonRecord person2 = personGenerator.generate(filter2);
+
         LOGGER.debug("person2=" + person2.toString());
-        Assertions.assertNotNull(person2);
-        
-        //Assertions.assertTrue(fullName.firstName() != fullName.middleName());
+        assertThat(person2).isNotNull();
     }
+    
 }

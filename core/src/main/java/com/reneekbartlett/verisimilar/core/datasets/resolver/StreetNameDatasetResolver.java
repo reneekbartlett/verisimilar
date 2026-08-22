@@ -6,25 +6,29 @@ import java.util.Map;
 import com.reneekbartlett.verisimilar.core.datasets.key.StreetNameDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.loader.ResourceLoaderUtil;
 import com.reneekbartlett.verisimilar.core.datasets.result.StreetNameDatasetResult;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.engine.StreetNameSelectionEngine.NameKey;
 
 /***
- * List<String> cfg_postaladdress_address1_streetname_ALL.csv
+ * For resolving and retrieving StreetName values from dataset files
+ * List<String> cfg_postal_address_address1_street_name_ALL.csv
  */
 public class StreetNameDatasetResolver extends AbstractDatasetResolver<StreetNameDatasetKey, StreetNameDatasetResult> {
 
-    private static final String DEFAULT_FILE = "datasets/cfg_postaladdress_address1_streetname_ALL.csv";
+    public static final TemplateField DEFAULT_RETURN_FIELD = TemplateField.STREET_NAME;
 
-    private final String defaultDataFile;
+    //private static final String DEFAULT_FILE = "datasets/cfg_postal_address_address1_street_name_ALL.csv";
+    private static final String DEFAULT_FILE_FORMAT = "datasets/cfg_postal_address_address1_street_name_%s.csv";
 
-    public StreetNameDatasetResolver(ResourceLoaderUtil loader, String defaultDataFile) {
+    private final String filePathFormat;
+
+    public StreetNameDatasetResolver(ResourceLoaderUtil loader, String filePathFormat) {
         super(loader);
-        this.defaultDataFile = defaultDataFile;
+        this.filePathFormat = filePathFormat;
     }
 
     public StreetNameDatasetResolver(ResourceLoaderUtil loader) {
-        super(loader);
-        this.defaultDataFile = DEFAULT_FILE;
+        this(loader, DEFAULT_FILE_FORMAT);
     }
 
     @Override
@@ -54,7 +58,8 @@ public class StreetNameDatasetResolver extends AbstractDatasetResolver<StreetNam
     }
 
     private String[] loadValues(StreetNameDatasetKey key) {
+        String defaultFilePath = String.format(filePathFormat, "ALL");
         //LOGGER.debug("Loading default: " + this.defaultDataFile);
-        return loader.loadStringArray(this.defaultDataFile);
+        return loader.loadStringArray(defaultFilePath);
     }
 }

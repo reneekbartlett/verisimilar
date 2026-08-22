@@ -1,6 +1,7 @@
 package com.reneekbartlett.verisimilar.core.model;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 public record PersonRecord(
         FullName fullName,
@@ -9,7 +10,7 @@ public record PersonRecord(
         PostalAddress postalAddress,
         EmailAddressRecord emailAddress,
         PhoneNumber phoneNumber
-){
+) implements CombinationResultField {
 
     public PersonRecord(FullName fullName) {
         this(fullName, null, null, null, null, null);
@@ -91,5 +92,17 @@ public record PersonRecord(
                 .append(this.emailAddress).append(FIELD_DELIM)
                 .append(this.gender)
                 .toString();
+    }
+
+    @Override
+    public String toValueString() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Set<TemplateField> getFields() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

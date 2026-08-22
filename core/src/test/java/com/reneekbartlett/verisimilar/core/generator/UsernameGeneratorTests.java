@@ -1,5 +1,7 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.Assertions;
@@ -31,7 +33,7 @@ public class UsernameGeneratorTests {
     }
 
     @Test
-    public void GenerateUsername_WithCriteria_FirstName() {
+    public void GenerateUsername_WithFilter_FirstName() {
         DatasetResolverRegistry resolvers = TestUtils.getEmailAddressDatasetResolverRegistry();
         UsernameSelectionEngine usernameSelector = new UsernameSelectionEngine(resolvers);
         SelectionFilter filter = SelectionFilter.builder().firstName("RENEE").build();
@@ -39,27 +41,33 @@ public class UsernameGeneratorTests {
         String username1 = usernameGenerator.generate(filter);
 
         LOGGER.debug("username1="+username1);
-        Assertions.assertFalse(username1.contains("{"));
+        assertThat(username1).isNotNull().doesNotContain("{");
     }
 
     @Test
-    public void GenerateUsername_WithCriteria() {
+    public void GenerateUsername_WithFilter() {
         DatasetResolverRegistry resolvers = TestUtils.getEmailAddressDatasetResolverRegistry();
         UsernameSelectionEngine usernameSelector = new UsernameSelectionEngine(resolvers);
         SelectionFilter filter = SelectionFilter.builder().firstName("RENEE").middleName("K").lastName("BARTLETT")
                 .birthday(LocalDate.of(1980, 7, 30)).build();
+        assertThat(filter.firstName()).isPresent();
+        assertThat(filter.middleName()).isPresent();
+        assertThat(filter.lastName()).isPresent();
 
         UsernameGenerator usernameGenerator = new UsernameGenerator(usernameSelector);
         String username1 = usernameGenerator.generate(filter);
         LOGGER.debug("username1="+username1);
+        assertThat(username1).isNotNull();
         Assertions.assertFalse(username1.contains("{"));
 
         String username2 = usernameGenerator.generate(filter);
         LOGGER.debug("username2="+username2);
+        assertThat(username2).isNotNull();
         Assertions.assertFalse(username2.contains("{"));
 
         String username3 = usernameGenerator.generate(filter);
         LOGGER.debug("username3="+username3);
+        assertThat(username3).isNotNull();
         Assertions.assertFalse(username3.contains("{"));
     }
 

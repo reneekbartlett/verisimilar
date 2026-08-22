@@ -4,9 +4,9 @@ import java.util.Date;
 import java.util.EnumSet;
 
 public enum TemplateField {
-    FIRST_NAME("FIRST", String.class, null),
-    MIDDLE_NAME("MIDDLE", String.class, null),
-    LAST_NAME("LAST", String.class, null),
+    FIRST_NAME("FIRST_NAME", String.class, null),
+    MIDDLE_NAME("MIDDLE_NAME", String.class, null),
+    LAST_NAME("LAST_NAME", String.class, null),
     NICKNAME("NICKNAME", String.class, null),
 
     BIRTHDAY("BIRTHDAY", Date.class, null),
@@ -28,11 +28,14 @@ public enum TemplateField {
     ADDRESS1("ADDRESS1", String.class, null),
     ADDRESS2("ADDRESS2", String.class, null),
     CITY("CITY", String.class, null),
+
     STATE("STATE", EnumSet.class, USState.class),
+    US_STATE("US_STATE", EnumSet.class, USState.class),
+
     ZIP_CODE("ZIP_CODE", String.class, null),
     REGION("REGION", EnumSet.class, USRegion.class),
 
-    CITY_STATE_ZIP("CITY_STATE_ZIP", String.class, null),
+    CITY_STATE_ZIP("CITY_STATE_ZIP", CityStateZip.class, null),
 
     PHONE_NUMBER("PHONE_NUMBER", String.class, null),
     PHONE_NUMBER_TYPE("PHONE_NUMBER_TYPE", EnumSet.class, PhoneNumberType.class),
@@ -52,6 +55,9 @@ public enum TemplateField {
     UNIT_TYPE("UNIT_TYPE", EnumSet.class, UnitType.class),
     UNIT_NUMBER("UNIT_NUMBER", Integer.class, null),
     UNIT_XTRA("UNIT_XTRA", String.class, null),
+
+    POSTAL_ADDRESS("POSTAL_ADDRESS", PostalAddress.class, null),
+    STREET_ADDRESS("STREET_ADDRESS", StreetAddress.class, null),
 
     SEPARATOR("SEPARATOR", String.class, null),
 
