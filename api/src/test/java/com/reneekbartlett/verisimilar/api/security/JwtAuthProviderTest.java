@@ -1,8 +1,14 @@
 package com.reneekbartlett.verisimilar.api.security;
 
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jose.JOSEException;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.text.ParseException;
+import java.util.List;
+
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,15 +16,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jwt.JWTClaimsSet;
 import com.reneekbartlett.verisimilar.api.security.service.JwtService;
-
-import java.text.ParseException;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class JwtAuthProviderTest {
@@ -51,15 +53,15 @@ public class JwtAuthProviderTest {
         Authentication result = jwtAuthProvider.authenticate(unauthenticatedToken);
 
         // Assert
-        assertNotNull(result);
-        assertTrue(result.isAuthenticated());
-        assertEquals("test_user", result.getPrincipal());
-        assertEquals(rawToken, result.getCredentials());
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.isAuthenticated()).isTrue();
+        Assertions.assertThat(result.getPrincipal()).isEqualTo("test_user");
+        Assertions.assertThat(result.getCredentials()).isEqualTo(rawToken);
 
         // Verify authorities are converted correctly
-        assertTrue(result.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER")));
-        assertTrue(result.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")));
-        assertEquals(2, result.getAuthorities().size());
+        Assertions.assertThat(result.getAuthorities())
+            .extracting(GrantedAuthority::getAuthority)
+            .containsOnly("ROLE_USER", "ROLE_ADMIN");
 
         //verify(jwtService).validateAndExtractClaims(rawToken);
         verify(jwtService).extractClaims(rawToken);
@@ -77,12 +79,13 @@ public class JwtAuthProviderTest {
             .thenThrow(new JOSEException("Signature validation failed"));
 
         // Act & Assert
-        BadCredentialsException exception = assertThrows(BadCredentialsException.class, () -> {
-            jwtAuthProvider.authenticate(unauthenticatedToken);
-        });
+        BadCredentialsException exception = Assertions
+                .catchThrowableOfType(BadCredentialsException.class,() -> jwtAuthProvider.authenticate(unauthenticatedToken));
 
-        assertEquals("The provided JSON Web Token is invalid or expired.", exception.getMessage());
-        assertInstanceOf(JOSEException.class, exception.getCause()); // Verifies the root cause is retained
+        // If needed, run your assertions on the caught object below
+        Assertions.assertThat(exception).isNotNull();
+        Assertions.assertThat(exception.getMessage()).isEqualTo("The provided JSON Web Token is invalid or expired.");
+        Assertions.assertThat(exception.getCause()).isInstanceOf(JOSEException.class);
 
         // Verify execution stopped immediately after validation failed
         //verify(jwtService).validateAndExtractClaims(invalidToken);
@@ -96,7 +99,7 @@ public class JwtAuthProviderTest {
     void supports_WithJwtAuthTokenClass_ReturnsTrue() {
         // Act & Assert
         boolean supportsJwtToken = jwtAuthProvider.supports(JwtAuthToken.class);
-        assertTrue(supportsJwtToken);
+        Assertions.assertThat(supportsJwtToken).isTrue();
     }
 
     @Test
@@ -105,6 +108,6 @@ public class JwtAuthProviderTest {
         // Standard Spring username/password mock authentication token class should fail validation
         boolean supportsOtherToken = jwtAuthProvider
                 .supports(org.springframework.security.authentication.UsernamePasswordAuthenticationToken.class);
-        assertFalse(supportsOtherToken);
+        Assertions.assertThat(supportsOtherToken).isFalse();
     }
 }

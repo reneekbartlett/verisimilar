@@ -1,14 +1,11 @@
 package com.reneekbartlett.verisimilar.api;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -28,7 +25,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -39,8 +35,6 @@ import com.reneekbartlett.verisimilar.api.service.GeneratorFilterResolver;
 //import com.reneekbartlett.verisimilar.api.service.StringToFilterOperatorConverter;
 //import com.reneekbartlett.verisimilar.api.service.StringToTemplateFieldConverter;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 /***
  * @WebMvcTest automatically scans and registers classes implementing Converter, 
@@ -165,8 +159,7 @@ public class GeneratorFilterResolverMockMvcTest {
         Object result = conversionService.convert(mockRequestParam, sourceType, targetType);
 
         // 4. Assert or inspect your result
-        assertNotNull(result);
-        assertTrue(result instanceof SelectionFilter);
+        Assertions.assertThat(result).isNotNull().isInstanceOf(SelectionFilter.class);
     }
 
 //    @Test
@@ -209,7 +202,7 @@ public class GeneratorFilterResolverMockMvcTest {
             LOGGER.debug("done {}", content);
 
             //assertThat(mvcTestResult).hasStatusOk();
-            assertThat(mvcTestResult).bodyText().contains("RENEE");
+            Assertions.assertThat(mvcTestResult).bodyText().contains("RENEE");
         } catch (UnsupportedEncodingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -260,7 +253,7 @@ public class GeneratorFilterResolverMockMvcTest {
 
         //LOGGER.debug("done {}", content);
 
-        assertThat(mvcTestResult).hasStatusOk().bodyText().contains("RENEE");
+        Assertions.assertThat(mvcTestResult).hasStatusOk().bodyText().contains("RENEE");
 
         //mockMvc.perform(get("/api/test/filter")
         //        .param("filter[LAST_NAME][startswith]", "B"))
@@ -278,7 +271,7 @@ public class GeneratorFilterResolverMockMvcTest {
         
         MvcTestResult mvcTestResult = this.mockMvc.perform(reqBldr);
 
-        assertThat(mvcTestResult).hasStatusOk();
+        Assertions.assertThat(mvcTestResult).hasStatusOk();
 
         //.andExpect(status().isOk())
         //.andExpect(jsonPath("$.firstName").value("RENEE"));
@@ -290,7 +283,7 @@ public class GeneratorFilterResolverMockMvcTest {
                 .header("X-API-Key", "TestKey123")
                 .param("filter[GENDER_IDENTITY][in]", "FEMALE,NON_BINARY");
         MvcTestResult mvcTestResult = this.mockMvc.perform(reqBldr);
-        assertThat(mvcTestResult).hasStatusOk();
+        Assertions.assertThat(mvcTestResult).hasStatusOk();
         
         //.andExpect(status().isOk())
         //.andExpect(jsonPath("$.genders").isArray())

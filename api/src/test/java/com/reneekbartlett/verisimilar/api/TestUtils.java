@@ -6,10 +6,10 @@ public class TestUtils {
     }
 
     public static boolean isRateLimitingTestingDisabled() {
-        return true;
+        return false;
     }
 
     public static boolean isAuthTestingDisabled() {
-        return true;
+        return false;
     }
 }

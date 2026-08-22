@@ -1,13 +1,13 @@
 package com.reneekbartlett.verisimilar.core.selector;
 
+import java.util.EnumSet;
+
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.UnitType;
-
-import org.junit.jupiter.api.BeforeEach;
-import java.util.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class WeightedEnumSelectorImplTests {
 
@@ -37,7 +37,11 @@ public class WeightedEnumSelectorImplTests {
 
         final String countsStr = "PENTHOUSE=" + countPenthouse + ", APARTMENT=" + countApartment 
                 + ", OTHER=" + countOther;
-        assertTrue(countApartment > countPenthouse, () -> "APARTMENT should be selected more often than PENTHOUSE. [" + countsStr + "]");
+        //assertTrue(countApartment > countPenthouse, () -> "APARTMENT should be selected more often than PENTHOUSE. [" + countsStr + "]");
         //assertTrue(countOther > 0, "countOther should be GT 0");
+
+        Assertions.assertThat(countApartment).isGreaterThan(countPenthouse)
+            .withFailMessage(() -> "APARTMENT should be selected more often than PENTHOUSE. [" + countsStr + "]");
+        Assertions.assertThat(countOther).isGreaterThan(0);
     }
 }

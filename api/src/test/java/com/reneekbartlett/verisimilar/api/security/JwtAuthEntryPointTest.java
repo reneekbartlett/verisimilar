@@ -1,5 +1,8 @@
 package com.reneekbartlett.verisimilar.api.security;
 
+import java.io.IOException;
+
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -12,13 +15,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
 
 public class JwtAuthEntryPointTest {
 
@@ -46,28 +42,32 @@ public class JwtAuthEntryPointTest {
 
         // Assert
         // 1. Verify HTTP Response Headers and Status Code
-        assertEquals(HttpServletResponse.SC_UNAUTHORIZED, response.getStatus());
-        assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
+        Assertions.assertThat(response.getStatus()).isEqualTo(HttpServletResponse.SC_UNAUTHORIZED);
+        Assertions.assertThat(response.getContentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
 
         // 2. Parse the written raw string output into a JSON tree structure for evaluation
         String jsonResponseBody = response.getContentAsString();
-        assertNotNull(jsonResponseBody);
-        assertFalse(jsonResponseBody.isBlank());
+
+        Assertions.assertThat(jsonResponseBody).isNotNull().isNotBlank();
 
         JsonNode rootNode = objectMapper.readTree(jsonResponseBody);
 
         // 3. Verify object field mapping rules match the exact contract keys
         // 3. Verify object field mapping metrics safely without any node text/string accessors
-        assertTrue(rootNode.hasNonNull("timestamp")); // Replaces old presence checks safely
+        //assertTrue(rootNode.hasNonNull("timestamp")); // Replaces old presence checks safely
+        Assertions.assertThat(rootNode.hasNonNull("timestamp")).isTrue();
 
         // Extract the timestamp field safely using tree conversion instead of a text accessor method
         String timestampValue = objectMapper.treeToValue(rootNode.path("timestamp"), String.class);
 
-        assertEquals(401, rootNode.get("status").asInt());
-        assertNotNull(timestampValue, "Timestamp must be a valid text string asset");
-        assertFalse(timestampValue.isBlank(), "Timestamp value string content cannot be blank");
+        //assertEquals(401, rootNode.get("status").asInt());
+        //assertNotNull(timestampValue, "Timestamp must be a valid text string asset");
+        //assertFalse(timestampValue.isBlank(), "Timestamp value string content cannot be blank");
         //assertEquals("Unauthorized", rootNode.get("error").asText());
         //assertEquals("The provided JSON Web Token is invalid or expired.", rootNode.get("message").asText());
         //assertEquals("/api/v1/secure-data", rootNode.get("path").asText());
+
+        Assertions.assertThat(rootNode.get("status").asInt()).isEqualTo(401);
+        Assertions.assertThat(timestampValue).isNotNull().isNotBlank();
     }
 }

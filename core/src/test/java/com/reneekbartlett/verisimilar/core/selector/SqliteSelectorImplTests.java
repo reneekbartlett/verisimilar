@@ -1,18 +1,18 @@
 package com.reneekbartlett.verisimilar.core.selector;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
-
-import org.junit.jupiter.api.BeforeEach;
-
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class SqliteSelectorImplTests {
 
@@ -71,7 +71,8 @@ public class SqliteSelectorImplTests {
                 try {
                     for (int i = 0; i < iterations; i++) {
                         String result = selector.select();
-                        assertNotNull(result);
+                        //assertNotNull(result);
+                        Assertions.assertThat(result).isNotNull();
                     }
                 } catch (Throwable ex) {
                     failed.set(true);
@@ -82,6 +83,7 @@ public class SqliteSelectorImplTests {
         executor.shutdown();
         executor.awaitTermination(10, TimeUnit.SECONDS);
 
-        assertFalse(failed.get(), "Concurrent access caused failure");
+        //assertFalse(failed.get(), "Concurrent access caused failure");
+        Assertions.assertThat(failed.get()).isFalse().withFailMessage(() -> "Concurrent access caused failure");
     }
 }

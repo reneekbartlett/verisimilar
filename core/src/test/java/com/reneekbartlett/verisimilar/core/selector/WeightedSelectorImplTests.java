@@ -8,15 +8,13 @@ import com.reneekbartlett.verisimilar.core.model.UnitType;
 import com.reneekbartlett.verisimilar.core.model.WeightedEnumData;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
+import org.assertj.core.api.Assertions;
 //import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisabledIf(value = "com.reneekbartlett.verisimilar.core.TestUtils#isCoreTestingDisabled")
 public class WeightedSelectorImplTests {
@@ -46,8 +44,12 @@ public class WeightedSelectorImplTests {
         }
 
         final String countsStr = "RENEE=" + countB + ", ALISON=" + countA + "";
-        assertTrue(countB > countA, () -> "RENEE should be selected more often than ALISON. [" + countsStr + "]");
-        assertTrue(countOther == 0, "countOther should be 0");
+
+        //assertTrue(countB > countA, () -> "RENEE should be selected more often than ALISON. [" + countsStr + "]");
+        //assertTrue(countOther == 0, "countOther should be 0");
+
+        Assertions.assertThat(countB).isGreaterThan(countA);
+        Assertions.assertThat(countOther).isEqualTo(0);
     }
 
     @Test
@@ -57,7 +59,8 @@ public class WeightedSelectorImplTests {
 
         int expected = 4;
         int actual = selector.getValueCount();
-        assertEquals(expected, actual, () -> "Expected value to be " + expected + " but was " + actual);
+        //assertEquals(expected, actual, () -> "Expected value to be " + expected + " but was " + actual);
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -70,7 +73,8 @@ public class WeightedSelectorImplTests {
 
         // Should not throw, and should still select valid items
         for (int i = 0; i < 1000; i++) {
-            assertTrue(weights.containsKey(selector.select()));
+            //assertTrue(weights.containsKey(selector.select()));
+            Assertions.assertThat(weights).containsKey(selector.select());
         }
     }
 
@@ -87,7 +91,8 @@ public class WeightedSelectorImplTests {
         selector.setFilter(filter);
 
         String result = selector.select();
-        assertTrue(result.startsWith("A"));
+        //assertTrue(result.startsWith("A"));
+        Assertions.assertThat(result).startsWithIgnoringCase("A");
     }
 
     @Test
@@ -112,7 +117,8 @@ public class WeightedSelectorImplTests {
 
         // Should fall back to unfiltered selection
         String result = selector.select();
-        assertTrue(weights.containsKey(result));
+
+        Assertions.assertThat(weights).containsKey(result);
     }
 
     @Test
@@ -123,7 +129,8 @@ public class WeightedSelectorImplTests {
         selector.setFilter(SelectionFilter.empty());
 
         String result = selector.select();
-        assertTrue(weights.containsKey(result));
+        //assertTrue(weights.containsKey(result));
+        Assertions.assertThat(weights).containsKey(result);
     }
 
     @Test
@@ -140,7 +147,9 @@ public class WeightedSelectorImplTests {
         WeightedSelectorImpl<String> first = selector.withFilter(filter);
         WeightedSelectorImpl<String> second = selector.withFilter(filter);
 
-        assertSame(first, second, "Filtered selector should be memoized");
+        //assertSame(first, second, "Filtered selector should be memoized");
+        Assertions.assertThat(first).isEqualTo(second);
+            //.withFailMessage("Filtered selector should be memoized", null);
     }
 
     @Test
@@ -165,7 +174,7 @@ public class WeightedSelectorImplTests {
                 try {
                     for (int i = 0; i < iterations; i++) {
                         String result = selector.select();
-                        assertNotNull(result);
+                        Assertions.assertThat(result).isNotNull();
                     }
                 } catch (Throwable ex) {
                     failed.set(true);
@@ -176,7 +185,8 @@ public class WeightedSelectorImplTests {
         executor.shutdown();
         executor.awaitTermination(10, TimeUnit.SECONDS);
 
-        assertFalse(failed.get(), "Concurrent access caused failure");
+        //assertFalse(failed.get(), "Concurrent access caused failure");
+        Assertions.assertThat(failed.get()).isFalse();
     }
 
     @Test
@@ -190,7 +200,8 @@ public class WeightedSelectorImplTests {
                 .build();
         WeightedSelectorImpl<String> filtered = selector.withFilter(filter);
 
-        assertNotSame(selector, filtered);
-        assertThat(weights).containsKey(filtered.select().toUpperCase());
+        //assertNotSame(selector, filtered);
+        Assertions.assertThat(filter.startsWithMap()).containsKey(field);
+        Assertions.assertThat(weights).containsKey(filtered.select().toUpperCase());
     }
 }

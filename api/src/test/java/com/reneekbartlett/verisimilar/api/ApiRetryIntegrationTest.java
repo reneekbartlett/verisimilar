@@ -6,9 +6,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import com.github.tomakehurst.wiremock.stubbing.Scenario;
-
 import com.reneekbartlett.verisimilar.api.config.TestConfig;
 import com.reneekbartlett.verisimilar.api.service.ExternalApiClient;
 
@@ -32,7 +30,7 @@ import com.reneekbartlett.verisimilar.api.service.ExternalApiClient;
 public class ApiRetryIntegrationTest {
 
     @Autowired
-    private ExternalApiClient apiClient; // Your AOP-annotated client bean
+    private ExternalApiClient apiClient; // AOP-annotated Bean
 
     @Test
     public void testRetryOn429RateLimitSuccess(WireMockRuntimeInfo wmRuntimeInfo) {
@@ -73,7 +71,7 @@ public class ApiRetryIntegrationTest {
         String response = apiClient.callRemoteApi(testUrl);
 
         // Assert that the final result is the successful 3rd call
-        assertEquals("{\"data\": \"Success after retries!\"}", response);
+        Assertions.assertThat(response).isEqualTo("{\"data\": \"Success after retries!\"}");
 
         // Verify WireMock was hit exactly 3 times total
         verify(3, getRequestedFor(urlEqualTo("/api/generate/person")));
@@ -96,14 +94,18 @@ public class ApiRetryIntegrationTest {
                 .withBody("{\"error\": \"Too Many Requests - Rate Limit Exceeded\"}")));
 
         // Verify that the client eventually throws the exception after exhausting its retries
-        HttpClientErrorException.TooManyRequests thrownException = assertThrows(
-            HttpClientErrorException.TooManyRequests.class,
-            () -> apiClient.callRemoteApi(testUrl),
-            "Expected callRemoteApi to throw a 429 TooManyRequests exception after retries exhausted"
-        );
+        //HttpClientErrorException.TooManyRequests thrownException = assertThrows(
+        //    HttpClientErrorException.TooManyRequests.class,
+        //    () -> apiClient.callRemoteApi(testUrl),
+        //    "Expected callRemoteApi to throw a 429 TooManyRequests exception after retries exhausted"
+        //);
+
+        // Class<THROWABLE> type, ThrowingCallable shouldRaiseThrowable
+        HttpClientErrorException.TooManyRequests thrownException = Assertions
+                .catchThrowableOfType(HttpClientErrorException.TooManyRequests.class,() -> apiClient.callRemoteApi(testUrl));
 
         // Assert that the thrown exception contains the correct HTTP status code
-        assertEquals(429, thrownException.getStatusCode().value());
+        Assertions.assertThat(thrownException.getStatusCode().value()).isEqualTo(429);
 
         // Verify that the AOP proxy attempted exactly 4 calls in total (1 initial try + 3 retries)
         verify(4, getRequestedFor(urlEqualTo(testPath)));
