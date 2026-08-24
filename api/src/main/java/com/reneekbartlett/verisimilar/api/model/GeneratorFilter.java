@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 //import org.apache.commons.lang3.math.NumberUtils;
 //import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 //import com.reneekbartlett.verisimilar.core.model.Generation;
@@ -46,16 +47,16 @@ public record GeneratorFilter(
                     handleIn(builder, filterCondition.field(), value);
                     break;
                 case STARTS_WITH:
-                    builder.addFilter(value, filterCondition.field(), FilterOperator.STARTS_WITH.keyword());
+                    builder.addFilter(value, filterCondition.field(), FilterOperator.STARTS_WITH);
                     break;
                 case CONTAINS:
-                    builder.addFilter(value, filterCondition.field(), FilterOperator.CONTAINS.keyword());
+                    builder.addFilter(value, filterCondition.field(), FilterOperator.CONTAINS);
                     break;
                 case ENDS_WITH:
-                    builder.addFilter(value, filterCondition.field(), FilterOperator.ENDS_WITH.keyword());
+                    builder.addFilter(value, filterCondition.field(), FilterOperator.ENDS_WITH);
                     break;
                 default:
-                    builder.addFilter(value, filterCondition.field(), filterCondition.operator().keyword());
+                    builder.addFilter(value, filterCondition.field(), filterCondition.operator());
                     break;
                     // ignore or log
             }
@@ -78,6 +79,7 @@ public record GeneratorFilter(
     // Operator Handlers
     // -----------------------------
 
+    // TODO: 8/21
     private void handleEq(SelectionFilter.Builder builder, TemplateField field, String filterValue) {
         Class<?> targetType = field.targetType();
 
@@ -86,24 +88,24 @@ public record GeneratorFilter(
             Class<? extends Enum<?>> enumType = field.enumType();
             Enum<?> enumValue = getEnumValue(targetType, enumType, filterValue);
             //EnumSet<?> enumValues = convertToEnumSet(enumType, toFilter);
-            builder.addFilter(Set.of(enumValue), field, FilterOperator.EQUAL_TO.keyword());
+            builder.addFilter(Set.of(enumValue), field, FilterOperator.EQUAL_TO);
             return;
         }
 
         // Integer
         if (Integer.class.equals(targetType)) {
-            builder.addFilter(filterValue, field, FilterOperator.EQUAL_TO.keyword());
+            builder.addFilter(filterValue, field, FilterOperator.EQUAL_TO);
             return;
         }
 
         // String
         if (String.class.equals(targetType)) {
-            builder.addFilter(filterValue, field, FilterOperator.EQUAL_TO.keyword());
+            builder.addFilter(filterValue, field, FilterOperator.EQUAL_TO);
             return;
         }
 
         if (Date.class.equals(targetType) || LocalDate.class.equals(targetType)) {
-            builder.addFilter(filterValue, field, FilterOperator.EQUAL_TO.keyword());
+            builder.addFilter(filterValue, field, FilterOperator.EQUAL_TO);
             return;
         }
 
@@ -124,13 +126,13 @@ public record GeneratorFilter(
         if (EnumSet.class.equals(targetType) || Enum.class.isAssignableFrom(targetType)) {
             // Convert String to EnumSet
             EnumSet<?> enumValues = convertToEnumSet(field.enumType(), toFilter);
-            builder.addFilter(enumValues, field, FilterOperator.IN.keyword());
+            builder.addFilter(enumValues, field, FilterOperator.IN);
             return;
         }
 
         // String list
         if (String.class.equals(targetType)) {
-            builder.addFilter(toFilter, field, FilterOperator.IN.keyword());
+            builder.addFilter(toFilter, field, FilterOperator.IN);
             return;
         }
 
@@ -142,7 +144,7 @@ public record GeneratorFilter(
             //        .map(NumberUtils::toInt) // Converts safely to a primitive int
             //        .collect(Collectors.toSet());
             //addFilter(builder, field, FilterOperator.IN, toFilter);
-            builder.addFilter(toFilter, field, FilterOperator.IN.keyword());
+            builder.addFilter(toFilter, field, FilterOperator.IN);
             return;
         }
 
