@@ -58,8 +58,12 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
         super(resolvers, strategy);
     }
 
+    public FirstNameSelectionEngine(FirstNameDatasetResolver resolver, SelectorStrategy<String> strategy) {
+        super(resolver, strategy);
+    }
+
     public FirstNameSelectionEngine(FirstNameDatasetResolver resolver) {
-        super(resolver, DEFAULT_SELECTOR_STRATEGY);
+        this(resolver, DEFAULT_SELECTOR_STRATEGY);
     }
 
     @Override
@@ -76,7 +80,7 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
                 genderIdentityMap.keySet().forEach(gender -> {
                     NameKey nameKey = new NameKey(gender, ethnicity, Decade.ALL);
                     LOGGER.debug("{}", nameKey);
-                    var tmpValMap = firstNameDatasetResult.get(nameKey);
+                    //var tmpValMap = firstNameDatasetResult.get(nameKey);
                     
                     RandomSelector<String> selector = strategy.buildSelector(firstNameDatasetResult.get(nameKey), field());
                     selectorsByNameKey.put(nameKey, selector);
@@ -134,7 +138,7 @@ public class FirstNameSelectionEngine extends AbstractSelectionEngine<FirstNameD
     }
 
     @Override
-    protected TemplateField field() {
+    public TemplateField field() {
         return TemplateField.FIRST_NAME;
     }
 }

@@ -36,14 +36,18 @@ public class AddressTwoSelectionEngine extends AbstractSelectionEngine<AddressTw
     }
 
     public AddressTwoSelectionEngine(DatasetResolverRegistry resolvers, SelectorStrategy<String> strategy) {
-        super(resolvers, strategy);
+        this(resolvers.address2(), strategy);
     }
 
     public AddressTwoSelectionEngine(AddressTwoDatasetResolver resolver) {
-        super(resolver, DEFAULT_SELECTOR_STRATEGY);
+        this(resolver, DEFAULT_SELECTOR_STRATEGY);
     }
 
-    protected void setup() {
+    public AddressTwoSelectionEngine(AddressTwoDatasetResolver resolver, SelectorStrategy<String> strategy) {
+        super(resolver, strategy);
+    }
+
+    public void setup() {
         AddressTwoDatasetResult result = datasetResolver().resolve(AddressTwoDatasetKey.defaults());
         this.selectorsByNameKey = HashMap.newHashMap(result.datasets().size());
         result.datasets().forEach((nameKey, map) -> {
@@ -86,7 +90,7 @@ public class AddressTwoSelectionEngine extends AbstractSelectionEngine<AddressTw
     }
 
     @Override
-    protected TemplateField field() {
+    public TemplateField field() {
         return TemplateField.ADDRESS2;
     }
 }

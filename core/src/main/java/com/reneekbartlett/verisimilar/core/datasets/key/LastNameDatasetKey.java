@@ -1,9 +1,11 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
 import java.util.EnumSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 
 /***
@@ -24,6 +26,11 @@ public record LastNameDatasetKey(String id, EnumSet<Ethnicity> ethnicities) impl
 
     public LastNameDatasetKey(Ethnicity ethnicity) {
         this(KEY_ID, EnumSet.of(ethnicity));
+    }
+
+    @Override
+    public Set<TemplateField> fields(){
+        return EnumSet.of(TemplateField.ETHNICITY);
     }
 
     public static LastNameDatasetKey defaults() {

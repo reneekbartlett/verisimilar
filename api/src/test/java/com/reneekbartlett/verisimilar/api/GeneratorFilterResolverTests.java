@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import com.reneekbartlett.verisimilar.api.model.FilterCondition;
-import com.reneekbartlett.verisimilar.api.model.FilterOperator;
+
 import com.reneekbartlett.verisimilar.api.model.GeneratorFilter;
 import com.reneekbartlett.verisimilar.api.service.GeneratorFilterResolver;
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.USState;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;

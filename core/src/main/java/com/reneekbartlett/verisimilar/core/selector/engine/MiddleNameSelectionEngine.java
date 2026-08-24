@@ -135,7 +135,7 @@ public class MiddleNameSelectionEngine extends AbstractSelectionEngine<MiddleNam
     }
 
     @Override
-    protected TemplateField field() {
+    public TemplateField field() {
         return TemplateField.MIDDLE_NAME;
     }
 }

@@ -95,7 +95,7 @@ public class DomainSelectionEngine extends AbstractSelectionEngine<DomainDataset
     }
 
     @Override
-    protected TemplateField field() {
+    public TemplateField field() {
         return TemplateField.DOMAIN;
     }
 

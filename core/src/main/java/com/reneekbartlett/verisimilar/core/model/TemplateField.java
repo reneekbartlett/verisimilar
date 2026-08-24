@@ -11,6 +11,7 @@ public enum TemplateField {
 
     BIRTHDAY("BIRTHDAY", Date.class, null),
     GENERATION("GENERATION", EnumSet.class, Generation.class),
+    DECADE("DECADE", EnumSet.class, Decade.class),
 
     GENDER_IDENTITY("GENDER_IDENTITY", EnumSet.class, GenderIdentity.class),
 
@@ -59,6 +60,8 @@ public enum TemplateField {
     POSTAL_ADDRESS("POSTAL_ADDRESS", PostalAddress.class, null),
     STREET_ADDRESS("STREET_ADDRESS", StreetAddress.class, null),
 
+    TEMPLATE("TEMPLATE", String.class, null),
+
     SEPARATOR("SEPARATOR", String.class, null),
 
     NUM10("NUM10", Integer.class, null),
@@ -91,10 +94,11 @@ public enum TemplateField {
     public Class<?> targetType() { return this.targetType; }
     public Class<? extends Enum<?>> enumType() { return this.enumType; }
 
-    // Companion reflection method to tell the converter which elements belong in the Set
+    // Reflection method to tell converter which elements belong in the Set
+    @SuppressWarnings("rawtypes")
     public Class<? extends Enum> getEnumElementClass() {
         if (this == DOMAIN_TYPE)
-            return DomainType.class; // Link directly to your sub-enum class
+            return DomainType.class; // Link directly to sub-enum class
 
         if (this == USERNAME_TYPE) 
             return UsernameType.class;

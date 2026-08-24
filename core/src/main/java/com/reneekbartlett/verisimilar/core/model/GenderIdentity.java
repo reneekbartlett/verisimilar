@@ -10,8 +10,12 @@ public enum GenderIdentity implements WeightedEnumData {
     MALE("MALE", 1, 0.4995, "male"),
     FEMALE("FEMALE", 2, 0.4995, "female"),
     NONBINARY("NON-BINARY", 3, 0.0010, "unisex"),
-    GENDER_UNSPECIFIED("UNSPECIFIED", 0, 0.0000, "unisex"),
-    EMPTY("", 0, 0.0000, "unisex");
+    GENDER_UNSPECIFIED("UNSPECIFIED", 0, 0.0000, "unisex"){
+        @Override public boolean isIncludedByDefault() { return false; }
+    },
+    EMPTY("", 0, 0.0000, "unisex"){
+        @Override public boolean isIncludedByDefault() { return false; }
+    };
 
     private final String label;
     private final int value;

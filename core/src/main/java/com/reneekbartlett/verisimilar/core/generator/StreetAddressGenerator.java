@@ -16,13 +16,13 @@ import com.reneekbartlett.verisimilar.core.model.StreetSuffix;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.UnitType;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
-import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
-import com.reneekbartlett.verisimilar.core.util.RandomUtils;
 import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorImpl;
 import com.reneekbartlett.verisimilar.core.selector.engine.AddressTwoSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.StreetNameSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.StreetSuffixSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.engine.registry.DatasetSelectionEngineRegistry;
+import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
+import com.reneekbartlett.verisimilar.core.util.RandomUtils;
 
 public class StreetAddressGenerator extends AbstractValueGenerator<StreetAddress>{
 

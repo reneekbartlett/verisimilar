@@ -83,7 +83,7 @@ public class KeywordSelectionEngine extends AbstractSelectionEngine<KeywordDatas
     }
 
     @Override
-    protected TemplateField field() {
+    public TemplateField field() {
         return TemplateField.KEYWORD1;
     }
 

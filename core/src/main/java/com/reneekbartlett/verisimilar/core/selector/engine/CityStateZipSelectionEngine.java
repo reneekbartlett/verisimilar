@@ -31,15 +31,20 @@ public class CityStateZipSelectionEngine extends AbstractSelectionEngine<CitySta
     }
 
     public CityStateZipSelectionEngine(DatasetResolverRegistry resolvers) {
-        super(resolvers, DEFAULT_SELECTOR_STRATEGY);
+        this(resolvers.cityStateZip(), DEFAULT_SELECTOR_STRATEGY);
     }
 
     public CityStateZipSelectionEngine(DatasetResolverRegistry resolvers, SelectorStrategy<String> strategy) {
-        super(resolvers, strategy);
+        this(resolvers.cityStateZip(), strategy);
     }
 
+    // TODO:  default from config
     public CityStateZipSelectionEngine(CityStateZipDatasetResolver resolver) {
-        super(resolver, DEFAULT_SELECTOR_STRATEGY);
+        this(resolver, DEFAULT_SELECTOR_STRATEGY);
+    }
+
+    public CityStateZipSelectionEngine(CityStateZipDatasetResolver resolver, SelectorStrategy<String> strategy) {
+        super(resolver, strategy);
     }
 
     @Override

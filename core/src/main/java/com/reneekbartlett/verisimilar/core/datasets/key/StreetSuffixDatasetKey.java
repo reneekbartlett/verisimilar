@@ -1,5 +1,9 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
+import java.util.EnumSet;
+import java.util.Set;
+
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 
 public record StreetSuffixDatasetKey(String id) implements DatasetKey {
@@ -8,6 +12,11 @@ public record StreetSuffixDatasetKey(String id) implements DatasetKey {
 
     public StreetSuffixDatasetKey() {
         this(KEY_ID);
+    }
+
+    @Override
+    public Set<TemplateField> fields(){
+        return EnumSet.of(TemplateField.ADDRESS_CATEGORY);
     }
 
     public static StreetSuffixDatasetKey defaults() {

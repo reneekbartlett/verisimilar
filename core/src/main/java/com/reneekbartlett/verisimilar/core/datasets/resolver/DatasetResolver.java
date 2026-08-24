@@ -20,4 +20,5 @@ public interface DatasetResolver<K, R> {
      */
     R resolve(K key);
 
+    //R loadForKey(K key);
 }

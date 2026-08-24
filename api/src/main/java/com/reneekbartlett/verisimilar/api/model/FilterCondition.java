@@ -2,6 +2,7 @@ package com.reneekbartlett.verisimilar.api.model;
 
 import java.util.Objects;
 
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 
 public record FilterCondition(

@@ -70,7 +70,7 @@ public class NicknameSelectionEngine extends AbstractSelectionEngine<NicknameDat
     }
 
     @Override
-    protected TemplateField field() {
+    public TemplateField field() {
         return TemplateField.NICKNAME;
     }
 }

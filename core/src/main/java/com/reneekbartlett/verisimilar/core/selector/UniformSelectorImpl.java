@@ -34,6 +34,7 @@ public final class UniformSelectorImpl<T> implements RandomSelector<T> {
 
     public UniformSelectorImpl(List<T> dataset, TemplateField field) {
         Objects.requireNonNull(dataset, "dataset");
+        Objects.requireNonNull(field, "TemplateField");
         if (dataset.isEmpty()) {
             LOGGER.error("Dataset cannot be empty");
             throw new IllegalArgumentException("Dataset cannot be empty");
@@ -66,16 +67,18 @@ public final class UniformSelectorImpl<T> implements RandomSelector<T> {
     }
 
     /***
-     * TODO:  Document filter process 
+     * TODO:  Document filter process
      */
     @Override
     public T select() {
         SelectionFilter filter = this.filter;
         if(filter != null && !filter.isEmpty()) {
             UniformSelectorImpl<T> filtered = filteredCache.computeIfAbsent(filter, this::buildFilteredSelector);
+            LOGGER.debug("select {} with filter", field.getLabel());
             return filtered.select();
         }
         // select un-filtered
+        LOGGER.debug("select {} without filter", field.getLabel());
         int idx = ThreadLocalRandom.current().nextInt(valueCount);
         return dataset.get(idx);
     }
@@ -92,7 +95,6 @@ public final class UniformSelectorImpl<T> implements RandomSelector<T> {
      */
     // TODO: Check EntryFilter.applyToList
     private UniformSelectorImpl<T> buildFilteredSelector(SelectionFilter filter) {
-        // TODO:  Convert List<T> to List<String>?
         List<T> filtered = EntryFilter.applyToList(dataset, filter, field);
         if (filtered.isEmpty()) {
             LOGGER.warn("Filtered dataset list empty for filter: {}", filter);
@@ -112,5 +114,6 @@ public final class UniformSelectorImpl<T> implements RandomSelector<T> {
 
     public void setFilter(SelectionFilter filter) {
         this.filter = filter;
+        LOGGER.debug("Set {} filter={}", field.getLabel(), filter);
     }
 }

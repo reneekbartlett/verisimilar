@@ -1,19 +1,29 @@
 package com.reneekbartlett.verisimilar.core.selector.engine;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.reneekbartlett.verisimilar.core.datasets.key.DatasetKey;
+import com.reneekbartlett.verisimilar.core.datasets.key.FirstNameDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.DatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.datasets.result.DatasetResult;
+import com.reneekbartlett.verisimilar.core.datasets.result.FirstNameDatasetResult;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.filter.EntryFilter;
+import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFieldMapper;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
+import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter.Builder;
 
 /***
  * DomainSelectionEngine extends AbstractSelectionEngine<DomainDatasetKey,DomainDatasetResult>
@@ -23,20 +33,20 @@ import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
  * DatasetResolverRegistry resolvers
  * SelectorStrategy<String> strategy
  */
-public abstract class AbstractSelectionEngine<K,R> {
+abstract class AbstractSelectionEngine<K,R> implements SelectionEngine<K,R> {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractSelectionEngine.class);
     protected final SelectorStrategy<String> strategy;
     protected final DatasetResolver<K, R> datasetResolver;
 
-    protected AbstractSelectionEngine(DatasetResolverRegistry resolvers, SelectorStrategy<String> strategy) {
-        this.datasetResolver = resolvers.getResolver(this.keyType());
+    protected AbstractSelectionEngine(DatasetResolver<K, R> datasetResolver, SelectorStrategy<String> strategy) {
+        this.datasetResolver = datasetResolver;
         this.strategy = strategy;
         setup();
     }
 
-    protected AbstractSelectionEngine(DatasetResolver<K, R> datasetResolver, SelectorStrategy<String> strategy) {
-        this.datasetResolver = datasetResolver;
+    protected AbstractSelectionEngine(DatasetResolverRegistry resolvers, SelectorStrategy<String> strategy) {
+        this.datasetResolver = resolvers.getResolver(this.keyType());
         this.strategy = strategy;
         setup();
     }
@@ -52,7 +62,8 @@ public abstract class AbstractSelectionEngine<K,R> {
         DatasetResult dsResult = (DatasetResult) datasetResolver.resolve(key);
         RandomSelector<String> randomSelector = strategy.buildSelector(dsResult.getDefault(), field());
         if (randomSelector == null) {
-            throw new IllegalStateException("No selector registered for default NameKey.");
+            LOGGER.warn("{}", dsResult.getDefault());
+            throw new IllegalStateException("No selector registered for default NameKey. [Field=" + field().getLabel() + "]");
         }
         if(filter != null && !filter.isEmpty()) {
             randomSelector.setFilter(filter);
@@ -70,15 +81,20 @@ public abstract class AbstractSelectionEngine<K,R> {
 
     protected abstract void setup();
 
-    protected abstract K defaultKey();
+    @Override
+    public abstract K defaultKey();
 
-    protected abstract Class<K> keyType();
+    @Override
+    public abstract Class<K> keyType();
 
-    protected abstract Class<R> resultType();
+    @Override
+    public abstract Class<R> resultType();
 
-    protected abstract TemplateField field();
+    @Override
+    public abstract TemplateField field();
 
-    protected DatasetResolver<K, R> datasetResolver(){
+    @Override
+    public DatasetResolver<K, R> datasetResolver(){
         return this.datasetResolver;
     }
 
@@ -99,5 +115,41 @@ public abstract class AbstractSelectionEngine<K,R> {
         }
         LOGGER.debug("applyFilter started; filter:{}", filter);
         return EntryFilter.applyToList(values, filter, field());
+    }
+
+    // TODO:  Not implemented.
+    public enum SelectionEngineMapper {
+        FIRST_NAME(
+            TemplateField.FIRST_NAME,
+            FirstNameSelectionEngine.class,
+            //(datasetResolver, strategy) -> new FirstNameSelectionEngine(datasetResolver, strategy)
+            null
+        );
+        private final TemplateField templateField;
+        private final Class<?> generatorType;
+        private final BiFunction<DatasetResolver<DatasetKey,DatasetResult>, 
+            SelectorStrategy<String>, AbstractSelectionEngine<DatasetKey,DatasetResult>> singleConsumer;
+        //private final BiFunction<Builder, Set<?>, Builder> multiConsumer;
+    
+        // Static lookup cache for fast, non-loop O(1) performance
+        //static final Map<TemplateField, SelectionFieldMapper> LOOKUP = Arrays.stream(values())
+        //        .collect(Collectors.toMap(SelectionFieldMapper::getTemplateField, Function.identity()));
+    
+        SelectionEngineMapper(
+                TemplateField templateField, 
+                Class<?> generatorType,
+                BiFunction<DatasetResolver<DatasetKey,DatasetResult>, SelectorStrategy<String>, 
+                AbstractSelectionEngine<DatasetKey,DatasetResult>> singleConsumer 
+                //BiFunction<Builder, Set<?>, Builder> multiConsumer
+        ) {
+            //Map<String, Double> map
+            //DatasetResolver<K, R> datasetResolver, SelectorStrategy<String> strategy
+            
+            //RandomSelector<String> randomSelector = strategy.buildSelector(dsResult.getDefault(), field());
+            this.templateField = templateField;
+            this.generatorType = generatorType;
+            this.singleConsumer = singleConsumer;
+            //this.multiConsumer  = multiConsumer;
+        }
     }
 }

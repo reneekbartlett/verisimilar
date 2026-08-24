@@ -1,9 +1,7 @@
 package com.reneekbartlett.verisimilar.core.datasets.resolver;
 
-import java.util.Map;
-
+import com.reneekbartlett.verisimilar.core.datasets.DatasetSource;
 import com.reneekbartlett.verisimilar.core.datasets.key.AddressTwoDatasetKey;
-import com.reneekbartlett.verisimilar.core.datasets.loader.ResourceLoaderUtil;
 import com.reneekbartlett.verisimilar.core.datasets.result.AddressTwoDatasetResult;
 
 /***
@@ -11,17 +9,21 @@ import com.reneekbartlett.verisimilar.core.datasets.result.AddressTwoDatasetResu
  */
 public class AddressTwoDatasetResolver extends AbstractDatasetResolver<AddressTwoDatasetKey, AddressTwoDatasetResult> {
 
-    private static final String DEFAULT_FILE_FORMAT = "datasets/cfg_postal_address_address2_unit_type_%s.csv";
+    //private static final String DEFAULT_FILE_FORMAT = "datasets/cfg_postal_address_address2_unit_type_%s.csv";
 
-    public AddressTwoDatasetResolver(ResourceLoaderUtil loader) {
-        super(loader);
+    public AddressTwoDatasetResolver(DatasetSource<AddressTwoDatasetKey, AddressTwoDatasetResult> source) {
+        super(source);
     }
 
-    @Override
-    public AddressTwoDatasetResult loadForKey(AddressTwoDatasetKey key) {
-        Map<String, Double> all = loadDataset(key);
-        return new AddressTwoDatasetResult(all);
-    }
+    //public AddressTwoDatasetResolver(ResourceLoaderUtil loader) {
+    //    super(loader);
+    //}
+
+    //@Override
+    //public AddressTwoDatasetResult loadForKey(AddressTwoDatasetKey key) {
+    //    Map<String, Double> all = loadDataset(key);
+    //    return new AddressTwoDatasetResult(all);
+    //}
 
     @Override
     public Class<AddressTwoDatasetKey> keyType() {
@@ -33,8 +35,8 @@ public class AddressTwoDatasetResolver extends AbstractDatasetResolver<AddressTw
         return AddressTwoDatasetResult.class;
     }
 
-    private Map<String, Double> loadDataset(AddressTwoDatasetKey key) {
-        String filePath = String.format(DEFAULT_FILE_FORMAT, "ALL");
-        return loader.loadWeightedMap(filePath);
-    }
+//    private Map<String, Double> loadDataset(AddressTwoDatasetKey key) {
+//        String filePath = String.format(DEFAULT_FILE_FORMAT, "ALL");
+//        return loader.loadWeightedMap(filePath);
+//    }
 }

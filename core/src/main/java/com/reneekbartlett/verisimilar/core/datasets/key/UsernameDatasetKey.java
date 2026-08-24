@@ -1,9 +1,11 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
 import java.util.EnumSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.UsernameType;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 
@@ -28,6 +30,11 @@ public record UsernameDatasetKey(
 
     public UsernameDatasetKey(EnumSet<UsernameType> usernameTypes) {
         this(KEY_ID, usernameTypes, GenderIdentity.defaultDatasets());
+    }
+
+    @Override
+    public Set<TemplateField> fields(){
+        return EnumSet.of(TemplateField.USERNAME_TYPE, TemplateField.GENDER_IDENTITY);
     }
 
     public static UsernameDatasetKey fromContext(DatasetResolutionContext ctx) {

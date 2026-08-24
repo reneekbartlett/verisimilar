@@ -5,7 +5,6 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -170,6 +169,7 @@ public enum SelectionFieldMapper {
     );
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(SelectionFieldMapper.class);
+
     private final TemplateField templateField;
     private final BiFunction<Builder, Object, Builder> singleConsumer;
     private final BiFunction<Builder, Set<?>, Builder> multiConsumer;

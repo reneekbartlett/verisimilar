@@ -1,4 +1,4 @@
-package com.reneekbartlett.verisimilar.core.selector;
+package com.reneekbartlett.verisimilar.core.selector.engine;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -9,8 +9,7 @@ import com.reneekbartlett.verisimilar.core.datasets.key.UsernameDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.UsernameDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
-import com.reneekbartlett.verisimilar.core.selector.engine.KeywordSelectionEngine;
-import com.reneekbartlett.verisimilar.core.selector.engine.UsernameSelectionEngine;
+
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 //import com.reneekbartlett.verisimilar.core.templates.TemplateRegistry;
 //import com.reneekbartlett.verisimilar.core.templates.loader.TemplateRegistryLoader;
@@ -31,7 +30,7 @@ public class KeywordSelectionEngineTests {
         //this.usernameSelector1 = new UsernameSelectionEngine(resolvers, TestUtils.UNIFORM_RANDOM, templateRegistry);
     }
 
-    //@Test
+    @Test
     public void GenerateKeyword_Random() {
         DatasetResolverRegistry resolvers = TestUtils.getEmailAddressDatasetResolverRegistry();
 

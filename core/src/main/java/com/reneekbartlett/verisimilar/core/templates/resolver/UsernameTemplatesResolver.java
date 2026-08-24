@@ -7,8 +7,9 @@ import java.util.Set;
 
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.TemplateSet;
-import com.reneekbartlett.verisimilar.core.selector.engine.UsernameSelectionEngine.TemplateParameters;
+
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
+import com.reneekbartlett.verisimilar.core.templates.TemplateParameters;
 import com.reneekbartlett.verisimilar.core.templates.TemplateRegistry;
 import com.reneekbartlett.verisimilar.core.templates.loader.TemplateRegistryLoader;
 

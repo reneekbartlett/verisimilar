@@ -17,19 +17,28 @@ public class BirthdayGenerator extends AbstractLocalDateGenerator {
         DEFAULT_MAX_YEAR = Year.now().getValue()-18; // most recent
     }
 
+    private final int minBirthYear;
+    private final int maxBirthYear;
+
     public BirthdayGenerator() {
+        this(DEFAULT_MIN_YEAR, DEFAULT_MAX_YEAR);
+    }
+
+    public BirthdayGenerator(int minBirthYear, int maxBirthYear) {
         // No config files / selector
+        this.minBirthYear = minBirthYear;
+        this.maxBirthYear = maxBirthYear;
     }
 
     @Override
-    protected LocalDate generateLocalDate(DatasetResolutionContext ctx, SelectionFilter criteria) {
-        return generateBirthday(ctx, criteria);
+    protected LocalDate generateLocalDate(DatasetResolutionContext ctx, SelectionFilter filter) {
+        return generateBirthday(ctx, filter);
     }
 
     /* Birthday gets generated here */
     public LocalDate generateBirthday(DatasetResolutionContext context, SelectionFilter filter) throws IllegalArgumentException {
-        int minYear = (!filter.minYear().isPresent()) ? DEFAULT_MIN_YEAR : filter.minYear().get();
-        int maxYear = (!filter.maxYear().isPresent()) ? DEFAULT_MAX_YEAR : filter.maxYear().get();
+        int minYear = filter.minYear().orElse(minBirthYear);
+        int maxYear = filter.minYear().orElse(maxBirthYear);
 
         // TODO:  Generation
         //int year1 = criteria.generation().getStartYear();

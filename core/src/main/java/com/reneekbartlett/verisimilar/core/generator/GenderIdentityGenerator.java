@@ -1,23 +1,29 @@
 package com.reneekbartlett.verisimilar.core.generator;
 
+import java.util.EnumSet;
+
 import com.reneekbartlett.verisimilar.core.datasets.key.GenderIdentityDatasetKey;
-import com.reneekbartlett.verisimilar.core.model.DomainType;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
+import com.reneekbartlett.verisimilar.core.model.WeightedEnumData;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
-import com.reneekbartlett.verisimilar.core.selector.RandomSelector;
 import com.reneekbartlett.verisimilar.core.selector.UniformSelectorImpl;
-import com.reneekbartlett.verisimilar.core.selector.WeightedSelectorImpl;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
-public class GenderIdentityGenerator extends AbstractValueGenerator<GenderIdentity>{
+public class GenderIdentityGenerator extends AbstractEnumGenerator<GenderIdentity>{
 
     public GenderIdentityGenerator() {
         // No SelectionEngine
+        super(WeightedEnumData.defaultSet(GenderIdentity.class));
+    }
+    
+    public GenderIdentityGenerator(EnumSet<GenderIdentity> enumSet) {
+        // No SelectionEngine
+        super(enumSet);
     }
 
     @Override
-    protected GenderIdentity generateValue(DatasetResolutionContext ctx, SelectionFilter criteria) {
+    protected GenderIdentity generateEnum(DatasetResolutionContext ctx, SelectionFilter criteria) {
         GenderIdentityDatasetKey key = GenderIdentityDatasetKey.fromContext(ctx);
         return generateGenderIdentity(key, criteria);
     }

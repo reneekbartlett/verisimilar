@@ -1,8 +1,10 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
 import java.util.EnumSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.USState;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 
@@ -16,6 +18,10 @@ public record AreaCodeDatasetKey(String id, EnumSet<USState> states) implements 
 
     public AreaCodeDatasetKey(EnumSet<USState> states) {
         this(KEY_ID, states);
+    }
+
+    public Set<TemplateField> fields(){
+        return EnumSet.of(TemplateField.STATE);
     }
 
     public static AreaCodeDatasetKey defaults() {

@@ -25,6 +25,8 @@ import com.reneekbartlett.verisimilar.core.selector.SelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.UniformSelectorImpl;
 import com.reneekbartlett.verisimilar.core.selector.UniformSelectorStrategy;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
+import com.reneekbartlett.verisimilar.core.templates.TemplateParameters;
+import com.reneekbartlett.verisimilar.core.templates.UsernameTemplateParam;
 import com.reneekbartlett.verisimilar.core.templates.loader.TemplateRegistryLoader;
 import com.reneekbartlett.verisimilar.core.templates.resolver.UsernameTemplatesResolver;
 import com.reneekbartlett.verisimilar.core.templates.resolver.UsernameTemplatesResolver.UsernameTemplatesResult;
@@ -62,7 +64,7 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
             DatasetResolverRegistry resolvers, 
             SelectorStrategy<String> strategy
     ) {
-        super(resolvers, strategy);
+        super(resolvers.username(), strategy);
     }
 
     public UsernameSelectionEngine(UsernameDatasetResolver usernameDatasetResolver) {
@@ -76,6 +78,7 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
             RandomSelector<String> selector = strategy.buildSelector(map, field());
             selectorsByNameKey.put(nameKey, selector);
         });
+        LOGGER.debug("setup - {}", selectorsByNameKey.keySet());
         /*this.selectorsByNameKey = result.datasets().entrySet().stream().collect(
                 Collectors.toMap(
                     Map.Entry::getKey,
@@ -105,6 +108,9 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
 
         String usernameKeyword1 = selector.select().toUpperCase();
         String usernameKeyword2 = selector.select().toUpperCase();
+        
+        LOGGER.debug("usernameKeyword1={}", usernameKeyword1);
+        LOGGER.debug("usernameKeyword2={}", usernameKeyword2);
 
         //
         // Templates
@@ -120,7 +126,7 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
 
         // Pick a template
         // TODO:  Backup?  "${KEYWORD}${NUM1000}"
-        UniformSelectorImpl<String> templateSelector = new UniformSelectorImpl<>(templateSet.toList(), null);
+        UniformSelectorImpl<String> templateSelector = new UniformSelectorImpl<>(templateSet.toList(), TemplateField.TEMPLATE);
         String randomTemplate = templateSelector.select();
         String usernameFromTemplate = applyTemplate(randomTemplate, usernameKeyword1, allTemplateParams);
         //LOGGER.debug("randomTemplate:{}; usernameFromTemplate:{}", randomTemplate, usernameFromTemplate);
@@ -129,78 +135,7 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
         return usernameFromTemplate;
     }
 
-    public record TemplateParameters(Set<UsernameTemplateParam> usernameTemplateFields) {
-        public EnumSet<TemplateField> populatedFields(){
-            return usernameTemplateFields.stream().map(x -> x.templateField)
-                    .collect(Collectors.toCollection(() -> EnumSet.noneOf(TemplateField.class)));
-        }
-
-        public Map<String, Object> resolved(){
-            // TODO:  Use placeholder instead? TemplateField.BIRTHDAY.getPlaceholder()
-            //usernameTemplateFields.stream().map(x -> x.fieldValue())
-            Map<String, Object> resolvedValueParams = HashMap.newHashMap(usernameTemplateFields.size());
-            for(UsernameTemplateParam templateParam : usernameTemplateFields) {
-                //templateParam.templateField.getPlaceholder();
-                //templateParam.fieldValue();
-                resolvedValueParams.put(templateParam.templateField.getPlaceholder(), templateParam.fieldValue());
-            }
-
-            String birthdayPlaceholder = TemplateField.BIRTHDAY.getPlaceholder();
-            if(resolvedValueParams.containsKey(birthdayPlaceholder)) {
-                LocalDate birthday = LocalDate.parse((String)resolvedValueParams.get(birthdayPlaceholder));
-                AstrologySign sign = AstrologySign.fromLocalDate(birthday);
-                resolvedValueParams.put("BIRTHDAY_YEAR", String.valueOf(birthday.getYear()));
-                resolvedValueParams.put("BIRTHDAY_YEAR_SHORT", String.valueOf(birthday.getYear()).substring(2));
-                resolvedValueParams.put("BIRTHDAY_DAY", String.valueOf(birthday.getDayOfMonth()));
-                resolvedValueParams.put("BIRTHDAY_SIGN", sign.name());
-            }
-
-            String firstNamePlaceholder = TemplateField.FIRST_NAME.getPlaceholder();
-            if(resolvedValueParams.containsKey(firstNamePlaceholder)) {
-                String firstName = (String) resolvedValueParams.get(firstNamePlaceholder);
-                resolvedValueParams.put("FIRST_INITIAL", firstName.charAt(0));
-            }
-
-            if(resolvedValueParams.containsKey(TemplateField.LAST_NAME.getPlaceholder())) {
-                 String lastName = (String) resolvedValueParams.get(TemplateField.LAST_NAME.getPlaceholder());
-                 resolvedValueParams.put("LAST_INITIAL", lastName.charAt(0));
-            }
-
-            if(resolvedValueParams.containsKey(TemplateField.MIDDLE_NAME.getPlaceholder())) {
-                 String middleName = (String) resolvedValueParams.get(TemplateField.MIDDLE_NAME.getPlaceholder());
-                 resolvedValueParams.put("MIDDLE_INITIAL", middleName.charAt(0));
-            }
-
-            return resolvedValueParams;
-        }
-
-        public Map<String, Object> general(){
-            Map<String, Object> generalValueParams = new HashMap<>();
-            ThreadLocalRandom rand = ThreadLocalRandom.current();
-            generalValueParams.put(TemplateField.fromValue("NUM10").getPlaceholder(), String.valueOf(rand.nextInt(100)));
-            generalValueParams.put(TemplateField.fromValue("NUM100").getPlaceholder(), String.valueOf(rand.nextInt(1000)));
-            generalValueParams.put(TemplateField.fromValue("NUM1000").getPlaceholder(), String.valueOf(rand.nextInt(1000,9999)));
-            generalValueParams.put("SEPARATOR", ".");
-            return generalValueParams;
-        }
-
-        public Map<String, Object> keyword(String... keywords){
-            Map<String, Object> keywordValueParams = new HashMap<>();
-            int i = 1;
-            for(String keyword : keywords) {
-                TemplateField keywordField = TemplateField.fromValue("KEYWORD" + String.valueOf(i));
-                if(keywordField != null) {
-                    keywordValueParams.put(keywordField.getPlaceholder(), keyword);
-                    i++;
-                } else {
-                    break;
-                }
-            }
-            return keywordValueParams;
-        }
-    }
-
-    public record UsernameTemplateParam(TemplateField templateField, String fieldValue) {}
+    
 
     private TemplateParameters getTemplateParameters(SelectionFilter filter, String... keywords) {
         Set<UsernameTemplateParam> templateParams = new HashSet<>();
@@ -254,9 +189,9 @@ public class UsernameSelectionEngine extends AbstractSelectionEngine<UsernameDat
     public Class<UsernameDatasetResult> resultType() {
         return UsernameDatasetResult.class;
     }
-    
+
     @Override
-    protected TemplateField field() {
+    public TemplateField field() {
         return TemplateField.USERNAME;
     }
 

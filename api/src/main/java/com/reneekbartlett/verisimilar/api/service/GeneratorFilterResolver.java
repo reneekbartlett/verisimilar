@@ -20,7 +20,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.reneekbartlett.verisimilar.api.model.FilterCondition;
-import com.reneekbartlett.verisimilar.api.model.FilterOperator;
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.api.model.GeneratorFilter;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 

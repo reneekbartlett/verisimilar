@@ -43,7 +43,7 @@ public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDat
     }
 
     public AreaCodeSelectionEngine(DatasetResolverRegistry resolvers, SelectorStrategy<String> strategy) {
-        super(resolvers, strategy);
+        super(resolvers.areaCode(), strategy);
     }
 
     public AreaCodeSelectionEngine(AreaCodeDatasetResolver resolver) {
@@ -117,7 +117,7 @@ public class AreaCodeSelectionEngine extends AbstractSelectionEngine<AreaCodeDat
     }
 
     @Override
-    protected TemplateField field() {
+    public TemplateField field() {
         return TemplateField.AREA_CODE;
     }
 

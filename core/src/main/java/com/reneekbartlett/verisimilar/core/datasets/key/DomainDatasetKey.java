@@ -1,10 +1,12 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
 import java.util.EnumSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.reneekbartlett.verisimilar.core.model.Decade;
 import com.reneekbartlett.verisimilar.core.model.DomainType;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 
 /***
@@ -28,6 +30,11 @@ public record DomainDatasetKey(
 
     public DomainDatasetKey(EnumSet<Decade> decades) {
         this(KEY_ID, defaultDomainTypes(), decades);
+    }
+
+    @Override
+    public Set<TemplateField> fields(){
+        return EnumSet.of(TemplateField.DOMAIN_TYPE, TemplateField.DECADE);
     }
 
     public static DomainDatasetKey defaults() {

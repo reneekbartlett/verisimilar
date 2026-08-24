@@ -123,7 +123,7 @@ public class LastNameSelectionEngine extends AbstractSelectionEngine<LastNameDat
     }
 
     @Override
-    protected TemplateField field() {
+    public TemplateField field() {
         return TemplateField.LAST_NAME;
     }
 }

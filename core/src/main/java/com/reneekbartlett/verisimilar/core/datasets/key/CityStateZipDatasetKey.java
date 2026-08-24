@@ -1,8 +1,10 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
 import java.util.EnumSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.USRegion;
 import com.reneekbartlett.verisimilar.core.model.USState;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
@@ -26,7 +28,11 @@ public record CityStateZipDatasetKey(
     public CityStateZipDatasetKey(USRegion region) {
         this(KEY_ID, USState.defaultDatasets(), EnumSet.of(region));
     }
-    
+
+    public Set<TemplateField> fields(){
+        return EnumSet.of(TemplateField.STATE, TemplateField.REGION);
+    }
+
     public static CityStateZipDatasetKey fromContext(DatasetResolutionContext ctx) {
         //TODO: Use Region OR States.
         EnumSet<USState> states = ctx.states().orElse(USState.defaultDatasets());

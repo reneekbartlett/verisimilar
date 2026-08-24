@@ -1,9 +1,11 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
 import java.util.EnumSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.reneekbartlett.verisimilar.core.model.KeywordType;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 
 /***
@@ -26,6 +28,11 @@ public record KeywordDatasetKey(
 
     public KeywordDatasetKey(EnumSet<KeywordType> keywordTypes) {
         this(KEY_ID, keywordTypes);
+    }
+
+    @Override
+    public Set<TemplateField> fields(){
+        return EnumSet.of(TemplateField.KEYWORD_TYPE);
     }
 
     public static KeywordDatasetKey fromContext(DatasetResolutionContext ctx) {

@@ -1,11 +1,13 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
 import java.util.EnumSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.reneekbartlett.verisimilar.core.model.Decade;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
+import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
 
 /***
@@ -30,6 +32,11 @@ public record FirstNameDatasetKey(
 
     public FirstNameDatasetKey(EnumSet<Ethnicity> ethnicities) {
         this(KEY_ID, GenderIdentity.defaultDatasets(), ethnicities, Decade.defaultDatasets());
+    }
+
+    @Override
+    public Set<TemplateField> fields(){
+        return EnumSet.of(TemplateField.GENDER_IDENTITY, TemplateField.ETHNICITY, TemplateField.DECADE);
     }
 
     public static FirstNameDatasetKey defaults() {

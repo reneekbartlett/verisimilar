@@ -1,6 +1,7 @@
 package com.reneekbartlett.verisimilar.core.datasets.key;
 
 import java.util.EnumSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
@@ -23,6 +24,11 @@ public record StreetNameDatasetKey(
 
     public StreetNameDatasetKey(USState state) {
         this(KEY_ID, EnumSet.of(state));
+    }
+
+    @Override
+    public Set<TemplateField> fields(){
+        return EnumSet.of(TemplateField.STATE);
     }
 
     public static StreetNameDatasetKey defaults() {

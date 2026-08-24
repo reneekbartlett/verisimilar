@@ -1,29 +1,30 @@
 package com.reneekbartlett.verisimilar.core.datasets.resolver;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.reneekbartlett.verisimilar.core.datasets.DatasetSource;
 import com.reneekbartlett.verisimilar.core.datasets.key.KeywordDatasetKey;
-import com.reneekbartlett.verisimilar.core.datasets.loader.ResourceLoaderUtil;
 import com.reneekbartlett.verisimilar.core.datasets.result.KeywordDatasetResult;
 
 public class KeywordDatasetResolver extends AbstractDatasetResolver<KeywordDatasetKey, KeywordDatasetResult> {
-    private static final String KEYWORDS_FILE = "datasets/cfg_username_keywords_ALL.csv";
+    //private static final String KEYWORDS_FILE = "datasets/cfg_username_keywords_ALL.csv";
 
-    public KeywordDatasetResolver(ResourceLoaderUtil loader) {
-        super(loader);
+    public KeywordDatasetResolver(DatasetSource<KeywordDatasetKey, KeywordDatasetResult> source) {
+        super(source);
     }
 
-    @Override
-    public KeywordDatasetResult loadForKey(KeywordDatasetKey key) {
-        String[] keywords = loadKeywordValues(key);
-        Map<String, Double> keywordWeights = new HashMap<>();
-        Double w = 1.000;
-        for(String k : keywords) {
-            keywordWeights.put(k, w);
-        }
-        return new KeywordDatasetResult(keywordWeights);
-    }
+    //public KeywordDatasetResolver(ResourceLoaderUtil loader) {
+    //    super(loader);
+    //}
+
+//    @Override
+//    public KeywordDatasetResult loadForKey(KeywordDatasetKey key) {
+//        String[] keywords = loadKeywordValues(key);
+//        Map<String, Double> keywordWeights = new HashMap<>();
+//        Double w = 1.000;
+//        for(String k : keywords) {
+//            keywordWeights.put(k, w);
+//        }
+//        return new KeywordDatasetResult(keywordWeights);
+//    }
 
     @Override
     public Class<KeywordDatasetKey> keyType(){
@@ -35,9 +36,9 @@ public class KeywordDatasetResolver extends AbstractDatasetResolver<KeywordDatas
         return KeywordDatasetResult.class;
     }
 
-    private String[] loadKeywordValues(KeywordDatasetKey key) {
-        return loader.loadStringArray(KEYWORDS_FILE);
-    }
+    //private String[] loadKeywordValues(KeywordDatasetKey key) {
+    //    return loader.loadStringArray(KEYWORDS_FILE);
+    //}
 
     // TODO:  i.e renee_nyc@gmail.com
     //private static final String[] KEYWORDS_LOCATION = { "NYC" };
