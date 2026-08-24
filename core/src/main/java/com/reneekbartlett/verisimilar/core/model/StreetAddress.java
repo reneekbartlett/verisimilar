@@ -40,7 +40,7 @@ public record StreetAddress(AddressLineOne addressLineOne, AddressLineTwo addres
 
     public static StreetAddress placeholder() {
         AddressCategory addressCategory = AddressCategory.SINGLE_FAMILY;
-        UnitType unitType = UnitType.APARTMENT;
+        //UnitType unitType = UnitType.APARTMENT;
         //AddressLineOne addressLineOne = new AddressLineOne(
         //        "301 MASSACHUSETTS AVE", "301", //"STREET_ID",
         //        "MASSACHUSETTS", //"STREET_NAME",

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.UnitType;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
@@ -84,7 +85,7 @@ public class WeightedSelectorImplTests {
         WeightedSelectorImpl<String> selector = new WeightedSelectorImpl<>(weights, field);
 
         SelectionFilter filter = SelectionFilter.builder()
-                .addFilter("A", field, "startswith")
+                .addFilter("A", field, FilterOperator.STARTS_WITH)
                 .build(); // assume matches only A
         selector.setFilter(filter);
 
@@ -110,7 +111,7 @@ public class WeightedSelectorImplTests {
         WeightedSelectorImpl<String> selector = new WeightedSelectorImpl<>(weights, field);
 
         SelectionFilter filter = SelectionFilter.builder()
-                .addFilter("NO MATCH", field, "startswith")
+                .addFilter("NO MATCH", field, FilterOperator.STARTS_WITH)
                 //.startsWith("NO MATCH", field)
                 .build();
         selector.setFilter(filter);
@@ -140,7 +141,7 @@ public class WeightedSelectorImplTests {
 
         SelectionFilter filter = SelectionFilter.builder()
                 //.startsWith("A", field)
-                .addFilter("A", field, "startswith")
+                .addFilter("A", field, FilterOperator.STARTS_WITH)
                 .build();
         selector.setFilter(filter);
 
@@ -158,7 +159,7 @@ public class WeightedSelectorImplTests {
 
         WeightedSelectorImpl<String> selector = new WeightedSelectorImpl<>(weights, field);
         SelectionFilter filter = SelectionFilter.builder()
-                .addFilter("A", field, "startswith")
+                .addFilter("A", field, FilterOperator.STARTS_WITH)
                 .build();
         selector.setFilter(filter);
 
@@ -195,7 +196,7 @@ public class WeightedSelectorImplTests {
         WeightedSelectorImpl<String> selector = new WeightedSelectorImpl<>(weights, field);
 
         SelectionFilter filter = SelectionFilter.builder()
-                .addFilter("A", field, "startswith")
+                .addFilter("A", field, FilterOperator.STARTS_WITH)
                 .build();
         WeightedSelectorImpl<String> filtered = selector.withFilter(filter);
 

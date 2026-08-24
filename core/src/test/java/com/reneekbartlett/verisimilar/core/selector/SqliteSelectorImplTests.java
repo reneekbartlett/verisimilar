@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
@@ -42,9 +43,9 @@ public class SqliteSelectorImplTests {
         SqliteSelectorImpl<String> selector = new SqliteSelectorImpl<>(field, String.class);
         SelectionFilter filter = SelectionFilter.builder()
                 //.startsWith("Ren", field)
-                .addFilter("ZASDFDS", field, "endswith")
+                .addFilter("ZASDFDS", field, FilterOperator.ENDS_WITH)
                 //.streetName("WESTCHESTER") // adds TemplateField to equalToMap
-                .addFilter("WEST", field, "contains")
+                .addFilter("WEST", field, FilterOperator.CONTAINS)
                 .build();
         selector.setFilter(filter);
         String result = selector.select();

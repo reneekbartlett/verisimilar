@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.reneekbartlett.verisimilar.core.TestUtils;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.PostalAddressDatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.model.AddressLineTwo;
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.core.model.StreetAddress;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.UnitType;
@@ -47,7 +48,7 @@ public class StreetAddressGeneratorTests {
                 streetNameSelector, streetSuffixSelector, addressTwoSelector);
 
         SelectionFilter filter = SelectionFilter.builder()
-                .addFilter("MA", TemplateField.STREET_NAME, "startswith")
+                .addFilter("MA", TemplateField.STREET_NAME, FilterOperator.STARTS_WITH)
                 .build();
         StreetAddress streetAddress1 = streetAddressGenerator.generate(filter);
         LOGGER.debug(streetAddress1.toString());

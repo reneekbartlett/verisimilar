@@ -1,20 +1,18 @@
 package com.reneekbartlett.verisimilar.api.controller;
 
-import java.io.UnsupportedEncodingException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.mock.web.MockHttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.assertj.MockMvcTester.MockMvcRequestBuilder;
 import org.springframework.test.web.servlet.assertj.MvcTestResult;
@@ -26,13 +24,7 @@ import com.reneekbartlett.verisimilar.api.security.ApiKeyProperties;
 import com.reneekbartlett.verisimilar.api.security.config.SecurityConfig;
 import com.reneekbartlett.verisimilar.api.security.service.ApiKeyService;
 import com.reneekbartlett.verisimilar.api.service.GeneratePersonService;
-import com.reneekbartlett.verisimilar.core.model.FullName;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /***
  * Components:  ApiKeyProperties, ApiKeyAuthProvider

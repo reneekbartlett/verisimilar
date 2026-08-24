@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.reneekbartlett.verisimilar.core.TestUtils;
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.pipeline.DatasetResolutionContext;
@@ -63,7 +64,7 @@ public class FirstNameGeneratorTests {
         //DatasetResolutionContext ctx = DatasetResolutionContext.builder().gender(GenderIdentity.MALE).build();
         SelectionFilter filter = SelectionFilter.builder()
                 .gender(GenderIdentity.GENDER_UNSPECIFIED)
-                .addFilter("SKYLER", TemplateField.FIRST_NAME, "startswith")
+                .addFilter("SKYLER", TemplateField.FIRST_NAME, FilterOperator.STARTS_WITH)
                 .build();
         Assertions.assertThat(filter.gender()).isPresent();
         Assertions.assertThat(filter.gender().get()).isEqualTo(GenderIdentity.GENDER_UNSPECIFIED);

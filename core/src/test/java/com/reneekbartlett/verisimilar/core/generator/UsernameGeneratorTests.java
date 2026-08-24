@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.reneekbartlett.verisimilar.core.TestUtils;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.selector.engine.UsernameSelectionEngine;
@@ -93,7 +94,7 @@ public class UsernameGeneratorTests {
         SelectionFilter filter = SelectionFilter.builder()
                 .birthday(LocalDate.of(1980, 7, 30))
                 //.startsWith("H", TemplateField.USERNAME)
-                .addFilter("H", TemplateField.USERNAME, "startswith")
+                .addFilter("H", TemplateField.USERNAME, FilterOperator.STARTS_WITH)
                 .build();
 
         UsernameGenerator usernameGenerator = new UsernameGenerator(usernameSelector);

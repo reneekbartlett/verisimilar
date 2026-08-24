@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.reneekbartlett.verisimilar.core.TestUtils;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.engine.LastNameSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
@@ -56,7 +57,7 @@ public class LastNameGeneratorTests {
         LastNameGenerator lastNameGenerator = new LastNameGenerator(lastNameProvider);
 
         SelectionFilter filter = SelectionFilter.builder()
-                .addFilter("TT", TemplateField.LAST_NAME, "endswith")
+                .addFilter("TT", TemplateField.LAST_NAME, FilterOperator.ENDS_WITH)
                 .build();
 
         String lastName = lastNameGenerator.generate(filter);

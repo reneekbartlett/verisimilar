@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.reneekbartlett.verisimilar.core.TestUtils;
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.model.PersonRecord;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
@@ -40,7 +41,7 @@ public class AsyncPersonGeneratorTests {
         SelectionFilter filter = SelectionFilter.builder()
                 .lastName(lastName)
                 //.startsWith("T", TemplateField.FIRST_NAME)
-                .addFilter("T", TemplateField.FIRST_NAME, "startswith")
+                .addFilter("T", TemplateField.FIRST_NAME, FilterOperator.STARTS_WITH)
                 .city("SHREWSBURY")
                 .build();
         PersonRecord person = asyncGenerator.generate(filter);
@@ -66,7 +67,7 @@ public class AsyncPersonGeneratorTests {
                 .gender(gender)
                 .firstName(firstName)
                 //.startsWith(lastNameChars, TemplateField.LAST_NAME)
-                .addFilter(lastNameChars, TemplateField.LAST_NAME, "startswith")
+                .addFilter(lastNameChars, TemplateField.LAST_NAME, FilterOperator.STARTS_WITH)
                 .streetName(streetName)
                 .domain(domain)
                 .build();

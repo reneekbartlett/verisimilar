@@ -22,6 +22,7 @@ import com.reneekbartlett.verisimilar.core.model.CityStateZip;
 import com.reneekbartlett.verisimilar.core.model.DomainRecord;
 import com.reneekbartlett.verisimilar.core.model.DomainType;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.core.model.FullName;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.model.Generation;
@@ -938,52 +939,53 @@ public record SelectionFilter(
         }
 
         // TODO: FilterOperator
-        public Builder addFilter(String value, TemplateField field, String filterOperator) {
+        public Builder addFilter(String value, TemplateField field, FilterOperator filterOperator) {
             if(value == null || field == null || filterOperator == null) {
                 return this;
             }
 
             switch(filterOperator) {
-                case "startswith":
+                // TODO:  use FilterOperator
+                case FilterOperator.STARTS_WITH:
                     // custom handling for CITY/STATE/ZIP dataset
                     if(field.equals(TemplateField.CITY)) {
-                        this.addFilter(value, TemplateField.CITY_STATE_ZIP, "startswith");
+                        this.addFilter(value, TemplateField.CITY_STATE_ZIP, FilterOperator.STARTS_WITH);
                     }
                     if(field.equals(TemplateField.STATE)) {
-                        this.addFilter("$" + value, TemplateField.CITY_STATE_ZIP, "contains");
+                        this.addFilter("$" + value, TemplateField.CITY_STATE_ZIP, FilterOperator.CONTAINS);
                     }
                     if(field.equals(TemplateField.ZIP_CODE)) {
-                        this.addFilter("$" + value, TemplateField.CITY_STATE_ZIP, "contains");
+                        this.addFilter("$" + value, TemplateField.CITY_STATE_ZIP, FilterOperator.CONTAINS);
                     }
 
                     // add to startsWith map
                     return this.startsWith(value, field);
-                case "endswith":
+                case FilterOperator.ENDS_WITH:
                     // custom handling for CITY/STATE/ZIP dataset
                     if(field.equals(TemplateField.CITY)) {
-                        this.addFilter(value + "$", TemplateField.CITY_STATE_ZIP, "contains");
+                        this.addFilter(value + "$", TemplateField.CITY_STATE_ZIP, FilterOperator.CONTAINS);
                     }
                     if(field.equals(TemplateField.STATE)) {
-                        this.addFilter(value + "$", TemplateField.CITY_STATE_ZIP, "contains");
+                        this.addFilter(value + "$", TemplateField.CITY_STATE_ZIP, FilterOperator.CONTAINS);
                     }
                     if(field.equals(TemplateField.ZIP_CODE)) {
-                        this.addFilter(value, TemplateField.CITY_STATE_ZIP, "endswith");
+                        this.addFilter(value, TemplateField.CITY_STATE_ZIP, FilterOperator.CONTAINS);
                     }
 
                     // add to endsWith map
                     return this.endsWith(value, field);
-                case "contains":
+                case FilterOperator.CONTAINS:
                     // custom handling for CITY/STATE/ZIP dataset
                     if(field.equals(TemplateField.CITY) || field.equals(TemplateField.STATE) || field.equals(TemplateField.ZIP_CODE)) {
-                        this.addFilter(value, TemplateField.CITY_STATE_ZIP, "contains");
+                        this.addFilter(value, TemplateField.CITY_STATE_ZIP, FilterOperator.CONTAINS);
                     }
 
                     // add to contains map
                     return this.contains(value, field);
-                case "eq":
+                case FilterOperator.EQUAL_TO:
                     LOGGER.debug("addFilter - equalTo {}", value);
                     return this.equalTo(value, field);
-                case "in":
+                case FilterOperator.IN:
                     // Parse values (if applicable) and pass to addFilter(Set<T>...)
                     // Fields that could contain multiple values
                     if(value.contains(",") && (field.equals(TemplateField.DOMAIN_TYPE) || field.equals(TemplateField.STATE) 
@@ -1010,27 +1012,27 @@ public record SelectionFilter(
          * @param filterOperator
          * @return
          */
-        public <T> Builder addFilter(Set<T> values, TemplateField field, String filterOperator) {
+        public <T> Builder addFilter(Set<T> values, TemplateField field, FilterOperator filterOperator) {
             if (values == null || values.isEmpty()) {
                 //LOGGER.debug("Set is null or empty. Cannot accurately determine element types.");
                 return this;
             }
 
             // only add a set filter for fields with EnumSet
-            if(!filterOperator.equalsIgnoreCase("in") && !filterOperator.equalsIgnoreCase("eq")) {
+            if(filterOperator != FilterOperator.IN && filterOperator != FilterOperator.EQUAL_TO){
                 return this;
             }
 
             T firstElement = values.iterator().next();
 
             switch(filterOperator) {
-                case "in":
+                case FilterOperator.IN:
                     // TODO:  Remove.. adding for testing
                     Set<String> strSet = TemplateField.isEnumField(field) ? SelectionFieldMapper.toEnumNameSet(values) : 
                         SelectionFieldMapper.castStringSet(values);
                     LOGGER.debug("addFilter - field {} in {}", field.getLabel(), strSet);
                     return SelectionFieldMapper.LOOKUP.get(field).applyMulti(this, values);
-                case "eq":
+                case FilterOperator.EQUAL_TO:
                     Set<String> eqStrSet = TemplateField.isEnumField(field) ? SelectionFieldMapper.toEnumNameSet(Set.of(firstElement)) : 
                         SelectionFieldMapper.castStringSet(Set.of(firstElement));
                     LOGGER.debug("addFilter - {} eq {}?", field.getLabel(), eqStrSet);

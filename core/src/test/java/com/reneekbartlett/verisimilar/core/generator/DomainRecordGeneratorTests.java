@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.reneekbartlett.verisimilar.core.TestUtils;
 import com.reneekbartlett.verisimilar.core.model.DomainRecord;
 import com.reneekbartlett.verisimilar.core.model.DomainType;
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.engine.DomainSelectionEngine;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
@@ -57,8 +58,8 @@ public class DomainRecordGeneratorTests {
         DomainRecordGenerator domainGenerator = new DomainRecordGenerator(domainSelector);
 
         SelectionFilter filter2 = SelectionFilter.builder()
-                .addFilter("G", TemplateField.DOMAIN, "startswith")
-                .addFilter("b2c", TemplateField.DOMAIN_TYPE, "eq")
+                .addFilter("G", TemplateField.DOMAIN, FilterOperator.STARTS_WITH)
+                .addFilter("b2c", TemplateField.DOMAIN_TYPE, FilterOperator.EQUAL_TO)
                 .build();
         LOGGER.debug("filter2={}", filter2);
         // TODO: add assert for filter2?
@@ -95,7 +96,7 @@ public class DomainRecordGeneratorTests {
         SelectionFilter filter = SelectionFilter.builder()
                 .domainType(DomainType.GOV)
                 //.startsWith("S", TemplateField.DOMAIN)
-                .addFilter("S", TemplateField.DOMAIN, "startswith")
+                .addFilter("S", TemplateField.DOMAIN, FilterOperator.STARTS_WITH)
                 .build();
         DomainRecord domain1 = domainGenerator.generate(filter);
         LOGGER.debug("domain1=" + domain1);
@@ -112,9 +113,9 @@ public class DomainRecordGeneratorTests {
 
         // Examples: iname.net, icloud.it
         SelectionFilter filter = SelectionFilter.builder()
-                .addFilter("i", TemplateField.DOMAIN, "startswith")
-                .addFilter("t", TemplateField.DOMAIN, "endswith")
-                .addFilter("b2b", TemplateField.DOMAIN_TYPE, "eq")
+                .addFilter("i", TemplateField.DOMAIN, FilterOperator.STARTS_WITH)
+                .addFilter("t", TemplateField.DOMAIN, FilterOperator.ENDS_WITH)
+                .addFilter("b2b", TemplateField.DOMAIN_TYPE, FilterOperator.EQUAL_TO)
                 .build();
         LOGGER.debug("filter={}", filter);
         Assertions.assertThat(filter.startsWithMap()).containsKey(TemplateField.DOMAIN);
@@ -140,7 +141,7 @@ public class DomainRecordGeneratorTests {
 
         // Examples: iname.net, icloud.it
         SelectionFilter filter = SelectionFilter.builder()
-                .addFilter("disposable", TemplateField.DOMAIN_TYPE, "eq")
+                .addFilter("disposable", TemplateField.DOMAIN_TYPE, FilterOperator.EQUAL_TO)
                 .build();
         LOGGER.debug("filter={}", filter);
         Assertions.assertThat(filter.domainType()).isPresent();
@@ -160,8 +161,7 @@ public class DomainRecordGeneratorTests {
         DomainRecordGenerator domainGenerator = new DomainRecordGenerator(domainSelector);
 
         SelectionFilter filter = SelectionFilter.builder()
-                //.startsWith("H", TemplateField.DOMAIN)
-                .addFilter("H", TemplateField.DOMAIN, "startswith")
+                .addFilter("H", TemplateField.DOMAIN, FilterOperator.STARTS_WITH)
                 .build();
         DomainRecord domain1 = domainGenerator.generate(filter);
         LOGGER.debug("domain1=" + domain1);

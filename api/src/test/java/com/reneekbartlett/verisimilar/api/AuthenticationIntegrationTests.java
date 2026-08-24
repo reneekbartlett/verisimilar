@@ -5,8 +5,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
@@ -16,9 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -29,7 +24,6 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import com.reneekbartlett.verisimilar.api.controller.GeneratePersonController;
 import com.reneekbartlett.verisimilar.api.dto.PersonResponseDto;
 import com.reneekbartlett.verisimilar.api.security.ApiKeyAuthProvider;
-import com.reneekbartlett.verisimilar.api.security.ApiKeyAuthToken;
 import com.reneekbartlett.verisimilar.api.security.ApiKeyProperties;
 import com.reneekbartlett.verisimilar.api.security.JwtAuthEntryPoint;
 import com.reneekbartlett.verisimilar.api.security.JwtAuthProvider;

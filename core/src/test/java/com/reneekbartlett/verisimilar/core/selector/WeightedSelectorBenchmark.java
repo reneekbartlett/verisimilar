@@ -2,6 +2,7 @@ package com.reneekbartlett.verisimilar.core.selector;
 
 import org.openjdk.jmh.annotations.*;
 
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 
@@ -31,8 +32,7 @@ public class WeightedSelectorBenchmark {
 
         // Filter that matches only 1 item
         SelectionFilter filter = SelectionFilter.builder()
-                .addFilter("A", field, "startswith")
-                //.startsWith("A", field)
+                .addFilter("A", field, FilterOperator.STARTS_WITH)
                 .build(); // assume matches only A
         selector.setFilter(filter);
 

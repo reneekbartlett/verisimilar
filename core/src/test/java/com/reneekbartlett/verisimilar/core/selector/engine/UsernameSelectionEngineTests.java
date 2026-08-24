@@ -10,6 +10,7 @@ import com.reneekbartlett.verisimilar.core.datasets.key.UsernameDatasetKey;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.UsernameDatasetResolver;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.model.DomainType;
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
 import com.reneekbartlett.verisimilar.core.templates.loader.TemplateRegistryLoader;
@@ -48,7 +49,7 @@ public class UsernameSelectionEngineTests {
         SelectionFilter usernameFilter = SelectionFilter.builder()
                 .domain("yahoo.com")
                 .domainType(DomainType.B2C)
-                .addFilter("G", TemplateField.USERNAME, "startswith")
+                .addFilter("G", TemplateField.USERNAME, FilterOperator.STARTS_WITH)
                 .build();
 
         String username2 = usernameSelector.select(usernameFilter);
@@ -71,7 +72,7 @@ public class UsernameSelectionEngineTests {
         SelectionFilter usernameFilter = SelectionFilter.builder()
                 .domain("yahoo.com")
                 .domainType(DomainType.B2C)
-                .addFilter("G", TemplateField.USERNAME, "startswith")
+                .addFilter("G", TemplateField.USERNAME, FilterOperator.STARTS_WITH)
                 .build();
 
         String username = usernameSelector.select(usernameFilter);

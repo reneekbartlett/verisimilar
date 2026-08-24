@@ -2,6 +2,7 @@ package com.reneekbartlett.verisimilar.core.selector;
 
 import org.junit.jupiter.api.Test;
 
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.UnitType;
 import com.reneekbartlett.verisimilar.core.selector.filter.SelectionFilter;
@@ -72,7 +73,7 @@ public class UniformSelectorImplTests {
         UniformSelectorImpl<String> selector = new UniformSelectorImpl<>(items, field);
 
         SelectionFilter filter = SelectionFilter.builder()
-                .addFilter("A", field, "startswith")
+                .addFilter("A", field, FilterOperator.STARTS_WITH)
                 .build();  // assume matches only "A"
         selector.setFilter(filter);
 
@@ -88,7 +89,7 @@ public class UniformSelectorImplTests {
         UniformSelectorImpl<String> selector = new UniformSelectorImpl<>(items, field);
 
         SelectionFilter filter = SelectionFilter.builder()
-                .addFilter("NO MATCH", field, "startswith")
+                .addFilter("NO MATCH", field, FilterOperator.STARTS_WITH)
                 .build();
         selector.setFilter(filter);
 
@@ -129,7 +130,7 @@ public class UniformSelectorImplTests {
         UniformSelectorImpl<String> selector = new UniformSelectorImpl<>(items, field);
 
         SelectionFilter filter = SelectionFilter.builder()
-                .addFilter("A", field, "startswith").build();
+                .addFilter("A", field, FilterOperator.STARTS_WITH).build();
         selector.setFilter(filter); // optional
 
         int threads = 50;

@@ -1,6 +1,5 @@
 package com.reneekbartlett.verisimilar.api.service;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -20,8 +19,8 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.reneekbartlett.verisimilar.api.model.FilterCondition;
-import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.api.model.GeneratorFilter;
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +34,7 @@ public class GeneratorFilterResolver implements HandlerMethodArgumentResolver {
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
 
-        boolean hasReqParam = parameter.hasParameterAnnotation(RequestParam.class);
+        //boolean hasReqParam = parameter.hasParameterAnnotation(RequestParam.class);
 
         // Triggers this resolver only when the controller method argument is a GeneratorFilter
         return parameter.getParameterType().equals(GeneratorFilter.class);
@@ -151,7 +150,7 @@ public class GeneratorFilterResolver implements HandlerMethodArgumentResolver {
 
         for (int i = 0; i < totalParameters; i++) {
             MethodParameter siblingParam = new MethodParameter(method, i);
-            Class<?> targetType = siblingParam.getParameterType();
+            //Class<?> targetType = siblingParam.getParameterType();
 
             // Look for @RequestParam annotations
             RequestParam requestParamAnnotation = siblingParam.getParameterAnnotation(RequestParam.class);
@@ -174,7 +173,7 @@ public class GeneratorFilterResolver implements HandlerMethodArgumentResolver {
                     requestParamValues.put(paramName, paramValue);
 
                     // Dynamically cast the string to whatever type the controller parameter requests!
-                    Object convertedValue = webRequest.getAttribute(paramName, NativeWebRequest.SCOPE_REQUEST); 
+                    //Object convertedValue = webRequest.getAttribute(paramName, NativeWebRequest.SCOPE_REQUEST); 
 
                     // Alternatively, inject ConversionService into your resolver to do it programmatically:
                     // Object convertedValue = conversionService.convert(rawValue, targetType);

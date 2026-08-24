@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.reneekbartlett.verisimilar.core.TestUtils;
 import com.reneekbartlett.verisimilar.core.datasets.resolver.registry.DatasetResolverRegistry;
 import com.reneekbartlett.verisimilar.core.model.Ethnicity;
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.core.model.FullName;
 import com.reneekbartlett.verisimilar.core.model.GenderIdentity;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
@@ -126,8 +127,8 @@ public class FullNameGeneratorTests {
         FullNameGenerator fullNameGenerator = new FullNameGenerator(firstNameSelector, middleNameSelector, lastNameSelector);
 
         SelectionFilter.Builder filterBuilder = SelectionFilter.builder()
-                .addFilter("R", TemplateField.FIRST_NAME, "startswith")
-                .addFilter("T", TemplateField.LAST_NAME, "endswith");
+                .addFilter("R", TemplateField.FIRST_NAME, FilterOperator.STARTS_WITH)
+                .addFilter("T", TemplateField.LAST_NAME, FilterOperator.ENDS_WITH);
 
         FullName fullName = fullNameGenerator.generate(filterBuilder.build());
 

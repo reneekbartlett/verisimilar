@@ -2,24 +2,18 @@ package com.reneekbartlett.verisimilar.core.selector.filter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.reneekbartlett.verisimilar.core.model.Ethnicity;
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.USState;
-import com.reneekbartlett.verisimilar.core.selector.UniformSelectorStrategy;
 
 public class EntryFilterTests {
 
@@ -43,7 +37,7 @@ public class EntryFilterTests {
                 "RAY", 1.000
         );
         SelectionFilter firstNameFilter = SelectionFilter.builder()
-                .addFilter("R", TemplateField.FIRST_NAME, "startswith")
+                .addFilter("R", TemplateField.FIRST_NAME, FilterOperator.STARTS_WITH)
                 .build();
         Map<String, Double> filteredFirstNames = testApply(firstNameValueMap, firstNameFilter, TemplateField.FIRST_NAME);
  
@@ -58,7 +52,7 @@ public class EntryFilterTests {
                 "Schmidt", 1.000
         );
         SelectionFilter lastNameFilter = SelectionFilter.builder()
-                .addFilter("T", TemplateField.LAST_NAME, "endswith")
+                .addFilter("T", TemplateField.LAST_NAME, FilterOperator.ENDS_WITH)
                 .build();
 
         Map<String, Double> filteredLastNames = testApply(lastNameValueMap, lastNameFilter, TemplateField.LAST_NAME);
@@ -78,7 +72,7 @@ public class EntryFilterTests {
                 "NEWTON$MA$02460", 1.000
         );
         SelectionFilter cityStateZipFilter1 = SelectionFilter.builder()
-                .addFilter("SH", TemplateField.CITY, "startswith")
+                .addFilter("SH", TemplateField.CITY, FilterOperator.STARTS_WITH)
                 .build();
         //Map<String, Double> filteredCityStateZips1 = testApply(cityStateZipValueMap, cityStateZipFilter1, TemplateField.CITY_STATE_ZIP);
         Map<String, Double> filteredCityStateZips1 = EntryFilter.applyToMap(cityStateZipValueMap, cityStateZipFilter1, TemplateField.CITY_STATE_ZIP);
@@ -89,7 +83,7 @@ public class EntryFilterTests {
         // NEWTON$MA$02460
         //
         SelectionFilter cityStateZipFilter2 = SelectionFilter.builder()
-                .addFilter("N", TemplateField.CITY, "startswith")
+                .addFilter("N", TemplateField.CITY, FilterOperator.STARTS_WITH)
                 .zipCode("02460")
                 .build();
         //Map<String, Double> filteredCityStateZips2 = testApply(cityStateZipValueMap, cityStateZipFilter2, TemplateField.CITY_STATE_ZIP);

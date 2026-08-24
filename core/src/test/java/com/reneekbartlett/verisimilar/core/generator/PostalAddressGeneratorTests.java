@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.reneekbartlett.verisimilar.core.TestUtils;
 import com.reneekbartlett.verisimilar.core.model.AddressLineTwo;
+import com.reneekbartlett.verisimilar.core.model.FilterOperator;
 import com.reneekbartlett.verisimilar.core.model.PostalAddress;
 import com.reneekbartlett.verisimilar.core.model.TemplateField;
 import com.reneekbartlett.verisimilar.core.model.USState;
@@ -152,8 +153,7 @@ public class PostalAddressGeneratorTests {
         PostalAddressRecordGenerator postalAddressGenerator = new PostalAddressRecordGenerator(registry);
 
         SelectionFilter.Builder filterBuilder = SelectionFilter.builder();
-        //filterBuilder.startsWith("MA", TemplateField.STREET_NAME);
-        filterBuilder.addFilter("MA", TemplateField.STREET_NAME, "startswith");
+        filterBuilder.addFilter("MA", TemplateField.STREET_NAME, FilterOperator.STARTS_WITH);
         filterBuilder.streetSuffix("ST");
 
         PostalAddress postalAddress = postalAddressGenerator.generate(filterBuilder.build());
